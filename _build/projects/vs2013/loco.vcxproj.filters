@@ -1,23 +1,48 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="include">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    <Filter Include="engine">
+      <UniqueIdentifier>{039964fa-2004-4653-8c7e-80e2258bfaa3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="engine\public">
+      <UniqueIdentifier>{1d07446d-f0ce-4310-90f3-ad66aaa749f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="engine\private">
+      <UniqueIdentifier>{583bb81a-6b63-46c5-ae93-9415aa07c20c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core">
+      <UniqueIdentifier>{9d001b70-0863-437d-80f9-a9b461cfc739}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\public">
+      <UniqueIdentifier>{dc15a591-bc4a-4712-8602-1a1e5aebdc03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="core\private">
+      <UniqueIdentifier>{00bdbe59-7e54-4cb4-8f1d-c3d9638b1809}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\include\loco.h">
-      <Filter>include</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\src\loco.cpp">
-      <Filter>src</Filter>
+    <ClCompile Include="..\..\..\source\engine\private\loco.cpp">
+      <Filter>engine\private</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\source\core\private\debug.cpp">
+      <Filter>core\private</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\engine\private\entity_manager.cpp">
+      <Filter>engine\private</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\source\engine\public\loco.h">
+      <Filter>engine\public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\engine\public\entity.h">
+      <Filter>engine\public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\public\debug.h">
+      <Filter>core\public</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\engine\public\entity_manager.h">
+      <Filter>engine\public</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
