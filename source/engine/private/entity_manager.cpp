@@ -25,7 +25,7 @@ namespace loco
 		{
 			_generation.push_back(0);
 			idx = _generation.size() - 1;
-			check(idx < (1 << ENTITY_INDEX_BITS));
+			CHECK(idx < (1 << ENTITY_INDEX_BITS));
 		}
 		return make_entity(idx, _generation[idx]);
 	}
