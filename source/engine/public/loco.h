@@ -4,6 +4,7 @@
 
 namespace loco
 {
+
 	/// Initialize loco library
 	void init();
 

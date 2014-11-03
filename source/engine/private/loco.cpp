@@ -5,7 +5,6 @@ namespace loco
 {
 	void init()
 	{
-
 	};
 
 	void shutdown()
