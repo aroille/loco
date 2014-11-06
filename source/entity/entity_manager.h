@@ -11,6 +11,7 @@ namespace loco
 	class EntityManager
 	{
 	public:
+
 		Entity	create();
 		bool	alive(Entity e) const;
 		void	destroy(Entity e);

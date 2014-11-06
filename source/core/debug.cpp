@@ -27,7 +27,7 @@ namespace loco
 
 		// Display error window
 		#ifdef WIN32
-		MessageBox(NULL, msg_buffer, "Loco Engine Error", MB_OK | MB_ICONERROR);
+		MessageBox(NULL, msg_buffer, "LocoEngine Error", MB_OK | MB_ICONERROR);
 		#endif
 
 		// Exit
