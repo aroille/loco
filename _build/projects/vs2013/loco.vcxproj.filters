@@ -4,45 +4,60 @@
     <Filter Include="engine">
       <UniqueIdentifier>{039964fa-2004-4653-8c7e-80e2258bfaa3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="engine\public">
-      <UniqueIdentifier>{1d07446d-f0ce-4310-90f3-ad66aaa749f7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="engine\private">
-      <UniqueIdentifier>{583bb81a-6b63-46c5-ae93-9415aa07c20c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="core">
       <UniqueIdentifier>{9d001b70-0863-437d-80f9-a9b461cfc739}</UniqueIdentifier>
     </Filter>
-    <Filter Include="core\public">
-      <UniqueIdentifier>{dc15a591-bc4a-4712-8602-1a1e5aebdc03}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="core\private">
-      <UniqueIdentifier>{00bdbe59-7e54-4cb4-8f1d-c3d9638b1809}</UniqueIdentifier>
+    <Filter Include="entity">
+      <UniqueIdentifier>{9fb032d8-4ed2-4228-8b9d-1bf9ad05f464}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\source\engine\private\loco.cpp">
-      <Filter>engine\private</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\core\private\debug.cpp">
-      <Filter>core\private</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\engine\private\entity_manager.cpp">
-      <Filter>engine\private</Filter>
-    </ClCompile>
+    <ClInclude Include="..\..\..\source\entity\entity.h">
+      <Filter>entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\entity\entity_manager.h">
+      <Filter>entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\debug.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\engine\loco.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\engine\world.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\math_types.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\entity\transform_component.h">
+      <Filter>entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\matrix4x4.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\engine\game.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\source\engine\public\loco.h">
-      <Filter>engine\public</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\source\engine\public\entity.h">
-      <Filter>engine\public</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\source\core\public\debug.h">
-      <Filter>core\public</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\source\engine\public\entity_manager.h">
-      <Filter>engine\public</Filter>
-    </ClInclude>
+    <ClCompile Include="..\..\..\source\entity\entity_manager.cpp">
+      <Filter>entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\debug.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\engine\loco.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\entity\transform_component.cpp">
+      <Filter>entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\math_static.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\engine\game.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

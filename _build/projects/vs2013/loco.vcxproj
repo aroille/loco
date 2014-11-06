@@ -11,15 +11,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\source\core\private\debug.cpp" />
-    <ClCompile Include="..\..\..\source\engine\private\entity_manager.cpp" />
-    <ClCompile Include="..\..\..\source\engine\private\loco.cpp" />
+    <ClInclude Include="..\..\..\source\core\debug.h" />
+    <ClInclude Include="..\..\..\source\core\math_types.h" />
+    <ClInclude Include="..\..\..\source\core\matrix4x4.h" />
+    <ClInclude Include="..\..\..\source\engine\game.h" />
+    <ClInclude Include="..\..\..\source\engine\loco.h" />
+    <ClInclude Include="..\..\..\source\engine\world.h" />
+    <ClInclude Include="..\..\..\source\entity\entity.h" />
+    <ClInclude Include="..\..\..\source\entity\entity_manager.h" />
+    <ClInclude Include="..\..\..\source\entity\transform_component.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\source\core\public\debug.h" />
-    <ClInclude Include="..\..\..\source\engine\public\entity.h" />
-    <ClInclude Include="..\..\..\source\engine\public\entity_manager.h" />
-    <ClInclude Include="..\..\..\source\engine\public\loco.h" />
+    <ClCompile Include="..\..\..\source\core\debug.cpp" />
+    <ClCompile Include="..\..\..\source\core\math_static.cpp" />
+    <ClCompile Include="..\..\..\source\engine\game.cpp" />
+    <ClCompile Include="..\..\..\source\engine\loco.cpp" />
+    <ClCompile Include="..\..\..\source\entity\entity_manager.cpp" />
+    <ClCompile Include="..\..\..\source\entity\transform_component.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5C7E71AD-6557-4C85-93CF-AA45287535CB}</ProjectGuid>
@@ -66,7 +74,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\source\core\public;..\..\..\source\engine\public;..\..\..\source\renderer\public;..\..\..\source\physic\public;..\..\..\source\physic\network</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\entity;..\..\..\3rdparty\bx\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -80,7 +88,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\source\core\public;..\..\..\source\engine\public;..\..\..\source\renderer\public;..\..\..\source\physic\public;..\..\..\source\physic\network</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\entity;..\..\..\3rdparty\bx\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_MBCS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
