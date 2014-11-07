@@ -31,7 +31,7 @@ namespace loco
 		return make_entity(idx, _generation[idx]);
 	}
 
-	bool EntityManager::alive(Entity e) const
+	bool EntityManager::is_alive(Entity e) const
 	{
 		return _generation[e.index()] == e.generation();
 	}

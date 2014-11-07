@@ -13,8 +13,8 @@ namespace loco
 	public:
 
 		Entity	create();
-		bool	alive(Entity e) const;
 		void	destroy(Entity e);
+		bool	is_alive(Entity e) const;
 
 	private:
 		Entity	make_entity(unsigned index, char generation);

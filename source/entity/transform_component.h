@@ -8,39 +8,50 @@
 
 namespace loco
 {
+	/// Manager for transform components
+	/// Once data capacity reached, capacity will automatically doubled
 	class TransformComponent
 	{
 		public:
 
+			/// Instance handle
 			struct Instance 
 			{
 				unsigned i;
-
-				inline bool operator==(Instance const& in) const { return i == in.i; };
-
+				//---------
 				static const Instance invalid;
+				bool operator==(Instance const& in) const { return i == in.i; };
 			};
 
 			TransformComponent();
 			~TransformComponent();
 
+			/// Attach a new transform component to entity e
 			Instance create(Entity e);
+
+			/// Get transform component attached to entity e
 			Instance lookup(Entity e);
+
+			/// Free the transform component attached to entity e
 			void destroy(Entity e);
 
-			/// Create a child/parent relationship between two entities
+			/// Check if instance e is different from Instance::invalid
+			bool is_valid(Instance e);
+
+			/// Create a child/parent relationship between two transform component instances
 			void link(Instance child, Instance parent);
 
 			/// Detach the child from its parent 
 			void unlink(Instance child);
 
-			bool is_valid(Instance e);
-
+			/// Get the local transform matrix of the instance i
 			Matrix4x4 local(Instance i);
+
+			/// Set the local transform matrix of the instance i (it also updates children instances)
 			void set_local(Instance i, const Matrix4x4& m);
 
+			/// Get the world transform matrix of the instance i
 			Matrix4x4 world(Instance i);
-
 
 		private:
 
@@ -58,16 +69,24 @@ namespace loco
 				Instance* next_sibling;		///< The next sibling of this instance
 				Instance* prev_sibling;		///< The next sibling of this instance
 			};
-
-			void allocate(unsigned sz);
-			Instance make_instance(unsigned i);
-			void transform(const Matrix4x4& parent, Instance i);
-			void move_instance(unsigned from, unsigned to);
-
 			InstanceData _data;
 
 			/// Map an Entity id (key) with a Instance id (value)
 			std::unordered_map<unsigned, unsigned> _map;
+
+			/// Increase the capicity of the data buffer to an Instance count of sz
+			void allocate(unsigned sz);
+
+			/// Return an instance from an index
+			Instance make_instance(unsigned i);
+
+			/// Update the world matrix of Instance i and of its children
+			void transform(const Matrix4x4& parent, Instance i);
+
+			/// Move an instance at index 'from' to a new location at index 'to'
+			/// This function will also update all instances with reference to this instance
+			/// The memory at index 'to' shoudn't be used by another instance before the move;
+			void move_instance(unsigned from, unsigned to);
 	};
 }
 

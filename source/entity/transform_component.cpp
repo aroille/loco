@@ -9,9 +9,6 @@ namespace loco
 	TransformComponent::TransformComponent()
 	{
 		_data = InstanceData{};
-
-		// 2 is the minimum size to be able to add and delete one instance
-		// Will grow automatically
 		allocate(2);	
 	}
 
@@ -72,8 +69,8 @@ namespace loco
 
 	void TransformComponent::link(Instance child, Instance parent)
 	{
-		LOCO_ASSERTF(is_valid(child), "Child transform component not found");
-		LOCO_ASSERTF(is_valid(parent), "Parent transform component not found");
+		LOCO_ASSERTF(is_valid(child), "Child transform componennt invalid");
+		LOCO_ASSERTF(is_valid(parent), "Parent transform component invalid");
 
 		// if child has already a parent : unlink
 		if (is_valid(_data.parent[child.i]))
@@ -97,7 +94,7 @@ namespace loco
 
 	void TransformComponent::unlink(Instance child)
 	{
-		LOCO_ASSERTF(is_valid(child), "Child transform component not found");
+		LOCO_ASSERTF(is_valid(child), "Child transform component invalid");
 
 		Instance parent = _data.parent[child.i];
 		if (!is_valid(parent))
