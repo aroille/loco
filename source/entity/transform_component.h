@@ -38,20 +38,34 @@ namespace loco
 			/// Check if instance e is different from Instance::invalid
 			bool is_valid(Instance e);
 
-			/// Create a child/parent relationship between two transform component instances
+			/// Create child/parent relationship between two transform component instances
 			void link(Instance child, Instance parent);
 
-			/// Detach the child from its parent 
+			/// Detach child from its parent 
 			void unlink(Instance child);
 
-			/// Get the local transform matrix of the instance i
-			Matrix4x4 local(Instance i);
+			/// Get local transform matrix of instance i
+			Matrix4x4 local_matrix(Instance i);
 
-			/// Set the local transform matrix of the instance i (it also updates children instances)
-			void set_local(Instance i, const Matrix4x4& m);
+			/// Set local transform matrix of instance i (it also updates children instances)
+			void set_local_matrix(Instance i, const Matrix4x4& m);
 
-			/// Get the world transform matrix of the instance i
-			Matrix4x4 world(Instance i);
+			/// Get world transform matrix of instance i
+			Matrix4x4 world_matrix(Instance i);
+
+			/// Get parent of instance i
+			Instance parent(Instance i);
+
+			/// Get first child of instance i
+			Instance first_child(Instance i);
+
+			/// Get next sibling of instance i
+			Instance next_sibling(Instance i);
+
+			/// Get previous sibling of instance i
+			Instance prev_sibling(Instance i);
+
+
 
 		private:
 

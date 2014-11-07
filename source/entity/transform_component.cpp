@@ -44,18 +44,17 @@ namespace loco
 		Instance i = lookup(e);
 		LOCO_ASSERTF(is_valid(i), "Entity not found (id:%s)", e.id);
 
+		_map.erase(_data.entity[i.i].id);
+
+		// unlink i and children of i
 		unlink(i);
 
-		// update children
 		Instance child = _data.first_child[i.i];
 		while (is_valid(child))
 		{
-			_data.parent[child.i] = Instance::invalid;
-			transform(Matrix4x4::identity, child);
+			unlink(child);
 			child = _data.next_sibling[child.i];
 		}
-
-		_map.erase(_data.entity[i.i].id);
 
 		// move the instance at [size-1] to the initial index of the destroyed instance
 		if (_data.size > 1)
@@ -133,12 +132,12 @@ namespace loco
 		return (i.i != Instance::invalid.i);
 	}
 
-	Matrix4x4 TransformComponent::local(Instance i)
+	Matrix4x4 TransformComponent::local_matrix(Instance i)
 	{
 		return _data.local[i.i];
 	}
 
-	void TransformComponent::set_local(Instance i, const Matrix4x4& m)
+	void TransformComponent::set_local_matrix(Instance i, const Matrix4x4& m)
 	{
 		_data.local[i.i] = m;
 		Instance parent = _data.parent[i.i];
@@ -146,9 +145,29 @@ namespace loco
 		transform(parent_tm, i);
 	}
 
-	Matrix4x4 TransformComponent::world(Instance i)
+	Matrix4x4 TransformComponent::world_matrix(Instance i)
 	{
 		return _data.world[i.i];
+	}
+
+	TransformComponent::Instance TransformComponent::parent(Instance i)
+	{
+		return _data.parent[i.i];
+	}
+
+	TransformComponent::Instance TransformComponent::first_child(Instance i)
+	{
+		return _data.first_child[i.i];
+	}
+
+	TransformComponent::Instance TransformComponent::next_sibling(Instance i)
+	{
+		return _data.next_sibling[i.i];
+	}
+
+	TransformComponent::Instance TransformComponent::prev_sibling(Instance i)
+	{
+		return _data.prev_sibling[i.i];
 	}
 
 	void TransformComponent::allocate(unsigned sz)
@@ -232,3 +251,4 @@ namespace loco
 			_data.next_sibling[_data.prev_sibling[to].i] = new_instance;
 	}
 }
+

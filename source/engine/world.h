@@ -8,10 +8,10 @@ namespace loco
 	class World
 	{
 	public:
-		TransformComponent* tf_component() { return &_tf_component; }
+		TransformComponent* transform() { return &_transform; }
 
 	private:
-		TransformComponent _tf_component;
+		TransformComponent _transform;
 	};
 }
 
