@@ -12,7 +12,10 @@ namespace loco
 		static void init();
 		static void shutdown();
 
-		static EntityManager* entity_manager() { return &_entity_manager; };
+		static Entity create_entity();
+		static bool is_entity_alive(Entity e);
+		static void destroy_entity(Entity e);
+
 		static World* world() { return &_world; };
 
 	private:
