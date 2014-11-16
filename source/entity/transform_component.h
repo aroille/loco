@@ -8,13 +8,13 @@
 
 namespace loco
 {
-	/// Transform component handle
+	/// Transform component (just a handle)
 	struct TransformComponent
 	{
 		unsigned i;
 		//---------
-		static const TransformComponent invalid;
 		bool operator==(TransformComponent const& in) const { return i == in.i; };
+		static const TransformComponent invalid;
 	};
 
 	/// Manager for transform components
@@ -72,11 +72,11 @@ namespace loco
 			{
 				unsigned size;				///< Number of used instance
 				unsigned capacity;			///< Number of allocated instance in arrays
-				void* buffer;				///< Buffer with instance data
+				char* buffer;				///< Buffer with instance data
 
-				Entity* entity;				///< The entity owning this instance
 				Matrix4x4* local;			///< Local transform relative to parent
 				Matrix4x4* world;			///< World transform
+				Entity* entity;				///< The entity owning this instance
 				TransformComponent* parent;			///< Parent instance of this instance
 				TransformComponent* first_child;		///< First child of this instance
 				TransformComponent* next_sibling;		///< The next sibling of this instance
@@ -97,7 +97,7 @@ namespace loco
 			void transform(const Matrix4x4& parent, TransformComponent c);
 
 			/// Move a component at index 'from' to a new location at index 'to'
-			/// This function will also update all component with reference to this component
+			/// This function will also update all transform component with reference to this component
 			/// The memory at index 'to' shoudn't be used by another component before the move;
 			void move_instance(unsigned from, unsigned to);
 	};

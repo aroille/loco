@@ -175,14 +175,18 @@ namespace loco
 		LOCO_ASSERT(sz > _data.size);
 
 		ComponentData new_data;
-		const unsigned bytes = sz * (sizeof(Entity)+2 * sizeof(Matrix4x4)+4 * sizeof(TransformComponent));
-		new_data.buffer = malloc(bytes);
+		unsigned alignement = 16; // Matrix4x4 need to be aligned on 16 octets (Matrix4x4* are first members of the struct)
+		const unsigned bytes = sz * (sizeof(Entity)+2 * sizeof(Matrix4x4)+4 * sizeof(TransformComponent) + alignement);
+		new_data.buffer = (char*)malloc(bytes);
 		new_data.size= _data.size;
 		new_data.capacity = sz;
 
-		new_data.entity = (Entity *)(new_data.buffer);
-		new_data.local = (Matrix4x4 *)(new_data.entity + sz);
+		unsigned offset = alignement - ((unsigned)new_data.buffer & (alignement - 1));
+
+		new_data.local = (Matrix4x4 *)(new_data.buffer + offset);
 		new_data.world = new_data.local + sz;
+		new_data.entity = (Entity*)(new_data.world + sz);
+
 		new_data.parent = (TransformComponent *)(new_data.world + sz);
 		new_data.first_child = new_data.parent + sz;
 		new_data.next_sibling = new_data.first_child + sz;
@@ -208,6 +212,8 @@ namespace loco
 
 	void TransformSystem::transform(const Matrix4x4& parent, TransformComponent c)
 	{
+		//Matrix4x4 local = _data.local[c.i];
+		//_data.world[c.i] = parent * local;
 		_data.world[c.i] = parent * _data.local[c.i];
 
 		TransformComponent child = _data.first_child[c.i];
