@@ -37,9 +37,14 @@ int _main_(int argc, char** argv)
 	loco::resources::load("common");
 	loco::resources::load("level\01");
 
-	loco::Mesh mesh = loco::resources::get_mesh("common\mesh\box");
-	loco::Texture mesh = loco::resources::get_texture("common\texture\box");
+	loco::resources::Mesh mesh = loco::resources::get_mesh("common\mesh\box");
+	loco::resources::Texture texture = loco::resources::get_texture("common\texture\box");
 	
+	loco::MeshComponent mesh_cp = mesh_components->create(e_1);
+	mesh_components->set_mesh(mesh);
+	mesh_components->set_material(mat);
+
+
 	loco::resources::unload("level\01");
 	loco::resources::unload("common");
 	*/

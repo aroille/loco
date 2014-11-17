@@ -1,7 +1,12 @@
 #include "resources.h"
+
+#include "renderer.h"
+#include "debug.h"
 #include "defines.h"
+#include "memory.h"
 #include "murmur_hash.h"
 #include "path.h"
+
 #include <string>
 #include <list>
 #include <map>
@@ -13,30 +18,130 @@ namespace loco
 		struct ResourceInfo
 		{
 			HashedString	hashed_name;
-			char			path[LOCO_PATH_LENGTH];
-			char*			data;
-			unsigned		data_size;
+			Memory*			memory;
 		};
 
-		static char _root[LOCO_PATH_LENGTH];
-		static std::map<unsigned, ResourceInfo> _meshes;
+		struct Texture
+		{
+			HashedString	i;
+		};
 
+		struct Mesh
+		{
+			HashedString	i;
+		};
+
+		struct Shader
+		{
+			HashedString	i;
+		};
+
+		struct Program
+		{
+			HashedString	i;
+		};
+
+		//==========================================================================
+		static char _root[LOCO_PATH_LENGTH];
+		static unsigned _root_length = 0;
+
+		static std::map<HashedString, ResourceInfo> _resources;
+
+		//==========================================================================
 		void init(char* root_folder_path)
 		{
+			// init root resources folder
 			strcpy(_root, root_folder_path);
+			_root_length = strlen(root_folder_path);
+
+			// load common resources
 			resources::load_folder(LOCO_COMMON_RESOURCE_PATH);
 		}
 
+		//==========================================================================
+		HashedString hashed_resource_name(FileInfo* file_info)
+		{
+			unsigned path_length = strlen(file_info->path);
+			unsigned ext_length = strlen(file_info->extention);
+			unsigned size_to_hash = path_length - _root_length - ext_length - 1;
+			return murmur_hash_64(file_info->path + _root_length, size_to_hash);
+		}
+
+		//==========================================================================
+		ResourceInfo load_file(FileInfo* file_info)
+		{
+			ResourceInfo resource_info;
+			resource_info.hashed_name = hashed_resource_name(file_info);
+
+			FILE* file = fopen(file_info->path, "rb");
+			LOCO_ASSERTF(file, "Can't open file : %s", file_info->path);
+
+			fseek(file, 0, SEEK_END);
+			int file_size = ftell(file);
+			fseek(file, 0, SEEK_SET);
+			if (file_size >= 0)
+			{
+				resource_info.memory = new Memory();
+				resource_info.memory->data = (uint8_t*)malloc(file_size);
+				resource_info.memory->size = file_size;
+
+				// read file
+				unsigned readed_size = fread(resource_info.memory->data, 1, resource_info.memory->size, file);
+				LOCO_ASSERTF(readed_size == resource_info.memory->size, "Error while reading file : %s", file_info->path);
+
+				auto resource_it = _resources.find(resource_info.hashed_name);
+				LOCO_ASSERTF(resource_it == _resources.end(), "The following file is already loaded : %s", file_info->path);
+				_resources[resource_info.hashed_name] = resource_info;
+			}
+			else
+			{
+				resource_info.memory = NULL;
+			}
+			
+			int close_return = fclose(file);
+			LOCO_ASSERTF(close_return == 0, "Can't close file : %s", file_info->path);
+			
+			return resource_info;
+		}
+
+		//==========================================================================
+		void create_texture(ResourceInfo resource_info)
+		{
+			Renderer::TextureHandle handle =  Renderer::create_texture(resource_info.memory);
+			Renderer::destroy_texture(handle);
+		}
+
+		//==========================================================================
 		unsigned load_folder(char* folder_path)
 		{
 			char path[LOCO_PATH_LENGTH];
 			strcpy(path, _root);
 			strcat(path, folder_path);
 
-			std::list<FileInfo> fi_list;
-			files_in_directory(path, true, &fi_list);
+			std::list<FileInfo> files_infos;
+			files_in_directory(path, true, &files_infos);
 
-			return 0;
+			FileInfo* file_info;
+			ResourceInfo resource_info;
+			unsigned resource_count = 0;
+
+			auto files_infos_it = files_infos.begin();
+			while (files_infos_it != files_infos.end())
+			{
+				file_info = &(*files_infos_it);
+				if (strcmp(file_info->extention, "dds") == 0)
+				{
+					resource_info = load_file(file_info);
+					create_texture(resource_info);
+					resource_count++;
+				}
+
+				files_infos_it++;
+			}
+
+			return resource_count;
 		}
+
+		
 	}
 }

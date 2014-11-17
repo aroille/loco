@@ -15,6 +15,7 @@
     <ClInclude Include="..\..\..\source\core\defines.h" />
     <ClInclude Include="..\..\..\source\core\math_types.h" />
     <ClInclude Include="..\..\..\source\core\matrix4x4.h" />
+    <ClInclude Include="..\..\..\source\core\memory.h" />
     <ClInclude Include="..\..\..\source\core\path.h" />
     <ClInclude Include="..\..\..\source\core\murmur_hash.h" />
     <ClInclude Include="..\..\..\source\engine\loco.h" />
@@ -34,6 +35,7 @@
     <ClCompile Include="..\..\..\source\core\debug.cpp" />
     <ClCompile Include="..\..\..\source\core\math_static.cpp" />
     <ClCompile Include="..\..\..\source\core\murmur_hash.cpp" />
+    <ClCompile Include="..\..\..\source\core\path.cpp" />
     <ClCompile Include="..\..\..\source\core\path_windows.cpp" />
     <ClCompile Include="..\..\..\source\engine\loco.cpp" />
     <ClCompile Include="..\..\..\source\engine\renderer.cpp" />

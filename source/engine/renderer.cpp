@@ -1,5 +1,6 @@
 #include "renderer.h"
 #include "bgfx.h"
+#include "Memory.h"
 
 namespace loco
 {
@@ -7,7 +8,6 @@ namespace loco
 	{
 		bgfx::init();
 	}
-
 
 	void Renderer::reset(unsigned width, unsigned height)
 	{
@@ -19,5 +19,18 @@ namespace loco
 	void Renderer::shutdown()
 	{
 		bgfx::shutdown();
+	}
+
+	Renderer::TextureHandle Renderer::create_texture(Memory* memory)
+	{
+		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, memory->size);
+		bgfx::TextureHandle bgfx_handle = bgfx::createTexture(bgfx_mem);
+
+		return Renderer::TextureHandle{ bgfx_handle.idx };
+	}
+
+	void Renderer::destroy_texture(TextureHandle handle)
+	{
+		bgfx::destroyTexture(bgfx::TextureHandle{ handle.idx });
 	}
 }
