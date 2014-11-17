@@ -12,22 +12,54 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\source\core\debug.h" />
+    <ClInclude Include="..\..\..\source\core\defines.h" />
     <ClInclude Include="..\..\..\source\core\math_types.h" />
     <ClInclude Include="..\..\..\source\core\matrix4x4.h" />
-    <ClInclude Include="..\..\..\source\engine\game.h" />
+    <ClInclude Include="..\..\..\source\core\path.h" />
+    <ClInclude Include="..\..\..\source\core\murmur_hash.h" />
     <ClInclude Include="..\..\..\source\engine\loco.h" />
+    <ClInclude Include="..\..\..\source\engine\renderer.h" />
+    <ClInclude Include="..\..\..\source\engine\resources.h" />
     <ClInclude Include="..\..\..\source\engine\world.h" />
     <ClInclude Include="..\..\..\source\entity\entity.h" />
     <ClInclude Include="..\..\..\source\entity\entity_manager.h" />
     <ClInclude Include="..\..\..\source\entity\transform_component.h" />
+    <ClInclude Include="..\..\..\source\entry\cmd.h" />
+    <ClInclude Include="..\..\..\source\entry\dbg.h" />
+    <ClInclude Include="..\..\..\source\entry\entry.h" />
+    <ClInclude Include="..\..\..\source\entry\entry_p.h" />
+    <ClInclude Include="..\..\..\source\entry\input.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\core\debug.cpp" />
     <ClCompile Include="..\..\..\source\core\math_static.cpp" />
-    <ClCompile Include="..\..\..\source\engine\game.cpp" />
+    <ClCompile Include="..\..\..\source\core\murmur_hash.cpp" />
+    <ClCompile Include="..\..\..\source\core\path_windows.cpp" />
     <ClCompile Include="..\..\..\source\engine\loco.cpp" />
+    <ClCompile Include="..\..\..\source\engine\renderer.cpp" />
+    <ClCompile Include="..\..\..\source\engine\resources.cpp" />
     <ClCompile Include="..\..\..\source\entity\entity_manager.cpp" />
     <ClCompile Include="..\..\..\source\entity\transform_component.cpp" />
+    <ClCompile Include="..\..\..\source\entry\cmd.cpp" />
+    <ClCompile Include="..\..\..\source\entry\dbg.cpp" />
+    <ClCompile Include="..\..\..\source\entry\entry.cpp" />
+    <ClCompile Include="..\..\..\source\entry\entry_android.cpp" />
+    <ClCompile Include="..\..\..\source\entry\entry_asmjs.cpp" />
+    <ClCompile Include="..\..\..\source\entry\entry_nacl.cpp" />
+    <ClCompile Include="..\..\..\source\entry\entry_qnx.cpp" />
+    <ClCompile Include="..\..\..\source\entry\entry_sdl.cpp" />
+    <ClCompile Include="..\..\..\source\entry\entry_windows.cpp" />
+    <ClCompile Include="..\..\..\source\entry\entry_x11.cpp" />
+    <ClCompile Include="..\..\..\source\entry\input.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\3rdparty\bgfx\.build\projects\vs2013\bgfx.vcxproj">
+      <Project>{6c90947c-58c7-950d-01b4-7b10edc9110f}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\source\entry\entry_ios.mm" />
+    <None Include="..\..\..\source\entry\entry_osx.mm" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5C7E71AD-6557-4C85-93CF-AA45287535CB}</ProjectGuid>
@@ -58,15 +90,15 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>..\..\win32_vs2013\bin\</OutDir>
-    <IntDir>..\..\win32_vs2013\obj\x32\Debug\loco\</IntDir>
-    <TargetName>locoDebug</TargetName>
+    <OutDir>..\..\$(Platform)_vs2013\bin\</OutDir>
+    <IntDir>..\..\$(Platform)_vs2013\obj\$(Configuration)\$(ProjectName)\</IntDir>
+    <TargetName>$(ProjectName)$(Configuration)</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>..\..\win32_vs2013\bin\</OutDir>
-    <IntDir>..\..\win32_vs2013\obj\x32\Release\loco\</IntDir>
-    <TargetName>locoRelease</TargetName>
+    <OutDir>..\..\$(Platform)_vs2013\bin\</OutDir>
+    <IntDir>..\..\$(Platform)_vs2013\obj\$(Configuration)\$(ProjectName)\</IntDir>
+    <TargetName>$(ProjectName)$(Configuration)</TargetName>
     <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -74,12 +106,16 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\entity;..\..\..\3rdparty\bx\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MBCS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\entity;..\..\..\3rdparty\bx\include;..\..\..\3rdparty\bgfx\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;_CRT_SECURE_NO_WARNINGS;_MBCS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -88,8 +124,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\entity;..\..\..\3rdparty\bx\include</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_MBCS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\entity;..\..\..\3rdparty\bx\include;..\..\..\3rdparty\bgfx\include</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>__STDC_LIMIT_MACROS;__STDC_FORMAT_MACROS;__STDC_CONSTANT_MACROS;WIN32;_WIN32;_HAS_EXCEPTIONS=0;_HAS_ITERATOR_DEBUGGING=0;_SCL_SECURE=0;_SECURE_SCL=0;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
