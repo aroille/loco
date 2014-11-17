@@ -2,6 +2,7 @@
 #define UTILS_H_HEADER_GUARD
 
 #include <stdint.h>
+#include "defines.h"
 
 namespace loco
 {
@@ -9,9 +10,7 @@ namespace loco
 
 	/// Implementation of the 64 bit MurmurHash2 function
 	/// http://murmurhash.googlepages.com/
-	uint64_t murmur_hash_64(const void *key, uint32_t len, uint64_t seed);
-
-	HashedString hash(char*);
+	uint64_t murmur_hash_64(const void *key, uint32_t len, uint64_t seed = LOCO_MURMUR_HASH_SEED);
 }
 
 #endif // UTILS_H_HEADER_GUARD

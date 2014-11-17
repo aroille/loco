@@ -57,9 +57,4 @@ namespace loco
 
 		return h;
 	}
-
-	HashedString hash(char* string)
-	{
-		return murmur_hash_64(string, strlen(string), LOCO_MURMUR_HASH_SEED);
-	}
 }

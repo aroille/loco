@@ -7,6 +7,26 @@
 
 namespace loco
 {
+	void extention(char* file_path, char* result)
+	{
+		unsigned size = strlen(file_path);
+		unsigned pos = size - 1;
+		while ((pos >= 0) && (file_path[pos] != '.'))
+			--pos;
+
+		if (pos >= 0)
+			strcpy(result, file_path + pos + 1);
+		else
+			strcpy(result, "");
+	}
+
+	unsigned long long last_modification_date(char* file_path)
+	{
+		WIN32_FILE_ATTRIBUTE_DATA file_attribute_data;
+		GetFileAttributesEx(file_path, GetFileExInfoStandard, &file_attribute_data);
+		return ((unsigned long long)file_attribute_data.ftLastWriteTime.dwHighDateTime << 32) | file_attribute_data.ftLastWriteTime.dwLowDateTime;
+	}
+
 	void files_in_directory(char* folder_path, bool recursive, std::list<FileInfo>* result)
 	{
 		char search_path[LOCO_PATH_LENGTH];
@@ -21,12 +41,17 @@ namespace loco
 			{
 				if (!(fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY))
 				{
-					//char child_folder_path[LOCO_PATH_LENGTH];
-					//wcstombs(child_folder_path, fd.cFileName, LOCO_PATH_LENGTH);
-					//names.push_back(fd.cFileName);
 					FileInfo fi;
+					// set file path
 					strcpy(fi.path, folder_path);
 					strcat(fi.path, fd.cFileName);
+
+					// set extention
+					extention(fi.path, fi.extention);
+
+					// set last modif date
+					fi.last_modif_date = last_modification_date(fi.path);
+
 					result->push_back(fi);
 				}
 				else if ((fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) && 
@@ -48,6 +73,9 @@ namespace loco
 			::FindClose(hFind);
 		}
 	}
-}
+
+
+
+} // namespace loco
 
 #endif // BX_PLATFORM_WINDOWS

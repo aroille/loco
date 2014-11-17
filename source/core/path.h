@@ -10,6 +10,7 @@ namespace loco
 	{
 		char path[LOCO_PATH_LENGTH];
 		char extention[LOCO_EXTENTION_LENGTH];
+		unsigned long long last_modif_date;
 	};
 
 	void files_in_directory(char* folder_path, bool recursive, std::list<FileInfo>* result);
