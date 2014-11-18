@@ -1,11 +1,12 @@
 #include "resources.h"
 
-#include "renderer.h"
 #include "debug.h"
 #include "defines.h"
+#include "file_system.h"
+#include "file_utils.h"
 #include "memory.h"
 #include "murmur_hash.h"
-#include "path.h"
+#include "renderer.h"
 
 #include <string>
 #include <list>
@@ -42,6 +43,8 @@ namespace loco
 		};
 
 		//==========================================================================
+		static FileSystem _file_system;
+		
 		static char _root[LOCO_PATH_LENGTH];
 		static unsigned _root_length = 0;
 
@@ -73,12 +76,12 @@ namespace loco
 			ResourceInfo resource_info;
 			resource_info.hashed_name = hashed_resource_name(file_info);
 
-			FILE* file = fopen(file_info->path, "rb");
+			File* file = FileSystem::open(file_info->path, FileSystem::Mode::READ | FileSystem::Mode::BINARY);
 			LOCO_ASSERTF(file, "Can't open file : %s", file_info->path);
-
-			fseek(file, 0, SEEK_END);
-			int file_size = ftell(file);
-			fseek(file, 0, SEEK_SET);
+			
+			FileSystem::seek_to_end(file);
+			int file_size = FileSystem::tell(file);
+			FileSystem::seek(file, 0);
 			if (file_size >= 0)
 			{
 				resource_info.memory = new Memory();
@@ -86,7 +89,7 @@ namespace loco
 				resource_info.memory->size = file_size;
 
 				// read file
-				unsigned readed_size = fread(resource_info.memory->data, 1, resource_info.memory->size, file);
+				unsigned readed_size = FileSystem::read(file, resource_info.memory->data, resource_info.memory->size);
 				LOCO_ASSERTF(readed_size == resource_info.memory->size, "Error while reading file : %s", file_info->path);
 
 				auto resource_it = _resources.find(resource_info.hashed_name);
@@ -98,8 +101,9 @@ namespace loco
 				resource_info.memory = NULL;
 			}
 			
-			int close_return = fclose(file);
-			LOCO_ASSERTF(close_return == 0, "Can't close file : %s", file_info->path);
+			FileSystem::close(file);
+			//int close_return = fclose(file);
+			//LOCO_ASSERTF(close_return == 0, "Can't close file : %s", file_info->path);
 			
 			return resource_info;
 		}

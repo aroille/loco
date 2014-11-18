@@ -1,5 +1,5 @@
-#ifndef UTILS_H_HEADER_GUARD
-#define UTILS_H_HEADER_GUARD
+#ifndef MURMUR_HASH_H_HEADER_GUARD
+#define MURMUR_HASH_H_HEADER_GUARD
 
 #include <stdint.h>
 #include "defines.h"
@@ -13,5 +13,5 @@ namespace loco
 	uint64_t murmur_hash_64(const void *key, uint32_t len, uint64_t seed = LOCO_MURMUR_HASH_SEED);
 }
 
-#endif // UTILS_H_HEADER_GUARD
+#endif // MURMUR_HASH_H_HEADER_GUARD
 

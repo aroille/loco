@@ -1,4 +1,4 @@
-#include "path.h"
+#include "file_utils.h"
 #include "bx/platform.h"
 
 #ifdef BX_PLATFORM_WINDOWS

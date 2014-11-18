@@ -57,9 +57,6 @@
     <ClInclude Include="..\..\..\source\engine\resources.h">
       <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\source\core\path.h">
-      <Filter>core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\source\core\defines.h">
       <Filter>core</Filter>
     </ClInclude>
@@ -70,6 +67,12 @@
       <Filter>engine</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\core\memory.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\file_system.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\file_utils.h">
       <Filter>core</Filter>
     </ClInclude>
   </ItemGroup>
@@ -128,13 +131,13 @@
     <ClCompile Include="..\..\..\source\core\murmur_hash.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\core\path_windows.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\source\engine\loco.cpp">
       <Filter>engine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\core\path.cpp">
+    <ClCompile Include="..\..\..\source\core\file_system.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\file_utils.cpp">
       <Filter>core</Filter>
     </ClCompile>
   </ItemGroup>

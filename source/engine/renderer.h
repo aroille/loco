@@ -3,7 +3,7 @@
 
 namespace loco
 {
-	class Memory;
+	struct Memory;
 
 	struct Renderer
 	{
