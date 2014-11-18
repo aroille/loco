@@ -3,22 +3,19 @@
 
 #include <stdint.h> // uint16_t
 
-#define LOCO_RENDERER_HANDLE(_name) \
-struct _name { uint16_t idx; };
-
 namespace loco
 {
 	struct Memory;
 
 	namespace renderer
 	{
-		LOCO_RENDERER_HANDLE(TextureHandle);
-		LOCO_RENDERER_HANDLE(VertexDeclHandle);
-		LOCO_RENDERER_HANDLE(VertexBufferHandle);
-		LOCO_RENDERER_HANDLE(IndexBufferHandle);
-		LOCO_RENDERER_HANDLE(ShaderHandle);
-		LOCO_RENDERER_HANDLE(ProgramHandle);
-		LOCO_RENDERER_HANDLE(UniformHandle);
+		struct TextureHandle		{ uint16_t idx; };
+		struct VertexDeclHandle		{ uint16_t idx; };
+		struct VertexBufferHandle	{ uint16_t idx; };
+		struct IndexBufferHandle	{ uint16_t idx; };
+		struct ShaderHandle			{ uint16_t idx; };
+		struct ProgramHandle		{ uint16_t idx; };
+		struct UniformHandle		{ uint16_t idx; };
 
 		void init();
 		void reset(unsigned width, unsigned height);
