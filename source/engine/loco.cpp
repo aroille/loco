@@ -10,15 +10,15 @@ namespace loco
 
 	void init(char* resources_path)
 	{
-		Renderer::init();
-		Renderer::reset(1280, 720);
+		renderer::init();
+		renderer::reset(1280, 720);
 
 		loco::resources::init(resources_path);
 	}
 
 	void shutdown()
 	{
-		Renderer::shutdown();
+		renderer::shutdown();
 	}
 
 	World* world()

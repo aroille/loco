@@ -1,36 +1,56 @@
 #include "renderer.h"
 #include "bgfx.h"
-#include "Memory.h"
+#include "memory.h"
 
 namespace loco
 {
-	void Renderer::init()
+	namespace renderer
+	{
+	/*
+	typedef bgfx::TextureHandle RendererTextureHandle;
+	typedef bgfx::VertexDeclHandle RendererVertexDeclHandle;
+	typedef bgfx::VertexBufferHandle RendererVertexBufferHandle;
+	typedef bgfx::IndexBufferHandle RendererIndexBufferHandle;
+	typedef bgfx::ShaderHandle RendererShaderHandle;
+	typedef bgfx::ProgramHandle RendererProgramHandle;
+	typedef bgfx::UniformHandle RendererUniformHandle;
+	*/
+
+	template<typename To, typename From>
+	To convert(From handle)
+	{
+		return To{ handle.idx };
+	}
+
+	void init()
 	{
 		bgfx::init();
 	}
 
-	void Renderer::reset(unsigned width, unsigned height)
+	void reset(unsigned width, unsigned height)
 	{
 		uint32_t reset = BGFX_RESET_VSYNC;
 
 		bgfx::reset(width, height, reset);
 	}
 
-	void Renderer::shutdown()
+	void shutdown()
 	{
 		bgfx::shutdown();
 	}
 
-	Renderer::TextureHandle Renderer::create_texture(Memory* memory)
+	TextureHandle create_texture(Memory* memory)
 	{
 		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, memory->size);
 		bgfx::TextureHandle bgfx_handle = bgfx::createTexture(bgfx_mem);
 
-		return Renderer::TextureHandle{ bgfx_handle.idx };
+		return convert<TextureHandle>(bgfx_handle);
 	}
 
-	void Renderer::destroy_texture(TextureHandle handle)
+	void destroy_texture(TextureHandle handle)
 	{
-		bgfx::destroyTexture(bgfx::TextureHandle{ handle.idx });
+		bgfx::destroyTexture(convert<bgfx::TextureHandle>(handle));
 	}
-}
+
+} // renderer
+} // loco

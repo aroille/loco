@@ -111,8 +111,8 @@ namespace loco
 		//==========================================================================
 		void create_texture(ResourceInfo resource_info)
 		{
-			Renderer::TextureHandle handle =  Renderer::create_texture(resource_info.memory);
-			Renderer::destroy_texture(handle);
+			renderer::TextureHandle handle = renderer::create_texture(resource_info.memory);
+			renderer::destroy_texture(handle);
 		}
 
 		//==========================================================================
