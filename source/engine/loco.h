@@ -7,7 +7,7 @@
 
 namespace loco
 {
-	void init(char* resources_path);
+	void init(const char* resources_path);
 	void shutdown();
 
 	Entity create_entity();

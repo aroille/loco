@@ -24,7 +24,7 @@ namespace loco
 		};
 
 		/// Open a file using a specific access mode
-		static File* open(char* file_path, int flags);
+		static File* open(const char* file_path, int flags);
 
 		/// Close a file
 		static void close(File* f);

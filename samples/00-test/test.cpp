@@ -37,7 +37,7 @@ int _main_(int argc, char** argv)
 	loco::resources::load("common");
 	loco::resources::load("level\01");
 
-	loco::resources::Mesh mesh = loco::resources::get_mesh("common\mesh\box");
+	loco::resources::Mesh mesh = loco::resources::get<Mesh>("common\mesh\box");
 	loco::resources::Texture texture = loco::resources::get_texture("common\texture\box");
 	
 	loco::MeshComponent mesh_cp = mesh_components->create(e_1);

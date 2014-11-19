@@ -5,11 +5,11 @@ namespace loco
 {
 	namespace resources
 	{
-		void init(char* root_folder_path);
+		void init(const char* root_folder_path);
 
 		/// Load all resources in path (recursive) + create the equivalent gpu resources
 		/// Return the number of resources loaded
-		unsigned load_folder(char* folder_path);
+		unsigned load_folder(const char* folder_path);
 
 		//Mesh get_mesh(char* resource_path);
 		//Texture get_texture(char* resource_path);

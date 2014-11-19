@@ -22,24 +22,19 @@ namespace loco
 			Memory*			memory;
 		};
 
-		struct Texture
+		struct Texture	{ HashedString name; };
+		struct Mesh		{ HashedString name; };
+		struct Shader	{ HashedString name; };
+		struct Program	{ HashedString name; };
+
+		struct TextureResource
 		{
-			HashedString	i;
+			renderer::TextureHandle handle;
 		};
 
-		struct Mesh
+		struct ShaderResource
 		{
-			HashedString	i;
-		};
-
-		struct Shader
-		{
-			HashedString	i;
-		};
-
-		struct Program
-		{
-			HashedString	i;
+			renderer::ShaderHandle handle;
 		};
 
 		//==========================================================================
@@ -48,10 +43,11 @@ namespace loco
 		static char _root[LOCO_PATH_LENGTH];
 		static unsigned _root_length = 0;
 
-		static std::map<HashedString, ResourceInfo> _resources;
+		typedef std::map<HashedString, ResourceInfo> ResourcesMap;
+		static ResourcesMap _resources;
 
 		//==========================================================================
-		void init(char* root_folder_path)
+		void init(const char* root_folder_path)
 		{
 			// init root resources folder
 			strcpy(_root, root_folder_path);
@@ -62,22 +58,22 @@ namespace loco
 		}
 
 		//==========================================================================
-		HashedString hashed_resource_name(FileInfo* file_info)
+		HashedString hashed_resource_name(const FileInfo& file_info)
 		{
-			unsigned path_length = strlen(file_info->path);
-			unsigned ext_length = strlen(file_info->extention);
+			unsigned path_length = strlen(file_info.path);
+			unsigned ext_length = strlen(file_info.extention);
 			unsigned size_to_hash = path_length - _root_length - ext_length - 1;
-			return murmur_hash_64(file_info->path + _root_length, size_to_hash);
+			return murmur_hash_64(file_info.path + _root_length, size_to_hash);
 		}
 
 		//==========================================================================
-		ResourceInfo load_file(FileInfo* file_info)
+		ResourceInfo load_file(const FileInfo& file_info)
 		{
 			ResourceInfo resource_info;
 			resource_info.hashed_name = hashed_resource_name(file_info);
 
-			File* file = FileSystem::open(file_info->path, FileSystem::Mode::READ | FileSystem::Mode::BINARY);
-			LOCO_ASSERTF(file, "Can't open file : %s", file_info->path);
+			File* file = FileSystem::open(file_info.path, FileSystem::Mode::READ | FileSystem::Mode::BINARY);
+			LOCO_ASSERTF(file, "Can't open file : %s", file_info.path);
 			
 			FileSystem::seek_to_end(file);
 			int file_size = FileSystem::tell(file);
@@ -90,10 +86,10 @@ namespace loco
 
 				// read file
 				unsigned readed_size = FileSystem::read(file, resource_info.memory->data, resource_info.memory->size);
-				LOCO_ASSERTF(readed_size == resource_info.memory->size, "Error while reading file : %s", file_info->path);
+				LOCO_ASSERTF(readed_size == resource_info.memory->size, "Error while reading file : %s", file_info.path);
 
 				auto resource_it = _resources.find(resource_info.hashed_name);
-				LOCO_ASSERTF(resource_it == _resources.end(), "The following file is already loaded : %s", file_info->path);
+				LOCO_ASSERTF(resource_it == _resources.end(), "The following file is already loaded : %s", file_info.path);
 				_resources[resource_info.hashed_name] = resource_info;
 			}
 			else
@@ -116,7 +112,7 @@ namespace loco
 		}
 
 		//==========================================================================
-		unsigned load_folder(char* folder_path)
+		unsigned load_folder(const char* folder_path)
 		{
 			char path[LOCO_PATH_LENGTH];
 			strcpy(path, _root);
@@ -125,22 +121,21 @@ namespace loco
 			std::list<FileInfo> files_infos;
 			files_in_directory(path, true, &files_infos);
 
-			FileInfo* file_info;
 			ResourceInfo resource_info;
 			unsigned resource_count = 0;
 
 			auto files_infos_it = files_infos.begin();
 			while (files_infos_it != files_infos.end())
 			{
-				file_info = &(*files_infos_it);
-				if (strcmp(file_info->extention, "dds") == 0)
+				FileInfo& file_info = *files_infos_it;
+				if (strcmp(file_info.extention, "dds") == 0)
 				{
 					resource_info = load_file(file_info);
 					create_texture(resource_info);
 					resource_count++;
 				}
 
-				files_infos_it++;
+				++files_infos_it;
 			}
 
 			return resource_count;

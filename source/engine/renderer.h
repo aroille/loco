@@ -21,8 +21,10 @@ namespace loco
 		void reset(unsigned width, unsigned height);
 		void shutdown();
 
-		TextureHandle create_texture(Memory* memory);
-		void destroy_texture(TextureHandle texture);
+		TextureHandle create_texture(const Memory* memory);
+		void destroy_texture(TextureHandle handle);
+
+
 	};
 }
 

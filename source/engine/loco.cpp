@@ -8,7 +8,7 @@ namespace loco
 	static EntityManager _entity_manager;
 	static World _world;
 
-	void init(char* resources_path)
+	void init(const char* resources_path)
 	{
 		renderer::init();
 		renderer::reset(1280, 720);

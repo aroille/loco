@@ -11,7 +11,7 @@ namespace loco
 		FILE* ff;
 	};
 
-	File* FileSystem::open(char* path, int flags)
+	File* FileSystem::open(const char* path, int flags)
 	{
 		char str_flags[8];
 		strcpy(str_flags, "");

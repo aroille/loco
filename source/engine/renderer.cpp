@@ -29,7 +29,7 @@ namespace renderer
 	}
 
 	//==========================================================================
-	TextureHandle create_texture(Memory* memory)
+	TextureHandle create_texture(const Memory* memory)
 	{
 		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, memory->size);
 		bgfx::TextureHandle bgfx_handle = bgfx::createTexture(bgfx_mem);
