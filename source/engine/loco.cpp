@@ -1,29 +1,22 @@
 
 #include "loco.h"
 #include "renderer.h"
-#include "resources.h"
 
 namespace loco
 {
 	static EntityManager _entity_manager;
-	static World _world;
 
 	void init(const char* resources_path)
 	{
 		renderer::init();
 		renderer::reset(1280, 720);
 
-		loco::resources::init(resources_path);
+		loco::resources.init(resources_path);
 	}
 
 	void shutdown()
 	{
 		renderer::shutdown();
-	}
-
-	World* world()
-	{
-		return &_world;
 	}
 
 	Entity create_entity()

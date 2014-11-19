@@ -21,7 +21,7 @@
     <ClInclude Include="..\..\..\source\core\murmur_hash.h" />
     <ClInclude Include="..\..\..\source\engine\loco.h" />
     <ClInclude Include="..\..\..\source\engine\renderer.h" />
-    <ClInclude Include="..\..\..\source\engine\resources.h" />
+    <ClInclude Include="..\..\..\source\engine\resource_manager.h" />
     <ClInclude Include="..\..\..\source\engine\world.h" />
     <ClInclude Include="..\..\..\source\entity\entity.h" />
     <ClInclude Include="..\..\..\source\entity\entity_manager.h" />
@@ -40,7 +40,7 @@
     <ClCompile Include="..\..\..\source\core\file_utils.cpp" />
     <ClCompile Include="..\..\..\source\engine\loco.cpp" />
     <ClCompile Include="..\..\..\source\engine\renderer.cpp" />
-    <ClCompile Include="..\..\..\source\engine\resources.cpp" />
+    <ClCompile Include="..\..\..\source\engine\resource_manager.cpp" />
     <ClCompile Include="..\..\..\source\entity\entity_manager.cpp" />
     <ClCompile Include="..\..\..\source\entity\transform_component.cpp" />
     <ClCompile Include="..\..\..\source\entry\cmd.cpp" />

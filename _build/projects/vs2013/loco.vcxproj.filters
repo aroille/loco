@@ -54,9 +54,6 @@
     <ClInclude Include="..\..\..\source\entry\input.h">
       <Filter>entry</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\source\engine\resources.h">
-      <Filter>engine</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\source\core\defines.h">
       <Filter>core</Filter>
     </ClInclude>
@@ -74,6 +71,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\source\core\file_utils.h">
       <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\engine\resource_manager.h">
+      <Filter>engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -125,9 +125,6 @@
     <ClCompile Include="..\..\..\source\entry\input.cpp">
       <Filter>entry</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\engine\resources.cpp">
-      <Filter>engine</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\source\core\murmur_hash.cpp">
       <Filter>core</Filter>
     </ClCompile>
@@ -139,6 +136,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\core\file_utils.cpp">
       <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\engine\resource_manager.cpp">
+      <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

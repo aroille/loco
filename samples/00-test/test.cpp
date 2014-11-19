@@ -4,10 +4,14 @@
 #include "bgfx.h"
 #include "defines.h"
 #include "entry.h"
+#include "resource_manager.h"
 
 #include <bgfxplatform.h>
 
 using loco::Matrix4x4;
+
+typedef loco::ResourceManager::Texture Texture;
+
 
 int _main_(int argc, char** argv)
 {
@@ -16,8 +20,7 @@ int _main_(int argc, char** argv)
 	
 	loco::entry::set_window_size(loco::entry::WindowHandle{ 0 }, 1280, 720);
 
-	loco::World* world = loco::world();
-	loco::TransformSystem* transform_components = world->transform_system();
+	loco::TransformSystem* transform_components = loco::world.transform_system();
 
 	// Create entities
 	loco::Entity e_1 = loco::create_entity();
@@ -33,16 +36,35 @@ int _main_(int argc, char** argv)
 	loco::TransformComponent tf_4 = transform_components->create(e_4);
 	loco::TransformComponent tf_5 = transform_components->create(e_5);
 
+	
+	Texture tex = loco::resources.get<Texture>("common/mesh/box");
+	bool b = loco::resources.is_loaded(tex);
+	
 	/*
-	loco::resources::load("common");
-	loco::resources::load("level\01");
+	loco::MeshComponent mesh_cp = mesh_components->create(e_1);
+	mesh_components->set_mesh(mesh_cp, mesh);
+	*/
+	
+	/*
+	loco::resources::load_folder("common");
+	loco::resources::load_folder("level\01");
 
-	loco::resources::Mesh mesh = loco::resources::get<Mesh>("common\mesh\box");
+	//LOCO_RESOURCE
+	loco::resources::Mesh mesh = loco::resources::get<loco::resources::Mesh>("common\mesh\box");
+	if (mesh == loco::resources::invalid)
+	{
+		mesh_components->set_mesh(mesh_cp, mesh);
+	}
+	loco::resources::Mesh mesh = loco::resources::get<loco::resources::Mesh>("common\mesh\box");
+
+	loco::resources::Mesh mesh = loco::resources::get(loco::resources::Type::Enum::MESH, "common\mesh\box");
+	loco::resources::Mesh mesh = loco::resources::get_mesh("common\mesh\box");
+
 	loco::resources::Texture texture = loco::resources::get_texture("common\texture\box");
 	
 	loco::MeshComponent mesh_cp = mesh_components->create(e_1);
-	mesh_components->set_mesh(mesh);
-	mesh_components->set_material(mat);
+	mesh_components->set_mesh(mesh_cp, mesh);
+	mesh_components->set_material(mesh_cp, mat);
 
 
 	loco::resources::unload("level\01");
