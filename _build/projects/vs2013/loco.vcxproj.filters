@@ -75,6 +75,9 @@
     <ClInclude Include="..\..\..\source\engine\resource_manager.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\source\engine\resource_loader.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\entity\entity_manager.cpp">

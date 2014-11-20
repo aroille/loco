@@ -2,9 +2,14 @@
 #include "loco.h"
 #include "renderer.h"
 
+
+
 namespace loco
 {
-	static EntityManager _entity_manager;
+	ResourceManager resources;
+	World world;
+
+	EntityManager _entity_manager;
 
 	void init(const char* resources_path)
 	{

@@ -5,7 +5,7 @@
 #include "file_system.h"
 #include "file_utils.h"
 #include "memory.h"
-
+#include "resource_loader.h"
 
 #include <string>
 #include <list>
@@ -13,9 +13,6 @@
 
 namespace loco
 {
-		//==========================================================================
-		static FileSystem _file_system;
-
 		//==========================================================================
 		void ResourceManager::init(const char* root_folder_path)
 		{
@@ -44,14 +41,28 @@ namespace loco
 			while (files_infos_it != files_infos.end())
 			{
 				FileInfo& file_info = *files_infos_it;
-				if (strcmp(file_info.extention, "dds") == 0)
+				ResourceType::Enum type = resource_type(file_info);
+
+				if (type == ResourceType::Unknown) 
 				{
-					resource_info = load_file(file_info);
-					create_texture(resource_info);
-					resource_count++;
+					files_infos_it++;
+					continue;
+				}
+				
+				resource_info = load_file(file_info);
+				//create_resource(type, resource_info);
+				switch (type)
+				{
+					case ResourceType::Texture :
+						_textures[resource_info.hashed_name] = load_texture(resource_info);
+						break;
+
+					default:
+						LOCO_ASSERTF(false, "Resources of type %d can't be handled by the resource manager", type);
 				}
 
-				++files_infos_it;
+				resource_count++;
+				files_infos_it++;
 			}
 
 			return resource_count;
@@ -96,7 +107,7 @@ namespace loco
 		HashedString ResourceManager::resource_name(const char* resource_path)
 		{
 			return murmur_hash_64(resource_path, strlen(resource_path));
-		};
+		}
 
 		//==========================================================================
 		HashedString ResourceManager::resource_name(const FileInfo& fi)
@@ -108,14 +119,17 @@ namespace loco
 		}
 
 		//==========================================================================
-		void ResourceManager::create_texture(ResourceInfo ri)
+		ResourceManager::ResourceType::Enum ResourceManager::resource_type(const FileInfo& fi)
 		{
-			renderer::TextureHandle handle = renderer::create_texture(ri.memory);
-			renderer::destroy_texture(handle);
+			if (strcmp(fi.extention, "dds") == 0)
+				return ResourceType::Texture;
+			else
+				return ResourceType::Unknown;
 		}
 
 		template<> bool ResourceManager::is_loaded<ResourceManager::Texture>(Texture handle)	{ return _textures.count(handle.name) > 0; }
 		template<> bool ResourceManager::is_loaded<ResourceManager::Mesh>(Mesh handle)			{ return _meshes.count(handle.name) > 0; }
 
 
-} // loco
+
+} // locoR

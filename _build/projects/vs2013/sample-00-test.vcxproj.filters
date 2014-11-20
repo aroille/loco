@@ -3,4 +3,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\samples\00-test\test.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\samples\00-test\bgfx_temp.h" />
+  </ItemGroup>
 </Project>

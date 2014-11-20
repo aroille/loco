@@ -13,6 +13,15 @@ namespace loco
 	{
 	public:
 
+		struct ResourceType
+		{
+			enum Enum
+			{
+				Unknown,
+				Texture
+			};
+		};
+
 		struct ResourceInfo
 		{
 			HashedString	hashed_name;
@@ -43,6 +52,8 @@ namespace loco
 		unsigned load_folder(const char* folder_path);
 
 		/// Return the resource handle associate with a specific resource path and resource type
+		/// This handle doesn't necessarily correspond to an existing and loaded resource
+		/// To check if this resource is loaded, use is_loaded(handle);
 		template<typename T> T get(const char* resource_path)
 		{
 			HashedString name = resource_name(resource_path);
@@ -67,7 +78,7 @@ namespace loco
 		ResourceInfo load_file(const FileInfo& fi);
 		HashedString resource_name(const FileInfo& fi);
 		HashedString resource_name(const char* resource_path);
-		void create_texture(ResourceInfo ri);
+		ResourceType::Enum resource_type(const FileInfo& fi);
 	};
 
 

@@ -21,6 +21,7 @@
     <ClInclude Include="..\..\..\source\core\murmur_hash.h" />
     <ClInclude Include="..\..\..\source\engine\loco.h" />
     <ClInclude Include="..\..\..\source\engine\renderer.h" />
+    <ClInclude Include="..\..\..\source\engine\resource_loader.h" />
     <ClInclude Include="..\..\..\source\engine\resource_manager.h" />
     <ClInclude Include="..\..\..\source\engine\world.h" />
     <ClInclude Include="..\..\..\source\entity\entity.h" />

@@ -1,24 +1,31 @@
 
 #include "loco.h"
 #include "math_types.h"
-#include "bgfx.h"
 #include "defines.h"
 #include "entry.h"
 #include "resource_manager.h"
 
 #include <bgfxplatform.h>
+#include "bgfx_temp.h"
 
 using loco::Matrix4x4;
 
-typedef loco::ResourceManager::Texture Texture;
+namespace loco
+{
+	typedef ResourceManager::Texture Texture;
+}
 
+bgfx::VertexDecl PosColorVertex::ms_decl;
 
 int _main_(int argc, char** argv)
 {
+	uint32_t width = 1280;
+	uint32_t height = 720;
+	
 	char* root_resource_path = argc > 1 ? argv[1] : LOCO_DEFAULT_RESOURCE_PATH;
 	loco::init(root_resource_path);
 	
-	loco::entry::set_window_size(loco::entry::WindowHandle{ 0 }, 1280, 720);
+	loco::entry::set_window_size(loco::entry::WindowHandle{ 0 }, width, height);
 
 	loco::TransformSystem* transform_components = loco::world.transform_system();
 
@@ -36,10 +43,10 @@ int _main_(int argc, char** argv)
 	loco::TransformComponent tf_4 = transform_components->create(e_4);
 	loco::TransformComponent tf_5 = transform_components->create(e_5);
 
-	
-	Texture tex = loco::resources.get<Texture>("common/mesh/box");
-	bool b = loco::resources.is_loaded(tex);
-	
+
+	loco::Texture texture = loco::resources.get<loco::Texture>("common/texture/biodome_floor_04a");
+	bool b = loco::resources.is_loaded(texture);
+
 	/*
 	loco::MeshComponent mesh_cp = mesh_components->create(e_1);
 	mesh_components->set_mesh(mesh_cp, mesh);
@@ -95,6 +102,28 @@ int _main_(int argc, char** argv)
 	Matrix4x4 tf_world_4 = transform_components->world_matrix(tf_4);
 	Matrix4x4 tf_world_5 = transform_components->world_matrix(tf_5);
 	
+	// Create vertex stream declaration.
+	PosColorVertex::init();
+
+	// Create static vertex buffer.
+	bgfx::VertexBufferHandle vbh = bgfx::createVertexBuffer(
+		// Static data can be passed with bgfx::makeRef
+		bgfx::makeRef(s_cubeVertices, sizeof(s_cubeVertices))
+		, PosColorVertex::ms_decl
+		);
+
+	// Create static index buffer.
+	bgfx::IndexBufferHandle ibh = bgfx::createIndexBuffer(
+		// Static data can be passed with bgfx::makeRef
+		bgfx::makeRef(s_cubeIndices, sizeof(s_cubeIndices))
+		);
+
+	// Create program from shaders.
+	bgfx::ProgramHandle program = loadProgram("vs_cubes", "fs_cubes");
+
+	float at[3] = { 0.0f, 0.0f, 0.0f };
+	float eye[3] = { 0.0f, 0.0f, -35.0f };
+
 	// Set view 0 clear state.
 	bgfx::setViewClear(0
 		, BGFX_CLEAR_COLOR_BIT | BGFX_CLEAR_DEPTH_BIT
@@ -110,13 +139,57 @@ int _main_(int argc, char** argv)
 	while (!loco::entry::process_window_events(state, debug, reset))
 	//while (true)
 	{
-		//bgfx::reset(720, 720, reset);
+		float view[16];
+		float proj[16];
+		bx::mtxLookAt(view, eye, at);
+		bx::mtxProj(proj, 60.0f, float(width) / float(height), 0.1f, 100.0f);
+
+		// Set view and projection matrix for view 0.
+		bgfx::setViewTransform(0, view, proj);
+
+		// Set view 0 default viewport.
+		bgfx::setViewRect(0, 0, 0, width, height);
+
 		// Set view 0 default viewport.
 		bgfx::setViewRect(0, 0, 0, 1280, 720);
+
+
 
 		// This dummy draw call is here to make sure that view 0 is cleared
 		// if no other draw calls are submitted to view 0.
 		bgfx::submit(0);
+
+		// Submit 11x11 cubes.
+		for (uint32_t yy = 0; yy < 11; ++yy)
+		{
+			for (uint32_t xx = 0; xx < 11; ++xx)
+			{
+				float mtx[16];
+				bx::mtxRotateXY(mtx, 0 + xx*0.21f, 0 + yy*0.37f);
+				mtx[12] = -15.0f + float(xx)*3.0f;
+				mtx[13] = -15.0f + float(yy)*3.0f;
+				mtx[14] = 0.0f;
+
+				// Set model matrix for rendering.
+				bgfx::setTransform(mtx);
+
+				// Set vertex and fragment shaders.
+				bgfx::setProgram(program);
+
+				// Set vertex and index buffer.
+				bgfx::setVertexBuffer(vbh);
+				bgfx::setIndexBuffer(ibh);
+
+				// Set render states.
+				bgfx::setState(BGFX_STATE_DEFAULT);
+
+				// Submit primitive for rendering to view 0.
+				bgfx::submit(0);
+			}
+		}
+
+
+
 		bgfx::frame();
 	}
 

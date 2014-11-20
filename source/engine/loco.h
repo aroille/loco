@@ -6,10 +6,13 @@
 #include "entity_manager.h"
 #include "resource_manager.h"
 
+
+
+
 namespace loco
 {
-	static ResourceManager resources;
-	static World world;
+	extern ResourceManager resources;
+	extern World world;
 
 	void init(const char* resources_path);
 	void shutdown();
