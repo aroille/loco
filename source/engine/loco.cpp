@@ -21,6 +21,7 @@ namespace loco
 
 	void shutdown()
 	{
+		resources.unload_all();
 		renderer::shutdown();
 	}
 

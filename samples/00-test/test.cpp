@@ -45,7 +45,9 @@ int _main_(int argc, char** argv)
 
 
 	loco::Texture texture = loco::resources.get<loco::Texture>("common/texture/biodome_floor_04a");
-	bool b = loco::resources.is_loaded(texture);
+	int i = 0;
+
+	//bool b = loco::resources.is_loaded(texture);
 
 	/*
 	loco::MeshComponent mesh_cp = mesh_components->create(e_1);

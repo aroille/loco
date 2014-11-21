@@ -23,7 +23,6 @@ namespace loco
 	{
 		public:
 
-
 			TransformSystem();
 			~TransformSystem();
 

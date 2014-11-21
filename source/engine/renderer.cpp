@@ -1,6 +1,6 @@
 #include "renderer.h"
 #include "bgfx.h"
-#include "memory.h"
+#include "memory_utils.h"
 
 #define CONVERT_HANDLE(handle) { handle.idx }
 

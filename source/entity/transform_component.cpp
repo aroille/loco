@@ -212,8 +212,6 @@ namespace loco
 
 	void TransformSystem::transform(const Matrix4x4& parent, TransformComponent c)
 	{
-		//Matrix4x4 local = _data.local[c.i];
-		//_data.world[c.i] = parent * local;
 		_data.world[c.i] = parent * _data.local[c.i];
 
 		TransformComponent child = _data.first_child[c.i];

@@ -63,9 +63,6 @@
     <ClInclude Include="..\..\..\source\engine\loco.h">
       <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\source\core\memory.h">
-      <Filter>core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\source\core\file_system.h">
       <Filter>core</Filter>
     </ClInclude>
@@ -75,7 +72,10 @@
     <ClInclude Include="..\..\..\source\engine\resource_manager.h">
       <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\source\engine\resource_loader.h">
+    <ClInclude Include="..\..\..\source\core\memory_utils.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\engine\resource_texture.h">
       <Filter>engine</Filter>
     </ClInclude>
   </ItemGroup>
