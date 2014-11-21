@@ -51,9 +51,6 @@ namespace loco
 		// init root resources folder
 		strcpy(_root_path, root_folder_path);
 		_root_path_lenght = strlen(root_folder_path);
-
-		// load common resources
-		load_folder(LOCO_COMMON_RESOURCE_PATH);
 	}
 
 	//==========================================================================

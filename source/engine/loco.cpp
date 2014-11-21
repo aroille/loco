@@ -17,6 +17,7 @@ namespace loco
 		renderer::reset(1280, 720);
 
 		loco::resources.init(resources_path);
+		loco::resources.load_folder(LOCO_COMMON_RESOURCE_PATH);
 	}
 
 	void shutdown()
