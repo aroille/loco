@@ -4,6 +4,7 @@
 #include "defines.h"
 #include "file_system.h"
 #include "file_utils.h"
+#include "loco.h"
 #include "memory_utils.h"
 
 #include "resource_texture.h"
@@ -14,7 +15,7 @@
 
 namespace loco
 {
-	const ResourceManager::Texture ResourceManager::Texture::invalid = { 0 };
+	const Texture Texture::invalid = { 0 };
 
 	//==========================================================================
 	const Memory* read_file(const FileInfo& fi)
@@ -46,19 +47,11 @@ namespace loco
 	}
 
 	//==========================================================================
-	void ResourceManager::init(const char* root_folder_path)
-	{
-		// init root resources folder
-		strcpy(_root_path, root_folder_path);
-		_root_path_lenght = strlen(root_folder_path);
-	}
-
-	//==========================================================================
 	unsigned ResourceManager::load_folder(const char* folder_path)
 	{
 		// concat root path + folder path
 		char path[LOCO_PATH_LENGTH];
-		strcpy(path, _root_path);
+		strcpy(path, loco::resource_root_path);
 		strcat(path, folder_path);
 
 		// get files in the folder
@@ -105,10 +98,8 @@ namespace loco
 		return true;
 	};
 
-
-
 	//==========================================================================
-	HashedString ResourceManager::resource_name(const char* resource_path) const
+	HashedString ResourceManager::resource_name(const char* resource_path)
 	{
 		return murmur_hash_64(resource_path, strlen(resource_path));
 	}
@@ -118,8 +109,8 @@ namespace loco
 	{
 		unsigned path_length = strlen(fi.path);
 		unsigned ext_length = strlen(fi.extention);
-		unsigned size_to_hash = path_length - _root_path_lenght - ext_length - 1;
-		return murmur_hash_64(fi.path + _root_path_lenght, size_to_hash);
+		unsigned size_to_hash = path_length - resource_root_path_length - ext_length - 1;
+		return murmur_hash_64(fi.path + resource_root_path_length, size_to_hash);
 	}
 
 	//==========================================================================
@@ -130,11 +121,10 @@ namespace loco
 
 		// Clear resources infos tables
 		for (int i = 0; i < ResourceType::Count; i++)
-		{
 			_resources[i].clear();
-		}
 	}
 
+	//==========================================================================
 	//==========================================================================
 	ResourceManager::ResourceType::Enum ResourceManager::resource_type(const FileInfo& fi) const
 	{
@@ -160,6 +150,6 @@ namespace loco
 	}
 
 	//==========================================================================
-	template<> std::map<HashedString, ResourceManager::Texture>& ResourceManager::resource_map()	{ return _textures; }
+	template<> std::map<HashedString, Texture>& ResourceManager::resource_map()	{ return _textures; }
 
 } // loco

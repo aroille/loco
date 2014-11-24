@@ -10,11 +10,6 @@
 
 using loco::Matrix4x4;
 
-namespace loco
-{
-	typedef ResourceManager::Texture Texture;
-}
-
 bgfx::VertexDecl PosColorVertex::ms_decl;
 
 int _main_(int argc, char** argv)
@@ -22,13 +17,13 @@ int _main_(int argc, char** argv)
 	uint32_t width = 1280;
 	uint32_t height = 720;
 	
-	char* root_resource_path = argc > 1 ? argv[1] : LOCO_DEFAULT_RESOURCE_PATH;
-	loco::init(root_resource_path);
+	char* resource_root_path = argc > 1 ? argv[1] : "";
+	loco::init(resource_root_path);
 	
 	loco::entry::set_window_size(loco::entry::WindowHandle{ 0 }, width, height);
 
 	loco::TransformSystem* transform_components = loco::world.transform_system();
-
+	
 	// Create entities
 	loco::Entity e_1 = loco::create_entity();
 	loco::Entity e_2 = loco::create_entity();
@@ -43,8 +38,12 @@ int _main_(int argc, char** argv)
 	loco::TransformComponent tf_4 = transform_components->create(e_4);
 	loco::TransformComponent tf_5 = transform_components->create(e_5);
 
+	loco::ResourceHandle handle = loco::resources.get_handle("common/texture/biodome_floor_04a");
 
-	loco::Texture texture = loco::resources.get<loco::Texture>("common/texture/biodome_floor_04a");
+	loco::Texture texture1 = loco::resources.get<loco::Texture>("common/texture/biodome_floor_04a");
+	loco::Texture texture2 = loco::resources.get<loco::Texture>(handle);
+
+
 	int i = 0;
 
 	//bool b = loco::resources.is_loaded(texture);
@@ -68,13 +67,10 @@ int _main_(int argc, char** argv)
 
 	loco::resources::Mesh mesh = loco::resources::get(loco::resources::Type::Enum::MESH, "common\mesh\box");
 	loco::resources::Mesh mesh = loco::resources::get_mesh("common\mesh\box");
-
-	loco::resources::Texture texture = loco::resources::get_texture("common\texture\box");
 	
 	loco::MeshComponent mesh_cp = mesh_components->create(e_1);
 	mesh_components->set_mesh(mesh_cp, mesh);
 	mesh_components->set_material(mesh_cp, mat);
-
 
 	loco::resources::unload("level\01");
 	loco::resources::unload("common");

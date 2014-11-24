@@ -6,6 +6,9 @@
 
 namespace loco
 {
+	char resource_root_path[LOCO_PATH_LENGTH];
+	unsigned resource_root_path_length;
+
 	ResourceManager resources;
 	World world;
 
@@ -13,16 +16,22 @@ namespace loco
 
 	void init(const char* resources_path)
 	{
+		// init resources root path
+		strcpy(resource_root_path, resources_path);
+		resource_root_path_length = strlen(resource_root_path);
+
+		//init renderer
 		renderer::init();
 		renderer::reset(1280, 720);
 
-		loco::resources.init(resources_path);
-		loco::resources.load_folder(LOCO_COMMON_RESOURCE_PATH);
+		// load all resources inside resources_root_path
+		loco::resources.load_folder("");
 	}
 
 	void shutdown()
 	{
 		resources.unload_all();
+
 		renderer::shutdown();
 	}
 

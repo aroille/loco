@@ -5,18 +5,20 @@
 
 namespace loco
 {
-	template<> ResourceManager::Texture ResourceManager::create(const Memory* mem) const
+
+
+	template<> Texture ResourceManager::create(const Memory* mem) const
 	{
 		// Create hardware resource
 		renderer::TextureHandle handle = renderer::create_texture(mem);
 
 		// Create a new ResourceManager::Texture instance
-		ResourceManager::Texture texture { handle };
+		Texture texture { handle };
 
 		return texture;
 	}
 
-	template<> void ResourceManager::destroy(const ResourceManager::Texture& texture) const
+	template<> void ResourceManager::destroy(const Texture& texture) const
 	{
 		renderer::destroy_texture(texture.handle);
 	}

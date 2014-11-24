@@ -23,8 +23,6 @@ namespace loco
 
 		TextureHandle create_texture(const Memory* memory);
 		void destroy_texture(TextureHandle handle);
-
-
 	};
 }
 

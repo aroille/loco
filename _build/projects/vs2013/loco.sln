@@ -19,10 +19,12 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{5C7E71AD-6557-4C85-93CF-AA45287535CB}.Debug|Win32.ActiveCfg = Debug|Win32
 		{5C7E71AD-6557-4C85-93CF-AA45287535CB}.Debug|Win32.Build.0 = Debug|Win32
-		{5C7E71AD-6557-4C85-93CF-AA45287535CB}.Debug|x64.ActiveCfg = Debug|Win32
+		{5C7E71AD-6557-4C85-93CF-AA45287535CB}.Debug|x64.ActiveCfg = Debug|x64
+		{5C7E71AD-6557-4C85-93CF-AA45287535CB}.Debug|x64.Build.0 = Debug|x64
 		{5C7E71AD-6557-4C85-93CF-AA45287535CB}.Release|Win32.ActiveCfg = Release|Win32
 		{5C7E71AD-6557-4C85-93CF-AA45287535CB}.Release|Win32.Build.0 = Release|Win32
-		{5C7E71AD-6557-4C85-93CF-AA45287535CB}.Release|x64.ActiveCfg = Release|Win32
+		{5C7E71AD-6557-4C85-93CF-AA45287535CB}.Release|x64.ActiveCfg = Release|x64
+		{5C7E71AD-6557-4C85-93CF-AA45287535CB}.Release|x64.Build.0 = Release|x64
 		{6C90947C-58C7-950D-01B4-7B10EDC9110F}.Debug|Win32.ActiveCfg = Debug|Win32
 		{6C90947C-58C7-950D-01B4-7B10EDC9110F}.Debug|Win32.Build.0 = Debug|Win32
 		{6C90947C-58C7-950D-01B4-7B10EDC9110F}.Debug|x64.ActiveCfg = Debug|x64
@@ -33,10 +35,12 @@ Global
 		{6C90947C-58C7-950D-01B4-7B10EDC9110F}.Release|x64.Build.0 = Release|x64
 		{E6A5F112-942D-4FE6-9299-22C8089DCE24}.Debug|Win32.ActiveCfg = Debug|Win32
 		{E6A5F112-942D-4FE6-9299-22C8089DCE24}.Debug|Win32.Build.0 = Debug|Win32
-		{E6A5F112-942D-4FE6-9299-22C8089DCE24}.Debug|x64.ActiveCfg = Debug|Win32
+		{E6A5F112-942D-4FE6-9299-22C8089DCE24}.Debug|x64.ActiveCfg = Debug|x64
+		{E6A5F112-942D-4FE6-9299-22C8089DCE24}.Debug|x64.Build.0 = Debug|x64
 		{E6A5F112-942D-4FE6-9299-22C8089DCE24}.Release|Win32.ActiveCfg = Release|Win32
 		{E6A5F112-942D-4FE6-9299-22C8089DCE24}.Release|Win32.Build.0 = Release|Win32
-		{E6A5F112-942D-4FE6-9299-22C8089DCE24}.Release|x64.ActiveCfg = Release|Win32
+		{E6A5F112-942D-4FE6-9299-22C8089DCE24}.Release|x64.ActiveCfg = Release|x64
+		{E6A5F112-942D-4FE6-9299-22C8089DCE24}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

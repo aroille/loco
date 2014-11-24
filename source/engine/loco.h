@@ -11,6 +11,9 @@
 
 namespace loco
 {
+	extern char resource_root_path[LOCO_PATH_LENGTH];
+	extern unsigned resource_root_path_length;
+
 	extern ResourceManager resources;
 	extern World world;
 
