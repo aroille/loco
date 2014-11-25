@@ -1,11 +1,10 @@
 #ifndef RESOURCE_TEXTURE_H_HEADER_GUARD
 #define RESOURCE_TEXTURE_H_HEADER_GUARD
 
-#include "resource_manager.h"
+//#include "resource_manager.h"
 
 namespace loco
 {
-
 	template<> Texture ResourceManager::create(const Memory* mem) const
 	{
 		// Create hardware resource

@@ -13,16 +13,13 @@ namespace loco
 		{
 			enum Enum
 			{
-				Uniform1f,
-				End,
-
-				Uniform1fv,
-				Uniform2fv,
-				Uniform3fv,
-				Uniform4fv,
-				Uniform3x3fv,
-				Uniform4x4fv,
-
+				Float,
+				Vector2,
+				Vector3,
+				Vector4,
+				Matrix3x3,
+				Matrix4x4,
+				Texture,
 				Count
 			};
 		};
@@ -42,10 +39,14 @@ namespace loco
 		TextureHandle create_texture(const Memory* memory);
 		void destroy_texture(TextureHandle handle);
 
-		UniformHandle create_uniform(const char* name, UniformType::Enum type, unsigned array_size);
-		void set_uniform(UniformHandle handle, const void* value, unsigned array_size);
-		void destroy_uniform(UniformHandle handle);
+		ProgramHandle create_program(ShaderHandle vertex_shader, ShaderHandle fragment_shader);
+		void destroy_program(ProgramHandle handle);
 
+		ShaderHandle create_shader(const Memory* memory);
+		void destroy_shader(ShaderHandle handle);
+
+		UniformHandle create_uniform(const char* name, UniformType::Enum type, unsigned array_size);
+		void destroy_uniform(UniformHandle handle);
 	};
 }
 
