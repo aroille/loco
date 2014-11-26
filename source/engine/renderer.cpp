@@ -10,6 +10,10 @@ namespace loco
 {
 namespace renderer
 {
+	TextureHandle TextureHandle::invalid = { 0 };
+	ShaderHandle ShaderHandle::invalid = { 0 };
+	ProgramHandle ProgramHandle::invalid = { 0 };
+
 	bgfx::UniformType::Enum UniformType_convert[UniformType::Count] =
 	{
 		bgfx::UniformType::Uniform1fv,

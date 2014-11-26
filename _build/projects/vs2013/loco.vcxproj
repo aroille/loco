@@ -31,6 +31,7 @@
     <ClInclude Include="..\..\..\source\engine\renderer.h" />
     <ClInclude Include="..\..\..\source\engine\resource_material.h" />
     <ClInclude Include="..\..\..\source\engine\resource_mesh.h" />
+    <ClInclude Include="..\..\..\source\engine\resource_shader.h" />
     <ClInclude Include="..\..\..\source\engine\resource_texture.h" />
     <ClInclude Include="..\..\..\source\engine\resource_manager.h" />
     <ClInclude Include="..\..\..\source\engine\world.h" />

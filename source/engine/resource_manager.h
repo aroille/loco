@@ -3,30 +3,27 @@
 
 #include "murmur_hash.h"
 #include "renderer.h"
+
+#include <vector>
 #include <map>
 
 namespace loco
 {
 	struct FileInfo;
 	struct Memory;
+	class Material;
 
 	//
-	struct ResourceHandle
-	{
-		HashedString name;
-	};
+	typedef HashedString ResourceName;
 
-	struct Texture
-	{
-		renderer::TextureHandle handle;
-
-		static const Texture invalid;
-	};
+	typedef renderer::TextureHandle Texture;
+	typedef renderer::ShaderHandle Shader;
 
 	struct Mesh
 	{
-		renderer::IndexBufferHandle vertex_buffer;
-		renderer::IndexBufferHandle index_buffer;
+		std::vector<Material*> materials;
+		std::vector<renderer::VertexBufferHandle> vertex_buffers;
+		std::vector<renderer::IndexBufferHandle> index_buffers;
 	};
 
 	class ResourceManager
@@ -37,6 +34,8 @@ namespace loco
 		{
 			enum Enum
 			{
+				Mesh,
+				Shader,
 				Texture,
 				Count,
 			};
@@ -44,7 +43,7 @@ namespace loco
 
 		struct ResourceInfo
 		{
-			HashedString		name;
+			ResourceName		name;
 			ResourceType::Enum	type;
 			unsigned long long	file_date;
 		};
@@ -58,15 +57,15 @@ namespace loco
 		/// Return the resource associated with a specific resource path and resource type
 		template<typename T> T get(const char* resource_path)
 		{
-			return get<T>(ResourceHandle{resource_name(resource_path)});
+			return get<T>(resource_name(resource_path));
 		}
 
 		/// Return the resource associated with a specific resource handle and resource type
-		template<typename T> T get(ResourceHandle handle)
+		template<typename T> T get(ResourceName name)
 		{
 			std::map<HashedString, T>& map = resource_map<T>();
 
-			auto it = map.find(handle.name);
+			auto it = map.find(name);
 			if (it != map.end())
 				return it->second;
 			else
@@ -75,9 +74,9 @@ namespace loco
 
 		/// Return the handle corresponding to a specific resource_path
 		/// Note : The handle is unique for a specific Resource Type.
-		static ResourceHandle get_handle(const char* resource_path)
+		static ResourceName get_name(const char* resource_path)
 		{
-			return{ resource_name(resource_path) };
+			return resource_name(resource_path);
 		}
 
 		/// Unload all resources holded by this resource manager
@@ -85,18 +84,20 @@ namespace loco
 
 	private:
 
-		std::map<HashedString, ResourceInfo>	_resources[ResourceType::Count];
-		std::map<HashedString, Texture>			_textures;
+		std::map<ResourceName, ResourceInfo>	_resources[ResourceType::Count];
+		std::map<ResourceName, Mesh>			_meshes;
+		std::map<ResourceName, Shader>			_shaders;
+		std::map<ResourceName, Texture>			_textures;
 
 		// ------
 		bool load_file(const FileInfo& fi);
 		void create_resource(const ResourceInfo& ri, const Memory* mem);
 		
-		HashedString resource_name(const FileInfo& fi) const;
-		static HashedString resource_name(const char* resource_path);
+		ResourceName resource_name(const FileInfo& fi) const;
+		static ResourceName resource_name(const char* resource_path);
 		ResourceType::Enum resource_type(const FileInfo& fi) const;
 		
-		template<typename T> std::map<HashedString, T>& resource_map();
+		template<typename T> std::map<ResourceName, T>& resource_map();
 		template<typename T> T create(const Memory* mem) const;
 		template<typename T> void destroy(const T& resource) const;
 

@@ -84,6 +84,9 @@
     <ClInclude Include="..\..\..\source\engine\resource_material.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\source\engine\resource_shader.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\entity\entity_manager.cpp">

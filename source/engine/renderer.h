@@ -6,6 +6,7 @@
 namespace loco
 {
 	struct Memory;
+	class Material;
 
 	namespace renderer
 	{
@@ -24,12 +25,12 @@ namespace loco
 			};
 		};
 
-		struct TextureHandle		{ uint16_t idx; };
+		struct TextureHandle		{ uint16_t idx; static TextureHandle invalid; };
 		struct VertexDeclHandle		{ uint16_t idx; };
 		struct VertexBufferHandle	{ uint16_t idx; };
 		struct IndexBufferHandle	{ uint16_t idx; };
-		struct ShaderHandle			{ uint16_t idx; };
-		struct ProgramHandle		{ uint16_t idx; };
+		struct ShaderHandle			{ uint16_t idx; static ShaderHandle invalid; };
+		struct ProgramHandle		{ uint16_t idx; static ProgramHandle invalid; };
 		struct UniformHandle		{ uint16_t idx; };
 
 		void init();
@@ -47,6 +48,8 @@ namespace loco
 
 		UniformHandle create_uniform(const char* name, UniformType::Enum type, unsigned array_size);
 		void destroy_uniform(UniformHandle handle);
+
+		void bind_material(const Material& mat);
 	};
 }
 

@@ -36,7 +36,7 @@ namespace loco
 		renderer::ProgramHandle _program;
 		std::map<HashedString, unsigned> _uniform_map;
 		std::map<HashedString, unsigned> _texture_map;
-		std::vector<Material::UniformInfo> _uniform_infos;
+		std::vector<UniformInfo> _uniform_infos;
 		std::vector<TextureInfo> _texture_infos;
 		std::vector<float> _uniform_buffer;
 

@@ -7,6 +7,8 @@
 #include "loco.h"
 #include "memory_utils.h"
 
+#include "resource_mesh.h"
+#include "resource_shader.h"
 #include "resource_texture.h"
 
 #include <string>
@@ -15,8 +17,6 @@
 
 namespace loco
 {
-	const Texture Texture::invalid = { 0 };
-
 	//==========================================================================
 	const Memory* read_file(const FileInfo& fi)
 	{
@@ -79,7 +79,7 @@ namespace loco
 			return false;
 
 		// check if the file is already loaded
-		HashedString name = resource_name(fi);
+		ResourceName name = resource_name(fi);
 		auto resource_it = _resources[type].find(name);
 
 		if (resource_it != _resources[type].end())
@@ -99,13 +99,13 @@ namespace loco
 	};
 
 	//==========================================================================
-	HashedString ResourceManager::resource_name(const char* resource_path)
+	ResourceName ResourceManager::resource_name(const char* resource_path)
 	{
-		return murmur_hash_64(resource_path, strlen(resource_path));
+		return hash_string(resource_path);
 	}
 
 	//==========================================================================
-	HashedString ResourceManager::resource_name(const FileInfo& fi) const
+	ResourceName ResourceManager::resource_name(const FileInfo& fi) const
 	{
 		unsigned path_length = strlen(fi.path);
 		unsigned ext_length = strlen(fi.extention);
@@ -125,23 +125,33 @@ namespace loco
 	}
 
 	//==========================================================================
-	//==========================================================================
 	ResourceManager::ResourceType::Enum ResourceManager::resource_type(const FileInfo& fi) const
 	{
 		if (strcmp(fi.extention, "dds") == 0)
 			return ResourceManager::ResourceType::Texture;
+		else if (strcmp(fi.extention, "mesh") == 0)
+			return ResourceManager::ResourceType::Mesh;
+		else if (strcmp(fi.extention, "shader") == 0)
+			return ResourceManager::ResourceType::Shader;
 		else
 			return ResourceManager::ResourceType::Count;
 	}
-
 
 	//==========================================================================
 	void ResourceManager::create_resource(const ResourceInfo& ri, const Memory* mem)
 	{
 		switch (ri.type)
 		{
+		case ResourceType::Mesh:
+			create_resource<Mesh>(ri, mem);
+			break;
+
 		case ResourceType::Texture:
 			create_resource<Texture>(ri, mem);
+			break;
+
+		case ResourceType::Shader:
+			create_resource<Shader>(ri, mem);
 			break;
 
 		default:
@@ -150,6 +160,7 @@ namespace loco
 	}
 
 	//==========================================================================
-	template<> std::map<HashedString, Texture>& ResourceManager::resource_map()	{ return _textures; }
-
+	template<> std::map<ResourceName, Mesh>& ResourceManager::resource_map()	{ return _meshes; }
+	template<> std::map<ResourceName, Texture>& ResourceManager::resource_map()	{ return _textures; }
+	template<> std::map<ResourceName, Shader>& ResourceManager::resource_map()	{ return _shaders; }
 } // loco
