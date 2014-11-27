@@ -1,8 +1,10 @@
 #ifndef RESOURCE_MANAGER_H_HEADER_GUARD
 #define RESOURCE_MANAGER_H_HEADER_GUARD
 
+#include "debug.h"
 #include "murmur_hash.h"
 #include "renderer.h"
+
 
 #include <vector>
 #include <map>
@@ -21,7 +23,7 @@ namespace loco
 
 	struct Mesh
 	{
-		std::vector<Material*> materials;
+		//std::vector<Material*> materials;
 		std::vector<renderer::VertexBufferHandle> vertex_buffers;
 		std::vector<renderer::IndexBufferHandle> index_buffers;
 	};
@@ -67,9 +69,15 @@ namespace loco
 
 			auto it = map.find(name);
 			if (it != map.end())
+			{
 				return it->second;
+			}
 			else
+			{
+				LOCO_ASSERTF(false, "Resource file not found");
 				return T::invalid;
+			}
+				
 		}
 
 		/// Return the handle corresponding to a specific resource_path
