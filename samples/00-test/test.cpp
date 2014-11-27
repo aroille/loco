@@ -37,6 +37,9 @@ int _main_(int argc, char** argv)
 	loco::TransformComponent tf_4 = loco::world.transforms.create(e_4);
 	loco::TransformComponent tf_5 = loco::world.transforms.create(e_5);
 
+	// test load mesh
+	loco::Mesh mesh = loco::resources.get<loco::Mesh>("common/mesh/bunny");
+
 	// test load texture
 	loco::ResourceName res_name = loco::resources.get_name("common/texture/biodome_floor_04a");
 	loco::Texture texture1 = loco::resources.get<loco::Texture>("common/texture/biodome_floor_04a");
@@ -49,10 +52,10 @@ int _main_(int argc, char** argv)
 	// test create material
 	float time = 5.0f;
 	float color[3] = { 0.1f, 0.5f, 0.8f };
-
 	
-	loco::Material* material = new loco::Material();
-	material->set_shader(vertex_shader, pixel_shader);
+	loco::Material material;
+	material.set_shader(vertex_shader, pixel_shader);
+
 	//material->set("u_time", loco::renderer::UniformType::Float, &time);
 	//material->set("u_color", loco::renderer::UniformType::Vector3, &color[0]);
 	//material->set("u_diffuse", texture1, LOCO_TEXTURE_U_CLAMP | LOCO_TEXTURE_V_CLAMP);
@@ -178,26 +181,9 @@ int _main_(int argc, char** argv)
 				mtx[13] = -15.0f + float(yy)*3.0f;
 				mtx[14] = 0.0f;
 
-				// Set model matrix for rendering.
-				bgfx::setTransform(mtx);
-
-				// Set vertex and fragment shaders.
-				//bgfx::setProgram(program);
-				loco::renderer::bind_material(*material);
-
-				// Set vertex and index buffer.
-				bgfx::setVertexBuffer(vbh);
-				bgfx::setIndexBuffer(ibh);
-
-				// Set render states.
-				bgfx::setState(BGFX_STATE_DEFAULT);
-
-				// Submit primitive for rendering to view 0.
-				bgfx::submit(0);
+				loco::renderer::submit(0, mesh, material, mtx);
 			}
 		}
-
-
 
 		bgfx::frame();
 	}

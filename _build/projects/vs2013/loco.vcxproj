@@ -27,10 +27,12 @@
     <ClInclude Include="..\..\..\source\core\memory_utils.h" />
     <ClInclude Include="..\..\..\source\core\file_utils.h" />
     <ClInclude Include="..\..\..\source\core\murmur_hash.h" />
+    <ClInclude Include="..\..\..\source\core\reader_writer.h" />
     <ClInclude Include="..\..\..\source\engine\loco.h" />
     <ClInclude Include="..\..\..\source\engine\renderer.h" />
     <ClInclude Include="..\..\..\source\engine\resource_material.h" />
     <ClInclude Include="..\..\..\source\engine\resource_mesh.h" />
+    <ClInclude Include="..\..\..\source\engine\resource_mesh_bgfx.h" />
     <ClInclude Include="..\..\..\source\engine\resource_shader.h" />
     <ClInclude Include="..\..\..\source\engine\resource_texture.h" />
     <ClInclude Include="..\..\..\source\engine\resource_manager.h" />
@@ -54,6 +56,7 @@
     <ClCompile Include="..\..\..\source\engine\renderer.cpp" />
     <ClCompile Include="..\..\..\source\engine\resource_manager.cpp" />
     <ClCompile Include="..\..\..\source\engine\resource_material.cpp" />
+    <ClCompile Include="..\..\..\source\engine\resource_mesh_bgfx.cpp" />
     <ClCompile Include="..\..\..\source\entity\entity_manager.cpp" />
     <ClCompile Include="..\..\..\source\entity\transform_component.cpp" />
     <ClCompile Include="..\..\..\source\entry\cmd.cpp" />

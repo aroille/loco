@@ -4,10 +4,16 @@
 #include <stdint.h> // uint16_t
 #include <vector>
 
+namespace bgfx
+{
+	struct VertexDecl;
+}
+
 namespace loco
 {
 	struct Memory;
 	class Material;
+	struct Mesh;
 
 	namespace renderer
 	{
@@ -100,12 +106,14 @@ namespace loco
 		void destroy_uniform(UniformHandle handle);
 
 		VertexBufferHandle create_vertex_buffer(const Memory* memory, const VertexDecl& decl);
+		VertexBufferHandle create_vertex_buffer(const Memory* memory, const bgfx::VertexDecl& decl);
 		void destroy_vertex_buffer(VertexBufferHandle handle);
 
 		IndexBufferHandle create_index_buffer(const Memory* memory);
 		void destroy_index_buffer(IndexBufferHandle handle);
 
 		void bind_material(const Material& mat);
+		void submit(uint8_t view_id, const Mesh& mesh, const Material& mat, const void* model_matrix);
 	};
 }
 

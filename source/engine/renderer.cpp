@@ -2,6 +2,7 @@
 #include "bgfx.h"
 #include "memory_utils.h"
 #include "resource_material.h"
+#include "resource_manager.h"
 
 #define LOCO_TO_BGFX(handle) { handle.idx }
 #define BGFX_TO_LOCO(handle) { handle.idx }
@@ -136,6 +137,13 @@ namespace renderer
 	}
 
 	//==========================================================================
+	VertexBufferHandle create_vertex_buffer(const Memory* memory, const bgfx::VertexDecl& bgfx_decl)
+	{
+		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, memory->size);
+		return BGFX_TO_LOCO(bgfx::createVertexBuffer(bgfx_mem, bgfx_decl));
+	}
+
+	//==========================================================================
 	void destroy_vertex_buffer(VertexBufferHandle handle)
 	{
 		bgfx::destroyVertexBuffer(LOCO_TO_BGFX(handle));
@@ -180,6 +188,28 @@ namespace renderer
 				tex_unit++;
 				it++;
 			}
+		}
+
+		// render states
+		bgfx::setState(BGFX_STATE_DEFAULT);
+	}
+
+	void submit(uint8_t view_id, const Mesh& mesh, const Material& mat, const void* model_matrix)
+	{
+		for (unsigned i = 0; i < mesh.submeshes.size(); i++)
+		{
+			// set material
+			bind_material(mat);
+
+			// set model matrix
+			bgfx::setTransform(model_matrix);
+
+			// set vertex and index buffer
+			bgfx::setVertexBuffer(bgfx::VertexBufferHandle LOCO_TO_BGFX(mesh.submeshes[i].vertex_buffer));
+			bgfx::setIndexBuffer(bgfx::IndexBufferHandle LOCO_TO_BGFX(mesh.submeshes[i].index_buffer));
+			
+			// submit draw call
+			bgfx::submit(view_id);
 		}
 	}
 

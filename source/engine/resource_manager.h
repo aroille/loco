@@ -21,11 +21,18 @@ namespace loco
 	typedef renderer::TextureHandle Texture;
 	typedef renderer::ShaderHandle Shader;
 
+	struct SubMesh
+	{
+		renderer::VertexBufferHandle vertex_buffer;
+		renderer::IndexBufferHandle index_buffer;
+	};
+
 	struct Mesh
 	{
 		//std::vector<Material*> materials;
-		std::vector<renderer::VertexBufferHandle> vertex_buffers;
-		std::vector<renderer::IndexBufferHandle> index_buffers;
+		std::vector<SubMesh> submeshes;
+
+		static Mesh invalid;
 	};
 
 	class ResourceManager

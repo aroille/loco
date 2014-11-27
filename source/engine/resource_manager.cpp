@@ -17,6 +17,9 @@
 
 namespace loco
 {
+
+	Mesh Mesh::invalid = {};
+
 	//==========================================================================
 	const Memory* read_file(const FileInfo& fi)
 	{

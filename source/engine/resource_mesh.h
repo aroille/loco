@@ -1,21 +1,29 @@
 #ifndef RESOURCE_MESH_H_HEADER_GUARD
 #define RESOURCE_MESH_H_HEADER_GUARD
 
+#include "reader_writer.h"
+#include <stdint.h>
+
+#include "resource_mesh_bgfx.h"
+
+#include<string>
+#include "bgfx.h"
+
 namespace loco
 {
 
-
 	template<> Mesh ResourceManager::create(const Memory* mem) const
 	{
-		Mesh mesh;
-		//mesh.index_buffer = renderer::IndexBufferHandle{ 0 };
-		//mesh.vertex_buffer = renderer::VertexBufferHandle{ 0 };
-		return mesh;
+		return bgfx_helper::load_mesh(mem);
 	}
 
 	template<> void ResourceManager::destroy(const Mesh& mesh) const
 	{
-		//renderer::destroy_texture(texture.handle);
+		for (unsigned i = 0; i < mesh.submeshes.size(); i++)
+		{
+			renderer::destroy_index_buffer(mesh.submeshes[i].index_buffer);
+			renderer::destroy_vertex_buffer(mesh.submeshes[i].vertex_buffer);
+		}
 	}
 }
 

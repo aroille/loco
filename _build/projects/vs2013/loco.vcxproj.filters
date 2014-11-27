@@ -87,6 +87,12 @@
     <ClInclude Include="..\..\..\source\engine\resource_shader.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\source\core\reader_writer.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\engine\resource_mesh_bgfx.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\entity\entity_manager.cpp">
@@ -153,6 +159,9 @@
       <Filter>engine</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\engine\resource_material.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\engine\resource_mesh_bgfx.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>
