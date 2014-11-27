@@ -2,6 +2,7 @@
 #define RENDERER_H_HEADER_GUARD
 
 #include <stdint.h> // uint16_t
+#include <vector>
 
 namespace loco
 {
@@ -10,6 +11,44 @@ namespace loco
 
 	namespace renderer
 	{
+		struct VertexAttrib
+		{
+			enum Enum
+			{
+				Position, 
+				Normal,
+				Tangent,
+				Bitangent,
+				Color0,
+				Color1,
+				Indices,
+				Weight,
+				TexCoord0,
+				TexCoord1,
+				TexCoord2,
+				TexCoord3,
+				TexCoord4,
+				TexCoord5,
+				TexCoord6,
+				TexCoord7,
+
+				Count
+			};
+		};
+
+		struct AttribType
+		{
+			enum Enum
+			{
+				Uint8,
+				Int16,
+				Half,
+				Float,
+
+				Count
+			};
+		};
+
 		struct UniformType
 		{
 			enum Enum
@@ -24,6 +63,17 @@ namespace loco
 				Count
 			};
 		};
+
+		struct VertexAttribDecl
+		{
+			VertexAttrib::Enum attrib;
+			uint8_t num;
+			AttribType::Enum type;
+			bool normalized;
+			bool asInt;
+		};
+
+		typedef std::vector<VertexAttribDecl> VertexDecl;
 
 		struct TextureHandle		{ uint16_t idx; static TextureHandle invalid; };
 		struct VertexDeclHandle		{ uint16_t idx; };
@@ -48,6 +98,12 @@ namespace loco
 
 		UniformHandle create_uniform(const char* name, UniformType::Enum type, unsigned array_size);
 		void destroy_uniform(UniformHandle handle);
+
+		VertexBufferHandle create_vertex_buffer(const Memory* memory, const VertexDecl& decl);
+		void destroy_vertex_buffer(VertexBufferHandle handle);
+
+		IndexBufferHandle create_index_buffer(const Memory* memory);
+		void destroy_index_buffer(IndexBufferHandle handle);
 
 		void bind_material(const Material& mat);
 	};
