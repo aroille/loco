@@ -120,6 +120,41 @@ namespace renderer
 	}
 
 	//==========================================================================
+	VertexBufferHandle create_vertex_buffer(const Memory* memory, const VertexDecl& decl)
+	{
+		bgfx::VertexDecl bgfx_decl;
+		bgfx_decl.begin();
+		for (unsigned i = 0; i < decl.size(); i++)
+		{
+			const VertexAttribDecl& d = decl[i];
+			bgfx_decl.add((bgfx::Attrib::Enum)d.attrib, d.num, (bgfx::AttribType::Enum)d.type, d.normalized, d.asInt);
+		}
+		bgfx_decl.end();
+
+		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, memory->size);
+		return BGFX_TO_LOCO(bgfx::createVertexBuffer(bgfx_mem, bgfx_decl));
+	}
+
+	//==========================================================================
+	void destroy_vertex_buffer(VertexBufferHandle handle)
+	{
+		bgfx::destroyVertexBuffer(LOCO_TO_BGFX(handle));
+	}
+
+	//==========================================================================
+	IndexBufferHandle create_index_buffer(const Memory* memory)
+	{
+		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, memory->size);
+		return BGFX_TO_LOCO(bgfx::createIndexBuffer(bgfx_mem));
+	}
+
+	//==========================================================================
+	void destroy_index_buffer(IndexBufferHandle handle)
+	{
+		bgfx::destroyIndexBuffer(LOCO_TO_BGFX(handle));
+	}
+
+	//==========================================================================
 	void bind_material(const Material& mat)
 	{
 		// programs
