@@ -5,13 +5,9 @@
 
 namespace loco
 {
-	class World
+	struct World
 	{
-	public:
-		TransformSystem* transform_system() { return &_transform_system; }
-
-	private:
-		TransformSystem _transform_system;
+		TransformSystem transforms;
 	};
 }
 

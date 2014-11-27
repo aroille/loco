@@ -4,7 +4,7 @@
 #include "defines.h"
 #include "entry.h"
 #include "resource_manager.h"
-
+#include "resource_material.h"
 #include <bgfxplatform.h>
 #include "bgfx_temp.h"
 
@@ -17,12 +17,11 @@ int _main_(int argc, char** argv)
 	uint32_t width = 1280;
 	uint32_t height = 720;
 	
-	char* resource_root_path = argc > 1 ? argv[1] : "";
-	loco::init(resource_root_path);
-	
-	loco::entry::set_window_size(loco::entry::WindowHandle{ 0 }, width, height);
+	char* resource_root_path = argc > 1 ? argv[1] : "resources/";
 
-	loco::TransformSystem* transform_components = loco::world.transform_system();
+	// init loco
+	loco::init(resource_root_path);	
+	loco::entry::set_window_size(loco::entry::WindowHandle{ 0 }, width, height);
 	
 	// Create entities
 	loco::Entity e_1 = loco::create_entity();
@@ -32,19 +31,33 @@ int _main_(int argc, char** argv)
 	loco::Entity e_5 = loco::create_entity();
 
 	// Add transform component to each entities
-	loco::TransformComponent tf_1 = transform_components->create(e_1);
-	loco::TransformComponent tf_2 = transform_components->create(e_2);
-	loco::TransformComponent tf_3 = transform_components->create(e_3);
-	loco::TransformComponent tf_4 = transform_components->create(e_4);
-	loco::TransformComponent tf_5 = transform_components->create(e_5);
+	loco::TransformComponent tf_1 = loco::world.transforms.create(e_1);
+	loco::TransformComponent tf_2 = loco::world.transforms.create(e_2);
+	loco::TransformComponent tf_3 = loco::world.transforms.create(e_3);
+	loco::TransformComponent tf_4 = loco::world.transforms.create(e_4);
+	loco::TransformComponent tf_5 = loco::world.transforms.create(e_5);
 
-	loco::ResourceHandle handle = loco::resources.get_handle("common/texture/biodome_floor_04a");
-
+	// test load texture
+	loco::ResourceName res_name = loco::resources.get_name("common/texture/biodome_floor_04a");
 	loco::Texture texture1 = loco::resources.get<loco::Texture>("common/texture/biodome_floor_04a");
-	loco::Texture texture2 = loco::resources.get<loco::Texture>(handle);
+	loco::Texture texture2 = loco::resources.get<loco::Texture>(res_name);
 
+	// test load shaders
+	loco::Shader vertex_shader = loco::resources.get<loco::Shader>("shaders/dx9/vs_cubes");
+	loco::Shader pixel_shader = loco::resources.get<loco::Shader>("shaders/dx9/fs_cubes");
 
-	int i = 0;
+	// test create material
+	float time = 5.0f;
+	float color[3] = { 0.1f, 0.5f, 0.8f };
+
+	
+	loco::Material* material = new loco::Material();
+	material->set_shader(vertex_shader, pixel_shader);
+	//material->set("u_time", loco::renderer::UniformType::Float, &time);
+	//material->set("u_color", loco::renderer::UniformType::Vector3, &color[0]);
+	//material->set("u_diffuse", texture1, LOCO_TEXTURE_U_CLAMP | LOCO_TEXTURE_V_CLAMP);
+	
+	//loco::MeshRendererComponent mesh_renderer_cpn = mesh_render_components->create(e_1);
 
 	//bool b = loco::resources.is_loaded(texture);
 
@@ -54,8 +67,6 @@ int _main_(int argc, char** argv)
 	*/
 	
 	/*
-	loco::resources::load_folder("common");
-	loco::resources::load_folder("level\01");
 
 	//LOCO_RESOURCE
 	loco::resources::Mesh mesh = loco::resources::get<loco::resources::Mesh>("common\mesh\box");
@@ -77,28 +88,27 @@ int _main_(int argc, char** argv)
 	*/
 		
 	// Create parent/child relations between the transform 
-	
-	transform_components->link(tf_2, tf_1);
-	transform_components->link(tf_3, tf_2);
-	transform_components->link(tf_4, tf_2);
-	transform_components->link(tf_5, tf_2);
+	loco::world.transforms.link(tf_2, tf_1);
+	loco::world.transforms.link(tf_3, tf_2);
+	loco::world.transforms.link(tf_4, tf_2);
+	loco::world.transforms.link(tf_5, tf_2);
 	
 	// setting the local transform matrix for each transform component
-	transform_components->set_local_matrix(tf_1, Matrix4x4{{{ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1 }}});
-	transform_components->set_local_matrix(tf_2, Matrix4x4{{{ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 2, 0, 0, 1 }}});
-	transform_components->set_local_matrix(tf_3, Matrix4x4{{{ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 3, 0, 0, 1 }}});
-	transform_components->set_local_matrix(tf_4, Matrix4x4{{{ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 0, 0, 1 }}});
-	transform_components->set_local_matrix(tf_5, Matrix4x4{{{ 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 5, 0, 0, 1 }}});
+	loco::world.transforms.set_local_matrix(tf_1, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1 } } });
+	loco::world.transforms.set_local_matrix(tf_2, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 2, 0, 0, 1 } } });
+	loco::world.transforms.set_local_matrix(tf_3, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 3, 0, 0, 1 } } });
+	loco::world.transforms.set_local_matrix(tf_4, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 0, 0, 1 } } });
+	loco::world.transforms.set_local_matrix(tf_5, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 5, 0, 0, 1 } } });
 
 	// destroy a parent/child relation
-	transform_components->unlink(tf_3);
+	loco::world.transforms.unlink(tf_3);
 
 	// get the world transform matrix 
-	Matrix4x4 tf_world_1 = transform_components->world_matrix(tf_1);
-	Matrix4x4 tf_world_2 = transform_components->world_matrix(tf_2);
-	Matrix4x4 tf_world_3 = transform_components->world_matrix(tf_3);
-	Matrix4x4 tf_world_4 = transform_components->world_matrix(tf_4);
-	Matrix4x4 tf_world_5 = transform_components->world_matrix(tf_5);
+	Matrix4x4 tf_world_1 = loco::world.transforms.world_matrix(tf_1);
+	Matrix4x4 tf_world_2 = loco::world.transforms.world_matrix(tf_2);
+	Matrix4x4 tf_world_3 = loco::world.transforms.world_matrix(tf_3);
+	Matrix4x4 tf_world_4 = loco::world.transforms.world_matrix(tf_4);
+	Matrix4x4 tf_world_5 = loco::world.transforms.world_matrix(tf_5);
 	
 	// Create vertex stream declaration.
 	PosColorVertex::init();
@@ -172,7 +182,8 @@ int _main_(int argc, char** argv)
 				bgfx::setTransform(mtx);
 
 				// Set vertex and fragment shaders.
-				bgfx::setProgram(program);
+				//bgfx::setProgram(program);
+				loco::renderer::bind_material(*material);
 
 				// Set vertex and index buffer.
 				bgfx::setVertexBuffer(vbh);
