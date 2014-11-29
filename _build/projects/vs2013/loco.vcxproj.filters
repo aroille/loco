@@ -93,6 +93,9 @@
     <ClInclude Include="..\..\..\source\engine\resource_mesh_bgfx.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\source\engine\resource_type.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\entity\entity_manager.cpp">
@@ -158,10 +161,10 @@
     <ClCompile Include="..\..\..\source\engine\resource_manager.cpp">
       <Filter>engine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\engine\resource_material.cpp">
+    <ClCompile Include="..\..\..\source\engine\resource_mesh_bgfx.cpp">
       <Filter>engine</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\engine\resource_mesh_bgfx.cpp">
+    <ClCompile Include="..\..\..\source\engine\resource_type.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>

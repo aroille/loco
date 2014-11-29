@@ -4,9 +4,10 @@
 #include "defines.h"
 #include "entry.h"
 #include "resource_manager.h"
-#include "resource_material.h"
 #include <bgfxplatform.h>
 #include "bgfx_temp.h"
+
+
 
 using loco::Matrix4x4;
 
@@ -38,7 +39,7 @@ int _main_(int argc, char** argv)
 	loco::TransformComponent tf_5 = loco::world.transforms.create(e_5);
 
 	// test load mesh
-	loco::Mesh mesh = loco::resources.get<loco::Mesh>("common/mesh/bunny");
+	loco::Mesh mesh = loco::resources.get<loco::Mesh>("common/mesh/cube");
 
 	// test load texture
 	loco::ResourceName res_name = loco::resources.get_name("common/texture/biodome_floor_04a");
@@ -46,8 +47,8 @@ int _main_(int argc, char** argv)
 	loco::Texture texture2 = loco::resources.get<loco::Texture>(res_name);
 
 	// test load shaders
-	loco::Shader vertex_shader = loco::resources.get<loco::Shader>("shaders/dx9/vs_cubes");
-	loco::Shader pixel_shader = loco::resources.get<loco::Shader>("shaders/dx9/fs_cubes");
+	loco::Shader vertex_shader = loco::resources.get<loco::Shader>("shaders/dx9/vs_test");
+	loco::Shader pixel_shader = loco::resources.get<loco::Shader>("shaders/dx9/fs_test");
 
 	// test create material
 	float time = 5.0f;
@@ -55,15 +56,19 @@ int _main_(int argc, char** argv)
 	
 	loco::Material material;
 	material.set_shader(vertex_shader, pixel_shader);
-
-	//material->set("u_time", loco::renderer::UniformType::Float, &time);
-	//material->set("u_color", loco::renderer::UniformType::Vector3, &color[0]);
-	//material->set("u_diffuse", texture1, LOCO_TEXTURE_U_CLAMP | LOCO_TEXTURE_V_CLAMP);
+	material.set("u_texColor", texture1);
 	
 	//loco::MeshRendererComponent mesh_renderer_cpn = mesh_render_components->create(e_1);
 
 	//bool b = loco::resources.is_loaded(texture);
 
+	//typedef std::shared_ptr<loco::Material> MaterialPtr;
+	//MaterialPtr mat = std::make_shared<loco::Material>();
+	//mat->set("u_texColor", texture1);
+	
+	//MaterialPtr mat2 = mat;
+	
+	
 	/*
 	loco::MeshComponent mesh_cp = mesh_components->create(e_1);
 	mesh_components->set_mesh(mesh_cp, mesh);
@@ -138,7 +143,7 @@ int _main_(int argc, char** argv)
 	// Set view 0 clear state.
 	bgfx::setViewClear(0
 		, BGFX_CLEAR_COLOR_BIT | BGFX_CLEAR_DEPTH_BIT
-		, 0x303030ff
+		, 0x101010ff
 		, 1.0f
 		, 0
 		);
@@ -153,38 +158,41 @@ int _main_(int argc, char** argv)
 		float view[16];
 		float proj[16];
 		bx::mtxLookAt(view, eye, at);
-		bx::mtxProj(proj, 60.0f, float(width) / float(height), 0.1f, 100.0f);
+		bx::mtxProj(proj, 60.0f, float(state.m_width) / float(state.m_height), 0.1f, 100.0f);
 
 		// Set view and projection matrix for view 0.
 		bgfx::setViewTransform(0, view, proj);
 
 		// Set view 0 default viewport.
-		bgfx::setViewRect(0, 0, 0, width, height);
-
-		// Set view 0 default viewport.
-		bgfx::setViewRect(0, 0, 0, 1280, 720);
-
-
+		bgfx::setViewRect(0, 0, 0, state.m_width, state.m_height);
 
 		// This dummy draw call is here to make sure that view 0 is cleared
 		// if no other draw calls are submitted to view 0.
 		bgfx::submit(0);
 
 		// Submit 11x11 cubes.
-		for (uint32_t yy = 0; yy < 11; ++yy)
+		for (uint32_t yy = 0; yy < 1; ++yy)
 		{
-			for (uint32_t xx = 0; xx < 11; ++xx)
+			for (uint32_t xx = 0; xx < 1; ++xx)
 			{
-				float mtx[16];
-				bx::mtxRotateXY(mtx, 0 + xx*0.21f, 0 + yy*0.37f);
-				mtx[12] = -15.0f + float(xx)*3.0f;
-				mtx[13] = -15.0f + float(yy)*3.0f;
-				mtx[14] = 0.0f;
+				float mtx_pos[16];
+				bx::mtxRotateXY(mtx_pos, 0 + xx*0.21f, 0 + yy*0.37f);
+				mtx_pos[12] = -15.0f + float(xx)*3.0f;
+				mtx_pos[13] = -15.0f + float(yy)*3.0f;
+				mtx_pos[14] = 0.0f;
 
+				float mtx_scale[16];
+				float scale = 1.0; // 0.005;
+				bx::mtxScale(mtx_scale, scale, scale, scale);
+
+				float mtx[16];
+				bx::mtxMul(mtx, mtx_scale, mtx_pos);
+				
 				loco::renderer::submit(0, mesh, material, mtx);
 			}
 		}
 
+		//loco::renderer::render(0, world, camera, viewport);
 		bgfx::frame();
 	}
 

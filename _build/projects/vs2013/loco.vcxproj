@@ -36,6 +36,7 @@
     <ClInclude Include="..\..\..\source\engine\resource_shader.h" />
     <ClInclude Include="..\..\..\source\engine\resource_texture.h" />
     <ClInclude Include="..\..\..\source\engine\resource_manager.h" />
+    <ClInclude Include="..\..\..\source\engine\resource_type.h" />
     <ClInclude Include="..\..\..\source\engine\world.h" />
     <ClInclude Include="..\..\..\source\entity\entity.h" />
     <ClInclude Include="..\..\..\source\entity\entity_manager.h" />
@@ -55,7 +56,7 @@
     <ClCompile Include="..\..\..\source\engine\loco.cpp" />
     <ClCompile Include="..\..\..\source\engine\renderer.cpp" />
     <ClCompile Include="..\..\..\source\engine\resource_manager.cpp" />
-    <ClCompile Include="..\..\..\source\engine\resource_material.cpp" />
+    <ClCompile Include="..\..\..\source\engine\resource_type.cpp" />
     <ClCompile Include="..\..\..\source\engine\resource_mesh_bgfx.cpp" />
     <ClCompile Include="..\..\..\source\entity\entity_manager.cpp" />
     <ClCompile Include="..\..\..\source\entity\transform_component.cpp" />
@@ -164,6 +165,12 @@
     <ProjectReference>
       <LinkLibraryDependencies>false</LinkLibraryDependencies>
     </ProjectReference>
+    <Lib>
+      <IgnoreAllDefaultLibraries>
+      </IgnoreAllDefaultLibraries>
+      <IgnoreSpecificDefaultLibraries>
+      </IgnoreSpecificDefaultLibraries>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>

@@ -1,5 +1,10 @@
 #include "resource_manager.h"
 
+#include "resource_material.h"
+#include "resource_mesh.h"
+#include "resource_shader.h"
+#include "resource_texture.h"
+
 #include "debug.h"
 #include "defines.h"
 #include "file_system.h"
@@ -7,19 +12,12 @@
 #include "loco.h"
 #include "memory_utils.h"
 
-#include "resource_mesh.h"
-#include "resource_shader.h"
-#include "resource_texture.h"
-
 #include <string>
 #include <list>
 #include <map>
 
 namespace loco
 {
-
-	Mesh Mesh::invalid = {};
-
 	//==========================================================================
 	const Memory* read_file(const FileInfo& fi)
 	{
@@ -60,6 +58,9 @@ namespace loco
 		// get files in the folder
 		std::list<FileInfo> files_infos;
 		files_in_directory(path, true, &files_infos);
+
+		// sort by resource type 
+		/// TODO
 
 		//load files
 		unsigned loaded_count = 0;
@@ -120,7 +121,10 @@ namespace loco
 	void ResourceManager::unload_all()
 	{
 		// Destroy resources
-		unload_all<Texture>();
+		unload_all<Texture>();	
+		unload_all<Shader>();
+		unload_all<MaterialPtr>();
+		unload_all<Mesh>();
 
 		// Clear resources infos tables
 		for (int i = 0; i < ResourceType::Count; i++)
@@ -134,6 +138,8 @@ namespace loco
 			return ResourceManager::ResourceType::Texture;
 		else if (strcmp(fi.extention, "mesh") == 0)
 			return ResourceManager::ResourceType::Mesh;
+		else if (strcmp(fi.extention, "material") == 0)
+			return ResourceManager::ResourceType::Material;
 		else if (strcmp(fi.extention, "shader") == 0)
 			return ResourceManager::ResourceType::Shader;
 		else
@@ -153,6 +159,10 @@ namespace loco
 			create_resource<Texture>(ri, mem);
 			break;
 
+		case ResourceType::Material:
+			create_resource<MaterialPtr>(ri, mem);
+			break;
+
 		case ResourceType::Shader:
 			create_resource<Shader>(ri, mem);
 			break;
@@ -163,7 +173,8 @@ namespace loco
 	}
 
 	//==========================================================================
-	template<> std::map<ResourceName, Mesh>& ResourceManager::resource_map()	{ return _meshes; }
-	template<> std::map<ResourceName, Texture>& ResourceManager::resource_map()	{ return _textures; }
-	template<> std::map<ResourceName, Shader>& ResourceManager::resource_map()	{ return _shaders; }
+	template<> std::map<ResourceName, MaterialPtr>& ResourceManager::resource_map()	{ return _materials; }
+	template<> std::map<ResourceName, Mesh>& ResourceManager::resource_map()		{ return _meshes; }
+	template<> std::map<ResourceName, Shader>& ResourceManager::resource_map()		{ return _shaders; }
+	template<> std::map<ResourceName, Texture>& ResourceManager::resource_map()		{ return _textures; }
 } // loco

@@ -1,7 +1,6 @@
 #include "renderer.h"
 #include "bgfx.h"
 #include "memory_utils.h"
-#include "resource_material.h"
 #include "resource_manager.h"
 
 #define LOCO_TO_BGFX(handle) { handle.idx }

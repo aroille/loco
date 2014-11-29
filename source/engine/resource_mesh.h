@@ -1,13 +1,7 @@
 #ifndef RESOURCE_MESH_H_HEADER_GUARD
 #define RESOURCE_MESH_H_HEADER_GUARD
 
-#include "reader_writer.h"
-#include <stdint.h>
-
 #include "resource_mesh_bgfx.h"
-
-#include<string>
-#include "bgfx.h"
 
 namespace loco
 {

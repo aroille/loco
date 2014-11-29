@@ -1,10 +1,9 @@
 #ifndef RESOURCE_MANAGER_H_HEADER_GUARD
 #define RESOURCE_MANAGER_H_HEADER_GUARD
 
+#include "resource_type.h"
 #include "debug.h"
 #include "murmur_hash.h"
-#include "renderer.h"
-
 
 #include <vector>
 #include <map>
@@ -13,27 +12,8 @@ namespace loco
 {
 	struct FileInfo;
 	struct Memory;
-	class Material;
-
-	//
+	
 	typedef HashedString ResourceName;
-
-	typedef renderer::TextureHandle Texture;
-	typedef renderer::ShaderHandle Shader;
-
-	struct SubMesh
-	{
-		renderer::VertexBufferHandle vertex_buffer;
-		renderer::IndexBufferHandle index_buffer;
-	};
-
-	struct Mesh
-	{
-		//std::vector<Material*> materials;
-		std::vector<SubMesh> submeshes;
-
-		static Mesh invalid;
-	};
 
 	class ResourceManager
 	{
@@ -43,9 +23,10 @@ namespace loco
 		{
 			enum Enum
 			{
-				Mesh,
-				Shader,
 				Texture,
+				Shader,
+				Material,
+				Mesh,
 				Count,
 			};
 		};
@@ -100,6 +81,7 @@ namespace loco
 	private:
 
 		std::map<ResourceName, ResourceInfo>	_resources[ResourceType::Count];
+		std::map<ResourceName, MaterialPtr>		_materials;
 		std::map<ResourceName, Mesh>			_meshes;
 		std::map<ResourceName, Shader>			_shaders;
 		std::map<ResourceName, Texture>			_textures;
