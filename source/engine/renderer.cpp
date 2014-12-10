@@ -172,7 +172,7 @@ namespace renderer
 			std::vector<Material::UniformInfo>::const_iterator it = mat._uniform_infos.cbegin();
 			while (it != mat._uniform_infos.cend())
 			{
-				bgfx::setUniform(LOCO_TO_BGFX((*it).uniform), mat._uniform_buffer.data() + (*it).buffer_offset, (*it).buffer_offset);
+				bgfx::setUniform(LOCO_TO_BGFX((*it).uniform), mat._uniform_buffer.data() + (*it).buffer_offset, (*it).array_size);
 				it++;
 			}
 		}
