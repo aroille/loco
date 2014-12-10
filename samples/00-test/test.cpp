@@ -39,7 +39,7 @@ int _main_(int argc, char** argv)
 	loco::TransformComponent tf_5 = loco::world.transforms.create(e_5);
 
 	// test load mesh
-	loco::Mesh mesh = loco::resources.get<loco::Mesh>("common/mesh/cube");
+	loco::Mesh mesh = loco::resources.get<loco::Mesh>("common/mesh/sponza");
 
 	// test load texture
 	loco::ResourceName res_name = loco::resources.get_name("common/texture/biodome_floor_04a");
@@ -49,6 +49,9 @@ int _main_(int argc, char** argv)
 	// test load shaders
 	loco::Shader vertex_shader = loco::resources.get<loco::Shader>("shaders/dx9/vs_test");
 	loco::Shader pixel_shader = loco::resources.get<loco::Shader>("shaders/dx9/fs_test");
+
+	// test load material
+	loco::MaterialPtr simple_mat = loco::resources.get<loco::MaterialPtr>("common/material/simple");
 
 	// test create material
 	float time = 5.0f;
@@ -182,13 +185,13 @@ int _main_(int argc, char** argv)
 				mtx_pos[14] = 0.0f;
 
 				float mtx_scale[16];
-				float scale = 1.0; // 0.005;
+				float scale = 0.1f;
 				bx::mtxScale(mtx_scale, scale, scale, scale);
 
 				float mtx[16];
 				bx::mtxMul(mtx, mtx_scale, mtx_pos);
 				
-				loco::renderer::submit(0, mesh, material, mtx);
+				loco::renderer::submit(0, mesh, *simple_mat, mtx);
 			}
 		}
 

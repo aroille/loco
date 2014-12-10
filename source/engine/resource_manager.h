@@ -4,13 +4,13 @@
 #include "resource_type.h"
 #include "debug.h"
 #include "murmur_hash.h"
+#include "file_utils.h"
 
 #include <vector>
 #include <map>
 
 namespace loco
 {
-	struct FileInfo;
 	struct Memory;
 	
 	typedef HashedString ResourceName;
@@ -28,6 +28,8 @@ namespace loco
 				Material,
 				Mesh,
 				Count,
+
+				Unknown,
 			};
 		};
 
@@ -35,7 +37,7 @@ namespace loco
 		{
 			ResourceName		name;
 			ResourceType::Enum	type;
-			unsigned long long	file_date;
+			FileInfo			file_info;
 		};
 
 		~ResourceManager();
@@ -47,11 +49,11 @@ namespace loco
 		/// Return the resource associated with a specific resource path and resource type
 		template<typename T> T get(const char* resource_path)
 		{
-			return get<T>(resource_name(resource_path));
+			return get<T>(resource_name(resource_path), resource_path);
 		}
 
 		/// Return the resource associated with a specific resource handle and resource type
-		template<typename T> T get(ResourceName name)
+		template<typename T> T get(ResourceName name, const char* debug_name = nullptr)
 		{
 			std::map<HashedString, T>& map = resource_map<T>();
 
@@ -62,8 +64,9 @@ namespace loco
 			}
 			else
 			{
-				LOCO_ASSERTF(false, "Resource file not found");
-				return T::invalid;
+				LOCO_ASSERTF(false, "Resource file not found : %s", debug_name != nullptr ? debug_name : "");
+				//return T::invalid;
+				return T();
 			}
 				
 		}
@@ -80,19 +83,21 @@ namespace loco
 
 	private:
 
-		std::map<ResourceName, ResourceInfo>	_resources[ResourceType::Count];
+		std::map<ResourceName, FileInfo>		_resources[ResourceType::Count];
+
 		std::map<ResourceName, MaterialPtr>		_materials;
 		std::map<ResourceName, Mesh>			_meshes;
 		std::map<ResourceName, Shader>			_shaders;
 		std::map<ResourceName, Texture>			_textures;
 
 		// ------
-		bool load_file(const FileInfo& fi);
+		bool load_resource(const ResourceInfo& ri);
 		void create_resource(const ResourceInfo& ri, const Memory* mem);
+		void destroy_resource(const ResourceInfo& ri);
 		
-		ResourceName resource_name(const FileInfo& fi) const;
 		static ResourceName resource_name(const char* resource_path);
-		ResourceType::Enum resource_type(const FileInfo& fi) const;
+		static ResourceName resource_name(const FileInfo& fi);
+		static ResourceType::Enum resource_type(const FileInfo& fi);
 		
 		template<typename T> std::map<ResourceName, T>& resource_map();
 		template<typename T> T create(const Memory* mem) const;
@@ -101,6 +106,11 @@ namespace loco
 		template<typename T> void create_resource(const ResourceInfo& ri, const Memory* mem)
 		{
 			resource_map<T>()[ri.name] = create<T>(mem);
+		}
+
+		template<typename T> void destroy_resource(const ResourceInfo& ri)
+		{
+			destroy<T>(resource_map<T>()[ri.name]);
 		}
 
 		template<typename T> void unload_all()

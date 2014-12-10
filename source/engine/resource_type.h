@@ -59,8 +59,8 @@ namespace loco
 
 		void set_shader(renderer::ShaderHandle vertex_shader, renderer::ShaderHandle pixel_shader);
 
-		void set(char* name, renderer::UniformType::Enum type, float* data, unsigned size = 1);
-		void set(char* name, renderer::TextureHandle texture, uint32_t flags = 0);
+		void set(const char* name, renderer::UniformType::Enum type, const float* data, unsigned size = 1);
+		void set(const char* name, renderer::TextureHandle texture, uint32_t flags = 0);
 
 		std::map<HashedString, unsigned> _uniform_map;
 		std::map<HashedString, unsigned> _texture_map;
@@ -72,8 +72,8 @@ namespace loco
 
 	private:
 
-		UniformInfo&  create_uniform_param(char* name, renderer::UniformType::Enum type, unsigned array_size);
-		TextureInfo&  create_texture_param(char* name);
+		UniformInfo&  create_uniform_param(const char* name, renderer::UniformType::Enum type, unsigned array_size);
+		TextureInfo&  create_texture_param(const char* name);
 	};
 
 	

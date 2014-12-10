@@ -19,6 +19,12 @@
 namespace loco
 {
 	//==========================================================================
+	bool compare_resource_type(const ResourceManager::ResourceInfo& first, const ResourceManager::ResourceInfo& second)
+	{
+		return (first.type < second.type);
+	}
+
+	//==========================================================================
 	const Memory* read_file(const FileInfo& fi)
 	{
 		const Memory* mem = NULL;
@@ -59,46 +65,63 @@ namespace loco
 		std::list<FileInfo> files_infos;
 		files_in_directory(path, true, &files_infos);
 
-		// sort by resource type 
-		/// TODO
-
-		//load files
-		unsigned loaded_count = 0;
-		auto files_infos_it = files_infos.begin();
-		while (files_infos_it != files_infos.end())
+		// create resource list
+		std::list<ResourceInfo> resources;
+		for (auto fi = files_infos.begin(); fi != files_infos.end(); fi++)
 		{
-			loaded_count += load_file(*files_infos_it);
-			files_infos_it++;
+			// check the resource type
+			ResourceType::Enum type = resource_type(*fi);
+			if (type == ResourceType::Count)
+				continue;
+
+			// check if the file is already loaded
+			ResourceName res_name = resource_name(*fi);
+			/*
+			auto res = _resources[type].find(res_name);
+			if (res != _resources[type].end())
+				continue;
+			*/
+
+			// ResourceInfo instance
+			ResourceInfo ri;
+			ri.name = res_name;
+			ri.type = type;
+			ri.file_info = *fi;
+
+			resources.push_back(ri);
+		}
+
+		// sort by resource type 
+		resources.sort(compare_resource_type);
+
+		// load resources
+		unsigned loaded_count = 0;
+		auto res = resources.begin();
+		while (res != resources.end())
+		{
+			loaded_count += load_resource(*res);
+			res++;
 		}
 
 		return loaded_count;
 	}
 
 	//==========================================================================
-	bool ResourceManager::load_file(const FileInfo& fi)
+	bool ResourceManager::load_resource(const ResourceInfo& ri)
 	{
-		// check the resource type
-		ResourceType::Enum type = resource_type(fi);
-		if (type == ResourceType::Count)
-			return false;
-
-		// check if the file is already loaded
-		ResourceName name = resource_name(fi);
-		auto resource_it = _resources[type].find(name);
-
-		if (resource_it != _resources[type].end())
-			return false;
-
-		// ResourceInfo instance
-		ResourceInfo ri;
-		ri.name = name;
-		ri.type = type;
-		ri.file_date = fi.last_modif_date;
-		_resources[type][name] = ri;
+		// if resource already loaded, unload previous resource version
+		auto fi = _resources[ri.type].find(ri.name);
+		if ((fi != _resources[ri.type].end()) && (fi->second.last_modif_date < ri.file_info.last_modif_date))
+		{
+			destroy_resource(ri);
+		}
+		
+		_resources[ri.type][ri.name] = ri.file_info;
 
 		// create the resource and reference it in the map corresponding to its type
-		const Memory* mem = read_file(fi);
+		const Memory* mem = read_file(ri.file_info);
 		create_resource(ri,mem);
+
 		return true;
 	};
 
@@ -109,7 +132,7 @@ namespace loco
 	}
 
 	//==========================================================================
-	ResourceName ResourceManager::resource_name(const FileInfo& fi) const
+	ResourceName ResourceManager::resource_name(const FileInfo& fi)
 	{
 		unsigned path_length = strlen(fi.path);
 		unsigned ext_length = strlen(fi.extention);
@@ -132,7 +155,7 @@ namespace loco
 	}
 
 	//==========================================================================
-	ResourceManager::ResourceType::Enum ResourceManager::resource_type(const FileInfo& fi) const
+	ResourceManager::ResourceType::Enum ResourceManager::resource_type(const FileInfo& fi)
 	{
 		if (strcmp(fi.extention, "dds") == 0)
 			return ResourceManager::ResourceType::Texture;
@@ -165,6 +188,32 @@ namespace loco
 
 		case ResourceType::Shader:
 			create_resource<Shader>(ri, mem);
+			break;
+
+		default:
+			LOCO_ASSERTF(false, "Resources of type %d are not handled by the resource manager", ri.type);
+		}
+	}
+
+	//==========================================================================
+	void ResourceManager::destroy_resource(const ResourceInfo& ri)
+	{
+		switch (ri.type)
+		{
+		case ResourceType::Mesh:
+			destroy_resource<Mesh>(ri);
+			break;
+
+		case ResourceType::Texture:
+			destroy_resource<Texture>(ri);
+			break;
+
+		case ResourceType::Material:
+			destroy_resource<MaterialPtr>(ri);
+			break;
+
+		case ResourceType::Shader:
+			destroy_resource<Shader>(ri);
 			break;
 
 		default:

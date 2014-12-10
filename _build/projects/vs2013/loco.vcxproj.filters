@@ -13,6 +13,9 @@
     <Filter Include="entry">
       <UniqueIdentifier>{9081b878-d096-4c94-8f0c-975424b63301}</UniqueIdentifier>
     </Filter>
+    <Filter Include="core\jsonxx">
+      <UniqueIdentifier>{415fdf80-730a-40c4-8f44-47799e77afc3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\source\entity\entity.h">
@@ -96,6 +99,12 @@
     <ClInclude Include="..\..\..\source\engine\resource_type.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\source\core\jsonxx\jsonxx.h">
+      <Filter>core\jsonxx</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\engine\resource_material_json.h">
+      <Filter>engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\entity\entity_manager.cpp">
@@ -165,6 +174,12 @@
       <Filter>engine</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\engine\resource_type.cpp">
+      <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\jsonxx\jsonxx.cc">
+      <Filter>core\jsonxx</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\engine\resource_material_json.cpp">
       <Filter>engine</Filter>
     </ClCompile>
   </ItemGroup>
