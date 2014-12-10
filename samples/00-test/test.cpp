@@ -6,7 +6,7 @@
 #include "resource_manager.h"
 #include <bgfxplatform.h>
 #include "bgfx_temp.h"
-
+#include <bx/timer.h>
 
 
 using loco::Matrix4x4;
@@ -61,6 +61,10 @@ int _main_(int argc, char** argv)
 	material.set_shader(vertex_shader, pixel_shader);
 	material.set("u_texColor", texture1);
 	
+
+	
+
+
 	//loco::MeshRendererComponent mesh_renderer_cpn = mesh_render_components->create(e_1);
 
 	//bool b = loco::resources.is_loaded(texture);
@@ -140,6 +144,7 @@ int _main_(int argc, char** argv)
 	// Create program from shaders.
 	bgfx::ProgramHandle program = loadProgram("vs_cubes", "fs_cubes");
 
+
 	float at[3] = { 0.0f, 0.0f, 0.0f };
 	float eye[3] = { 0.0f, 0.0f, -35.0f };
 
@@ -151,23 +156,45 @@ int _main_(int argc, char** argv)
 		, 0
 		);
 
+
+	loco::cmdAdd("move", cmdMove);
+	loco::inputAddBindings("camBindings", s_camBindings);
+	cameraReset();
+
 	uint32_t debug = BGFX_DEBUG_TEXT;
 	uint32_t reset = BGFX_RESET_VSYNC;
 
-	loco::entry::WindowState state;
-	while (!loco::entry::process_window_events(state, debug, reset))
+	int64_t timeOffset = bx::getHPCounter();
+
+	//loco::entry::WindowState state;
+	//while (!loco::entry::process_window_events(state, debug, reset))
+	loco::entry::MouseState mouseState;
+	while (!loco::entry::process_events(width, height, debug, reset, &mouseState))
 	//while (true)
 	{
+		int64_t now = bx::getHPCounter();
+		static int64_t last = now;
+		const int64_t frameTime = now - last;
+		last = now;
+		const double freq = double(bx::getHPFrequency());
+		const double toMs = 1000.0 / freq;
+		const float deltaTime = float(frameTime / freq);
+
+		float time = (float)((now - timeOffset) / freq);
+
+		loco::resources.hot_reload<loco::MaterialPtr>();
+
 		float view[16];
 		float proj[16];
-		bx::mtxLookAt(view, eye, at);
-		bx::mtxProj(proj, 60.0f, float(state.m_width) / float(state.m_height), 0.1f, 100.0f);
+		cameraUpdate(deltaTime, mouseState.m_mx, mouseState.m_my, !!mouseState.m_buttons[loco::entry::MouseButton::Right]);
+		bx::mtxLookAt(view, m_eye, m_at, m_up);
+		bx::mtxProj(proj, 60.0f, float(width) / float(height), 0.1f, 1000.0f);
 
 		// Set view and projection matrix for view 0.
 		bgfx::setViewTransform(0, view, proj);
 
 		// Set view 0 default viewport.
-		bgfx::setViewRect(0, 0, 0, state.m_width, state.m_height);
+		bgfx::setViewRect(0, 0, 0, width, height);
 
 		// This dummy draw call is here to make sure that view 0 is cleared
 		// if no other draw calls are submitted to view 0.
