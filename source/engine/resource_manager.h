@@ -40,6 +40,7 @@ namespace loco
 			FileInfo			file_info;
 		};
 
+		ResourceManager();
 		~ResourceManager();
 
 		/// Load all resources in path (recursive)
@@ -67,8 +68,7 @@ namespace loco
 				LOCO_ASSERTF(false, "Resource file not found : %s", debug_name != nullptr ? debug_name : "");
 				//return T::invalid;
 				return T();
-			}
-				
+			}		
 		}
 
 		/// Return the handle corresponding to a specific resource_path
@@ -80,6 +80,25 @@ namespace loco
 
 		/// Unload all resources holded by this resource manager
 		void unload_all();
+
+		/// Reload all modified resources of type T
+		template<typename T> void hot_reload()
+		{
+			ResourceType::Enum type = ResourceType::Material;
+			for (auto it = _resources[type].begin(); it != _resources[type].end(); it++)
+			{
+				unsigned long long modif_date = file_modification_date(it->second.path);
+				//if (modif_date > it->second.last_modif_date)
+				{
+					/// WARNING : memory leak here
+					const Memory* mem = file_read(it->second);
+					resource_map<T>()[it->first] = replace<T>(resource_map<T>()[it->first], mem);
+
+					it->second.last_modif_date = modif_date;
+				}
+			}
+		}
+
 
 	private:
 
@@ -93,19 +112,21 @@ namespace loco
 		// ------
 		bool load_resource(const ResourceInfo& ri);
 		void create_resource(const ResourceInfo& ri, const Memory* mem);
+		void replace_resource(const ResourceInfo& ri, const Memory* mem);
 		void destroy_resource(const ResourceInfo& ri);
 		
 		static ResourceName resource_name(const char* resource_path);
 		static ResourceName resource_name(const FileInfo& fi);
 		static ResourceType::Enum resource_type(const FileInfo& fi);
-		
-		template<typename T> std::map<ResourceName, T>& resource_map();
-		template<typename T> T create(const Memory* mem) const;
-		template<typename T> void destroy(const T& resource) const;
 
 		template<typename T> void create_resource(const ResourceInfo& ri, const Memory* mem)
 		{
 			resource_map<T>()[ri.name] = create<T>(mem);
+		}
+
+		template<typename T> void replace_resource(const ResourceInfo& ri, const Memory* mem)
+		{
+			resource_map<T>()[ri.name] = replace<T>(resource_map<T>()[ri.name], mem);
 		}
 
 		template<typename T> void destroy_resource(const ResourceInfo& ri)
@@ -123,6 +144,12 @@ namespace loco
 			}
 			resource_map<T>().clear();
 		}
+
+		/// function to specialize per resource type
+		template<typename T> std::map<ResourceName, T>& resource_map();
+		template<typename T> T create(const Memory* mem) const;
+		template<typename T> T replace(T& current, const Memory* replace) const;
+		template<typename T> void destroy(const T& resource) const;
 	};
 }
 

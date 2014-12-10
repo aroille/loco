@@ -3,9 +3,19 @@
 
 namespace loco
 {
+	template<> std::map<ResourceName, Shader>& ResourceManager::resource_map()
+	{ 
+		return _shaders; 
+	}
+
 	template<> Shader ResourceManager::create(const Memory* mem) const
 	{
 		return renderer::create_shader(mem);
+	}
+
+	template<> Shader ResourceManager::replace(Shader& current, const Memory* mem) const
+	{
+		return current;
 	}
 
 	template<> void ResourceManager::destroy(const Shader& shader) const

@@ -5,7 +5,7 @@
 
 namespace loco
 {
-	Material* load_material(const Memory* mem)
+	void load_material(const Memory* mem, Material* mat)
 	{		
 		const char* vs_param("vs_shader");
 		const char* ps_param("ps_shader");
@@ -23,7 +23,7 @@ namespace loco
 		LOCO_ASSERTF(o.has<jsonxx::String>(ps_param), "Material parsing error, \"%s\" parameter is missing", ps_param);
 
 		// Create material + assign shaders
-		Material* mat = new Material();
+		
 		Shader vs_shader = loco::resources.get<Shader>(o.get<jsonxx::String>(vs_param).c_str());
 		Shader ps_shader = loco::resources.get<Shader>(o.get<jsonxx::String>(ps_param).c_str());
 		mat->set_shader(vs_shader, ps_shader);
@@ -108,7 +108,7 @@ namespace loco
 			}
 		}
 
-		return mat;
+		return;
 	}
 }
 

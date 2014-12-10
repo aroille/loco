@@ -3,10 +3,37 @@
 
 #ifdef BX_PLATFORM_WINDOWS
 
+#include "debug.h"
+#include "file_system.h"
+
 #include <Windows.h>
 
 namespace loco
 {
+	//==========================================================================
+	const Memory* file_read(const FileInfo& fi)
+	{
+		const Memory* mem = NULL;
+
+		File* file = FileSystem::open(fi.path, FileSystem::Mode::READ | FileSystem::Mode::BINARY);
+		LOCO_ASSERTF(file, "Can't open file : %s", fi.path);
+
+		FileSystem::seek_to_end(file);
+		int file_size = FileSystem::tell(file);
+		FileSystem::seek(file, 0);
+		if (file_size >= 0)
+		{
+			mem = alloc(file_size);
+
+			// read file
+			unsigned readed_size = FileSystem::read(file, mem->data, mem->size);
+			LOCO_ASSERTF(readed_size == mem->size, "Error while reading file : %s", fi.path);
+		}
+
+		FileSystem::close(file);
+		return mem;
+	}
+
 	void extention(char* file_path, char* result)
 	{
 		unsigned size = strlen(file_path);
@@ -20,7 +47,7 @@ namespace loco
 			strcpy(result, "");
 	}
 
-	unsigned long long last_modification_date(char* file_path)
+	unsigned long long file_modification_date(char* file_path)
 	{
 		WIN32_FILE_ATTRIBUTE_DATA file_attribute_data;
 		GetFileAttributesEx(file_path, GetFileExInfoStandard, &file_attribute_data);
@@ -50,7 +77,7 @@ namespace loco
 					extention(fi.path, fi.extention);
 
 					// set last modif date
-					fi.last_modif_date = last_modification_date(fi.path);
+					fi.last_modif_date = file_modification_date(fi.path);
 
 					result->push_back(fi);
 				}
@@ -73,9 +100,6 @@ namespace loco
 			::FindClose(hFind);
 		}
 	}
-
-
-
 } // namespace loco
 
 #endif // BX_PLATFORM_WINDOWS

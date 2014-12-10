@@ -190,7 +190,7 @@ namespace renderer
 		}
 
 		// render states
-		bgfx::setState(BGFX_STATE_DEFAULT);
+		bgfx::setState(BGFX_STATE_DEFAULT | BGFX_STATE_CULL_CCW);
 	}
 
 	void submit(uint8_t view_id, const Mesh& mesh, const Material& mat, const void* model_matrix)

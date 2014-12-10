@@ -3,9 +3,19 @@
 
 namespace loco
 {
+	template<> std::map<ResourceName, Texture>& ResourceManager::resource_map()
+	{ 
+		return _textures; 
+	}
+
 	template<> Texture ResourceManager::create(const Memory* mem) const
 	{
 		return renderer::create_texture(mem);
+	}
+
+	template<> Texture ResourceManager::replace(Texture& current, const Memory* mem) const
+	{
+		return current;
 	}
 
 	template<> void ResourceManager::destroy(const Texture& texture) const

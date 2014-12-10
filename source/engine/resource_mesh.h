@@ -5,10 +5,19 @@
 
 namespace loco
 {
+	template<> std::map<ResourceName, Mesh>& ResourceManager::resource_map()
+	{
+		return _meshes;
+	}
 
 	template<> Mesh ResourceManager::create(const Memory* mem) const
 	{
 		return bgfx_helper::load_mesh(mem);
+	}
+
+	template<> Mesh ResourceManager::replace(Mesh& current, const Memory* mem) const
+	{
+		return current;
 	}
 
 	template<> void ResourceManager::destroy(const Mesh& mesh) const

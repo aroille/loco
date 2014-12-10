@@ -2,6 +2,7 @@
 #define FILE_UTILS_H_HEADER_GUARD
 
 #include "defines.h"
+#include "memory_utils.h"
 #include <list>
 
 namespace loco
@@ -22,6 +23,10 @@ namespace loco
 	};
 
 	void files_in_directory(char* folder_path, bool recursive, std::list<FileInfo>* result);
+
+	const Memory* file_read(const FileInfo& fi);
+
+	unsigned long long file_modification_date(char* file_path);
 }
 
 #endif // FILE_UTILS_H_HEADER_GUARD

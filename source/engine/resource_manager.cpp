@@ -24,29 +24,10 @@ namespace loco
 		return (first.type < second.type);
 	}
 
-	//==========================================================================
-	const Memory* read_file(const FileInfo& fi)
+	ResourceManager::ResourceManager()
 	{
-		const Memory* mem = NULL;
-
-		File* file = FileSystem::open(fi.path, FileSystem::Mode::READ | FileSystem::Mode::BINARY);
-		LOCO_ASSERTF(file, "Can't open file : %s", fi.path);
-
-		FileSystem::seek_to_end(file);
-		int file_size = FileSystem::tell(file);
-		FileSystem::seek(file, 0);
-		if (file_size >= 0)
-		{
-			mem = alloc(file_size);
-
-			// read file
-			unsigned readed_size = FileSystem::read(file, mem->data, mem->size);
-			LOCO_ASSERTF(readed_size == mem->size, "Error while reading file : %s", fi.path);
-		}
-
-		FileSystem::close(file);
-		return mem;
 	}
+
 
 	ResourceManager::~ResourceManager()
 	{
@@ -111,19 +92,19 @@ namespace loco
 	{
 		// if resource already loaded, unload previous resource version
 		auto fi = _resources[ri.type].find(ri.name);
-		if ((fi != _resources[ri.type].end()) && (fi->second.last_modif_date < ri.file_info.last_modif_date))
+		if ((fi != _resources[ri.type].end()))
 		{
-			destroy_resource(ri);
+			LOCO_ASSERTF(false, "The following resource is already loaded : %s", ri.file_info.path);
+			return false;
 		}
-		
+
+		/// WARNING : memory leak here
+		const Memory* mem = file_read(ri.file_info);
+		create_resource(ri, mem);
 		_resources[ri.type][ri.name] = ri.file_info;
 
-		// create the resource and reference it in the map corresponding to its type
-		const Memory* mem = read_file(ri.file_info);
-		create_resource(ri,mem);
-
 		return true;
-	};
+	}
 
 	//==========================================================================
 	ResourceName ResourceManager::resource_name(const char* resource_path)
@@ -221,9 +202,32 @@ namespace loco
 		}
 	}
 
+
 	//==========================================================================
-	template<> std::map<ResourceName, MaterialPtr>& ResourceManager::resource_map()	{ return _materials; }
-	template<> std::map<ResourceName, Mesh>& ResourceManager::resource_map()		{ return _meshes; }
-	template<> std::map<ResourceName, Shader>& ResourceManager::resource_map()		{ return _shaders; }
-	template<> std::map<ResourceName, Texture>& ResourceManager::resource_map()		{ return _textures; }
+	void ResourceManager::replace_resource(const ResourceInfo& ri, const Memory* mem)
+	{
+		switch (ri.type)
+		{
+		case ResourceType::Mesh:
+			replace_resource<Mesh>(ri, mem);
+			break;
+
+		case ResourceType::Texture:
+			replace_resource<Texture>(ri, mem);
+			break;
+
+		case ResourceType::Material:
+			replace_resource<MaterialPtr>(ri, mem);
+			break;
+
+		case ResourceType::Shader:
+			replace_resource<Shader>(ri, mem);
+			break;
+
+		default:
+			LOCO_ASSERTF(false, "Resources of type %d are not handled by the resource manager", ri.type);
+		}
+	}
+	
+
 } // loco
