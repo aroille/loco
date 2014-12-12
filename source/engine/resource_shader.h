@@ -3,6 +3,11 @@
 
 namespace loco
 {
+	template<> ResourceManager::ResourceType::Enum ResourceManager::resource_type<Shader>() const
+	{
+		return ResourceType::Shader;
+	}
+
 	template<> std::map<ResourceName, Shader>& ResourceManager::resource_map()
 	{ 
 		return _shaders; 

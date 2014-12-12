@@ -17,7 +17,7 @@ namespace loco
 	extern ResourceManager resources;
 	extern World world;
 
-	void init(const char* resources_path);
+	void init(const char* resources_path, const char* loco_resources_relativ_path);
 	void shutdown();
 
 	Entity create_entity();

@@ -14,7 +14,7 @@ namespace loco
 
 	EntityManager _entity_manager;
 
-	void init(const char* resources_path)
+	void init(const char* resources_path, const char* loco_resources_relativ_path)
 	{
 		// init resources root path
 		strcpy(resource_root_path, resources_path);
@@ -25,13 +25,12 @@ namespace loco
 		renderer::reset(1280, 720);
 
 		// load all resources inside resources_root_path
-		loco::resources.load_folder("");
+		loco::resources.load_folder(loco_resources_relativ_path);
 	}
 
 	void shutdown()
 	{
 		resources.unload_all();
-
 		renderer::shutdown();
 	}
 

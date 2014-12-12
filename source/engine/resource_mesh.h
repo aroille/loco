@@ -5,6 +5,11 @@
 
 namespace loco
 {
+	template<> ResourceManager::ResourceType::Enum ResourceManager::resource_type<Mesh>() const
+	{
+		return ResourceType::Mesh;
+	}
+
 	template<> std::map<ResourceName, Mesh>& ResourceManager::resource_map()
 	{
 		return _meshes;

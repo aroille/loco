@@ -3,6 +3,11 @@
 
 namespace loco
 {
+	template<> ResourceManager::ResourceType::Enum ResourceManager::resource_type<Texture>() const
+	{
+		return ResourceType::Texture;
+	}
+
 	template<> std::map<ResourceName, Texture>& ResourceManager::resource_map()
 	{ 
 		return _textures; 

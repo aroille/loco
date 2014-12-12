@@ -5,9 +5,14 @@
 
 namespace loco
 {
-	template<> std::map<ResourceName, MaterialPtr>& ResourceManager::resource_map()	
+	template<> ResourceManager::ResourceType::Enum ResourceManager::resource_type<MaterialPtr>() const
 	{ 
-		return _materials; 
+		return ResourceType::Material;
+	}
+
+	template<> std::map<ResourceName, MaterialPtr>& ResourceManager::resource_map()
+	{
+		return _materials;
 	}
 
 	template<> MaterialPtr ResourceManager::create(const Memory* mem) const
