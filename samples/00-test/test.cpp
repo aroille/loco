@@ -21,9 +21,10 @@ int _main_(int argc, char** argv)
 	char* resource_root_path = argc > 1 ? argv[1] : "resources/";
 
 	// init loco
-	loco::init(resource_root_path);	
+	loco::init(resource_root_path, "loco/");	
 	loco::entry::set_window_size(loco::entry::WindowHandle{ 0 }, width, height);
-	
+	loco::resources.load_folder("sponza/");
+
 	// Create entities
 	loco::Entity e_1 = loco::create_entity();
 	loco::Entity e_2 = loco::create_entity();
@@ -39,30 +40,19 @@ int _main_(int argc, char** argv)
 	loco::TransformComponent tf_5 = loco::world.transforms.create(e_5);
 
 	// test load mesh
-	loco::Mesh mesh = loco::resources.get<loco::Mesh>("common/mesh/sponza");
+	loco::Mesh mesh = loco::resources.get<loco::Mesh>("sponza/sponza");
 
 	// test load texture
-	loco::ResourceName res_name = loco::resources.get_name("common/texture/biodome_floor_04a");
-	loco::Texture texture1 = loco::resources.get<loco::Texture>("common/texture/biodome_floor_04a");
+	loco::ResourceName res_name = loco::resources.get_name("loco/texture/default");
+	loco::Texture texture1 = loco::resources.get<loco::Texture>("loco/texture/default");
 	loco::Texture texture2 = loco::resources.get<loco::Texture>(res_name);
 
 	// test load shaders
-	loco::Shader vertex_shader = loco::resources.get<loco::Shader>("shaders/dx9/vs_test");
-	loco::Shader pixel_shader = loco::resources.get<loco::Shader>("shaders/dx9/fs_test");
+	loco::Shader vertex_shader = loco::resources.get<loco::Shader>("loco/shaders/dx9/vs_test");
+	loco::Shader pixel_shader = loco::resources.get<loco::Shader>("loco/shaders/dx9/fs_test");
 
 	// test load material
-	loco::MaterialPtr simple_mat = loco::resources.get<loco::MaterialPtr>("common/material/simple");
-
-	// test create material
-	float time = 5.0f;
-	float color[3] = { 0.1f, 0.5f, 0.8f };
-	
-	loco::Material material;
-	material.set_shader(vertex_shader, pixel_shader);
-	material.set("u_texColor", texture1);
-	
-
-	
+	loco::MaterialPtr simple_mat = loco::resources.get<loco::MaterialPtr>("sponza/sponza");
 
 
 	//loco::MeshRendererComponent mesh_renderer_cpn = mesh_render_components->create(e_1);
@@ -89,7 +79,6 @@ int _main_(int argc, char** argv)
 	{
 		mesh_components->set_mesh(mesh_cp, mesh);
 	}
-	loco::resources::Mesh mesh = loco::resources::get<loco::resources::Mesh>("common\mesh\box");
 
 	loco::resources::Mesh mesh = loco::resources::get(loco::resources::Type::Enum::MESH, "common\mesh\box");
 	loco::resources::Mesh mesh = loco::resources::get_mesh("common\mesh\box");
@@ -125,25 +114,6 @@ int _main_(int argc, char** argv)
 	Matrix4x4 tf_world_4 = loco::world.transforms.world_matrix(tf_4);
 	Matrix4x4 tf_world_5 = loco::world.transforms.world_matrix(tf_5);
 	
-	// Create vertex stream declaration.
-	PosColorVertex::init();
-
-	// Create static vertex buffer.
-	bgfx::VertexBufferHandle vbh = bgfx::createVertexBuffer(
-		// Static data can be passed with bgfx::makeRef
-		bgfx::makeRef(s_cubeVertices, sizeof(s_cubeVertices))
-		, PosColorVertex::ms_decl
-		);
-
-	// Create static index buffer.
-	bgfx::IndexBufferHandle ibh = bgfx::createIndexBuffer(
-		// Static data can be passed with bgfx::makeRef
-		bgfx::makeRef(s_cubeIndices, sizeof(s_cubeIndices))
-		);
-
-	// Create program from shaders.
-	bgfx::ProgramHandle program = loadProgram("vs_cubes", "fs_cubes");
-
 
 	float at[3] = { 0.0f, 0.0f, 0.0f };
 	float eye[3] = { 0.0f, 0.0f, -35.0f };
@@ -212,7 +182,7 @@ int _main_(int argc, char** argv)
 				mtx_pos[14] = 0.0f;
 
 				float mtx_scale[16];
-				float scale = 0.1f;
+				float scale = 10.0f;
 				bx::mtxScale(mtx_scale, scale, scale, scale);
 
 				float mtx[16];
