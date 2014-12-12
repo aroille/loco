@@ -35,8 +35,13 @@ namespace loco
 
 		struct ResourceId
 		{
-			ResourceName		name;
 			ResourceType::Enum	type;
+			ResourceName		name;
+
+			bool operator<(ResourceId const& in) const
+			{
+				return (type < in.type) ? true : ((type > in.type) ? false : (name < in.name));
+			}
 		};
 
 		struct ResourceInfo
@@ -87,8 +92,6 @@ namespace loco
 			return resource_name(resource_path);
 		}
 
-
-
 		/// Reload all modified resources of type T
 		template<typename T> void hot_reload()
 		{
@@ -97,16 +100,23 @@ namespace loco
 				const HashedString& folder_path = folder_it->first;
 
 				ResourceType::Enum type = resource_type<T>();
-				for (auto it = _files[folder_path][type].begin(); it != _files[folder_path][type].end(); it++)
+				for (auto it = _files[folder_path].begin(); it != _files[folder_path].end(); it++)
 				{
-					unsigned long long modif_date = file_modification_date(it->second.path);
-					if (modif_date > it->second.last_modif_date)
-					{
-						/// WARNING : memory leak here
-						const Memory* mem = file_read(it->second);
-						resource_map<T>()[it->first] = replace<T>(resource_map<T>()[it->first], mem);
+					const ResourceId& id = it->first;
+					FileInfo& file_info = it->second;
 
-						it->second.last_modif_date = modif_date;
+					if (id.type != type)
+						continue;
+					
+					unsigned long long modif_date = file_modification_date(file_info.path);
+					if (modif_date > file_info.last_modif_date)
+					{
+						
+						release(file_info.mem);
+						file_read(file_info);
+						resource_map<T>()[id.name] = replace<T>(resource_map<T>()[id.name], file_info.mem);
+
+						file_info.last_modif_date = modif_date;
 					}
 				}
 			}
@@ -115,8 +125,8 @@ namespace loco
 
 	private:
 
-		typedef std::map<ResourceName, FileInfo> FileMap;
-		std::map<HashedString, FileMap*>		_files;
+		typedef std::map<ResourceId, FileInfo> FileMap;
+		std::map<HashedString, FileMap>			_files;
 
 		std::map<ResourceName, MaterialPtr>		_materials;
 		std::map<ResourceName, Mesh>			_meshes;
@@ -125,7 +135,7 @@ namespace loco
 
 		// ------
 
-		bool load_resource(const ResourceInfo& ri, const HashedString& root_folder);
+		bool load_resource(ResourceInfo& ri, const HashedString& root_folder);
 		bool unload_resource(const ResourceId& id, const HashedString& root_folder);
 		bool unload_folder(const HashedString& folder_path);
 
@@ -134,8 +144,7 @@ namespace loco
 		void destroy_resource(const ResourceId& id);
 		
 		static ResourceName resource_name(const char* resource_path);
-		static ResourceName resource_name(const FileInfo& fi);
-		static ResourceType::Enum resource_type(const FileInfo& fi);
+		static ResourceId resource_id(const FileInfo& fi);
 
 		template<typename T> void create_resource(const ResourceId& id, const Memory* mem)
 		{

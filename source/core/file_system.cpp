@@ -29,7 +29,7 @@ namespace loco
 			strcat(str_flags, "b");
 
 		FILE* ff = fopen(path, str_flags);
-		File* file = NULL;
+		File* file = nullptr;
 		if (ff)
 		{
 			file = new File();

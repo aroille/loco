@@ -41,7 +41,7 @@ namespace loco
 			return 0;
 		}
 
-		_files[root_folder] = new FileMap[ResourceType::Count];
+		_files[root_folder] = FileMap();
 
 		// concat root path + folder path
 		char path[LOCO_PATH_LENGTH];
@@ -53,28 +53,24 @@ namespace loco
 		files_in_directory(path, true, &files_infos);
 
 		// create resource list
+		ResourceInfo ri;
 		std::list<ResourceInfo> resources;
 		for (auto fi = files_infos.begin(); fi != files_infos.end(); fi++)
 		{
+			ri.id = resource_id(*fi);
+
 			// check the resource type
-			ResourceType::Enum type = resource_type(*fi);
-			if (type == ResourceType::Count)
+			if (ri.id.type >= ResourceType::Count)
 				continue;
 
 			// check if the file is already loaded
-			ResourceName res_name = resource_name(*fi);
 			/*
 			auto res = _resources[type].find(res_name);
 			if (res != _resources[type].end())
 				continue;
 			*/
 
-			// ResourceInfo instance
-			ResourceInfo ri;
-			ri.id.name = res_name;
-			ri.id.type = type;
 			ri.file_info = *fi;
-
 			resources.push_back(ri);
 		}
 
@@ -112,55 +108,54 @@ namespace loco
 			return false;
 		}
 
-		FileMap* file_maps = folder_files_it->second;
-		for (unsigned i = 0; i < ResourceType::Count; i++)
+		FileMap& file_map = folder_files_it->second;
+		auto file_it = file_map.begin();
+		while (file_it != file_map.end())
 		{
-			auto file_it = file_maps[i].begin();
-			while (file_it != file_maps[i].end())
-			{
-				unload_resource(ResourceId{ file_it->first, (ResourceType::Enum)i }, folder_path);
-				file_it = file_maps[i].begin();
-			}
+			unload_resource(file_it->first, folder_path);
+			file_it = file_map.begin();
 		}
 
-		delete[] folder_files_it->second;
 		_files.erase(folder_files_it);
 
 		return true;
 	}
 
 	//==========================================================================
-	bool ResourceManager::load_resource(const ResourceInfo& ri, const HashedString& root_folder)
+	bool ResourceManager::load_resource(ResourceInfo& ri, const HashedString& root_folder)
 	{
 		// if resource already loaded, unload previous resource version
-		auto fi = _files[root_folder][ri.id.type].find(ri.id.name);
-		if ((fi != _files[root_folder][ri.id.type].end()))
+		auto fi = _files[root_folder].find(ri.id);
+		if ((fi != _files[root_folder].end()))
 		{
 			LOCO_ASSERTF(false, "The following resource is already loaded : %s", ri.file_info.path);
 			return false;
 		}
 
-		/// WARNING : memory leak here
-		const Memory* mem = file_read(ri.file_info);
-		create_resource(ri.id, mem);
-		_files[root_folder][ri.id.type][ri.id.name] = ri.file_info;
-
-		return true;
+		bool read_success = file_read(ri.file_info);
+		if (read_success)
+		{
+			create_resource(ri.id, ri.file_info.mem);
+			_files[root_folder][ri.id] = ri.file_info;
+		}
+		
+		return read_success;
 	}
 
 	//==========================================================================
 	bool ResourceManager::unload_resource(const ResourceId& id, const HashedString& root_folder)
 	{
 		// check if the resource is loaded
-		auto fi = _files[root_folder][id.type].find(id.name);
-		if ((fi == _files[root_folder][id.type].end()))
+		auto fi = _files[root_folder].find(id);
+		if ((fi == _files[root_folder].end()))
 		{
 			LOCO_ASSERTF(false, "Unloading a resource not loaded : (%d,&d,%d)", id.name, id.type, root_folder);
 			return false;
 		}
 
 		destroy_resource(id);
-		_files[root_folder][id.type].erase(id.name);
+		release(fi->second.mem);
+		_files[root_folder].erase(id);
 
 		return true;
 	}
@@ -172,12 +167,28 @@ namespace loco
 	}
 
 	//==========================================================================
-	ResourceName ResourceManager::resource_name(const FileInfo& fi)
+	ResourceManager::ResourceId ResourceManager::resource_id(const FileInfo& fi)
 	{
+		ResourceId id;
+
 		unsigned path_length = strlen(fi.path);
 		unsigned ext_length = strlen(fi.extention);
 		unsigned size_to_hash = path_length - resource_root_path_length - ext_length - 1;
-		return murmur_hash_64(fi.path + resource_root_path_length, size_to_hash);
+
+		id.name = murmur_hash_64(fi.path + resource_root_path_length, size_to_hash);
+
+		if (strcmp(fi.extention, "dds") == 0)
+			id.type = ResourceManager::ResourceType::Texture;
+		else if (strcmp(fi.extention, "mesh") == 0)
+			id.type = ResourceManager::ResourceType::Mesh;
+		else if (strcmp(fi.extention, "material") == 0)
+			id.type = ResourceManager::ResourceType::Material;
+		else if (strcmp(fi.extention, "shader") == 0)
+			id.type = ResourceManager::ResourceType::Shader;
+		else
+			id.type = ResourceManager::ResourceType::Unknown;
+
+		return id;
 	}
 
 	//==========================================================================
@@ -187,21 +198,6 @@ namespace loco
 		{
 			unload_folder(_files.begin()->first);
 		}
-	}
-
-	//==========================================================================
-	ResourceManager::ResourceType::Enum ResourceManager::resource_type(const FileInfo& fi)
-	{
-		if (strcmp(fi.extention, "dds") == 0)
-			return ResourceManager::ResourceType::Texture;
-		else if (strcmp(fi.extention, "mesh") == 0)
-			return ResourceManager::ResourceType::Mesh;
-		else if (strcmp(fi.extention, "material") == 0)
-			return ResourceManager::ResourceType::Material;
-		else if (strcmp(fi.extention, "shader") == 0)
-			return ResourceManager::ResourceType::Shader;
-		else
-			return ResourceManager::ResourceType::Count;
 	}
 
 	//==========================================================================

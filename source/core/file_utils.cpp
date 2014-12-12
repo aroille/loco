@@ -11,27 +11,37 @@
 namespace loco
 {
 	//==========================================================================
-	const Memory* file_read(const FileInfo& fi)
+	bool file_read(FileInfo& fi)
 	{
-		const Memory* mem = NULL;
-
 		File* file = FileSystem::open(fi.path, FileSystem::Mode::READ | FileSystem::Mode::BINARY);
-		LOCO_ASSERTF(file, "Can't open file : %s", fi.path);
-
+		if (file == nullptr)
+		{
+			LOCO_ASSERTF(false, "Can't open file : %s", fi.path);
+			return false;
+		}
+		
 		FileSystem::seek_to_end(file);
 		int file_size = FileSystem::tell(file);
 		FileSystem::seek(file, 0);
 		if (file_size >= 0)
 		{
-			mem = alloc(file_size);
+			fi.mem = alloc(file_size);
 
 			// read file
-			unsigned readed_size = FileSystem::read(file, mem->data, mem->size);
-			LOCO_ASSERTF(readed_size == mem->size, "Error while reading file : %s", fi.path);
+			unsigned readed_size = FileSystem::read(file, fi.mem->data, fi.mem->size);
+			if (readed_size != fi.mem->size)
+			{
+				LOCO_ASSERTF(false, "Error while reading file : %s", fi.path);
+				release(fi.mem);
+				fi.mem = nullptr;
+				FileSystem::close(file);
+				return false;
+			}
+			
 		}
 
 		FileSystem::close(file);
-		return mem;
+		return true;
 	}
 
 	void extention(char* file_path, char* result)
@@ -78,6 +88,9 @@ namespace loco
 
 					// set last modif date
 					fi.last_modif_date = file_modification_date(fi.path);
+
+					// set memory buffer
+					fi.mem = nullptr;
 
 					result->push_back(fi);
 				}
