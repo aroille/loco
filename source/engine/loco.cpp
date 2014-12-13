@@ -10,7 +10,6 @@ namespace loco
 	unsigned resource_root_path_length;
 
 	ResourceManager resources;
-	World world;
 
 	EntityManager _entity_manager;
 

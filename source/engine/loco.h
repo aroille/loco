@@ -15,7 +15,6 @@ namespace loco
 	extern unsigned resource_root_path_length;
 
 	extern ResourceManager resources;
-	extern World world;
 
 	void init(const char* resources_path, const char* loco_resources_relativ_path);
 	void shutdown();

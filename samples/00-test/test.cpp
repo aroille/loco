@@ -10,8 +10,9 @@
 
 
 using loco::Matrix4x4;
-
 bgfx::VertexDecl PosColorVertex::ms_decl;
+
+loco::World main_world;
 
 int _main_(int argc, char** argv)
 {
@@ -33,11 +34,11 @@ int _main_(int argc, char** argv)
 	loco::Entity e_5 = loco::create_entity();
 
 	// Add transform component to each entities
-	loco::TransformComponent tf_1 = loco::world.transforms.create(e_1);
-	loco::TransformComponent tf_2 = loco::world.transforms.create(e_2);
-	loco::TransformComponent tf_3 = loco::world.transforms.create(e_3);
-	loco::TransformComponent tf_4 = loco::world.transforms.create(e_4);
-	loco::TransformComponent tf_5 = loco::world.transforms.create(e_5);
+	loco::TransformComponent tf_1 = main_world.transforms.create(e_1);
+	loco::TransformComponent tf_2 = main_world.transforms.create(e_2);
+	loco::TransformComponent tf_3 = main_world.transforms.create(e_3);
+	loco::TransformComponent tf_4 = main_world.transforms.create(e_4);
+	loco::TransformComponent tf_5 = main_world.transforms.create(e_5);
 
 	// test load mesh
 	loco::Mesh mesh = loco::resources.get<loco::Mesh>("sponza/sponza");
@@ -92,27 +93,27 @@ int _main_(int argc, char** argv)
 	*/
 		
 	// Create parent/child relations between the transform 
-	loco::world.transforms.link(tf_2, tf_1);
-	loco::world.transforms.link(tf_3, tf_2);
-	loco::world.transforms.link(tf_4, tf_2);
-	loco::world.transforms.link(tf_5, tf_2);
+	main_world.transforms.link(tf_2, tf_1);
+	main_world.transforms.link(tf_3, tf_2);
+	main_world.transforms.link(tf_4, tf_2);
+	main_world.transforms.link(tf_5, tf_2);
 	
 	// setting the local transform matrix for each transform component
-	loco::world.transforms.set_local_matrix(tf_1, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1 } } });
-	loco::world.transforms.set_local_matrix(tf_2, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 2, 0, 0, 1 } } });
-	loco::world.transforms.set_local_matrix(tf_3, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 3, 0, 0, 1 } } });
-	loco::world.transforms.set_local_matrix(tf_4, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 0, 0, 1 } } });
-	loco::world.transforms.set_local_matrix(tf_5, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 5, 0, 0, 1 } } });
+	main_world.transforms.set_local_matrix(tf_1, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1 } } });
+	main_world.transforms.set_local_matrix(tf_2, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 2, 0, 0, 1 } } });
+	main_world.transforms.set_local_matrix(tf_3, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 3, 0, 0, 1 } } });
+	main_world.transforms.set_local_matrix(tf_4, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 0, 0, 1 } } });
+	main_world.transforms.set_local_matrix(tf_5, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 5, 0, 0, 1 } } });
 
 	// destroy a parent/child relation
-	loco::world.transforms.unlink(tf_3);
+	main_world.transforms.unlink(tf_3);
 
 	// get the world transform matrix 
-	Matrix4x4 tf_world_1 = loco::world.transforms.world_matrix(tf_1);
-	Matrix4x4 tf_world_2 = loco::world.transforms.world_matrix(tf_2);
-	Matrix4x4 tf_world_3 = loco::world.transforms.world_matrix(tf_3);
-	Matrix4x4 tf_world_4 = loco::world.transforms.world_matrix(tf_4);
-	Matrix4x4 tf_world_5 = loco::world.transforms.world_matrix(tf_5);
+	Matrix4x4 tf_world_1 = main_world.transforms.world_matrix(tf_1);
+	Matrix4x4 tf_world_2 = main_world.transforms.world_matrix(tf_2);
+	Matrix4x4 tf_world_3 = main_world.transforms.world_matrix(tf_3);
+	Matrix4x4 tf_world_4 = main_world.transforms.world_matrix(tf_4);
+	Matrix4x4 tf_world_5 = main_world.transforms.world_matrix(tf_5);
 	
 
 	float at[3] = { 0.0f, 0.0f, 0.0f };
