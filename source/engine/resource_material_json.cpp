@@ -22,8 +22,7 @@ namespace loco
 		LOCO_ASSERTF(o.has<jsonxx::String>(vs_param), "Material parsing error, \"%s\" parameter is missing", vs_param);
 		LOCO_ASSERTF(o.has<jsonxx::String>(ps_param), "Material parsing error, \"%s\" parameter is missing", ps_param);
 
-		// Create material + assign shaders
-		
+		// Assign shaders
 		Shader vs_shader = loco::resources.get<Shader>(o.get<jsonxx::String>(vs_param).c_str());
 		Shader ps_shader = loco::resources.get<Shader>(o.get<jsonxx::String>(ps_param).c_str());
 		mat->set_shader(vs_shader, ps_shader);

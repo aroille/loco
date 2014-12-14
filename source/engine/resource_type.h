@@ -24,6 +24,8 @@ namespace loco
 	{
 		renderer::VertexBufferHandle vertex_buffer;
 		renderer::IndexBufferHandle index_buffer;
+
+		bool operator==(SubMesh const& in) const;
 	};
 
 	struct Mesh
@@ -31,12 +33,19 @@ namespace loco
 		std::vector<SubMesh> submeshes;
 
 		static Mesh invalid;
+		bool operator==(Mesh const& in) const;
 	};
 
 	/// Material =========================================
 
-	typedef std::shared_ptr<Material> MaterialPtr;
-	//typedef Material MaterialPtr;
+	//typedef std::shared_ptr<Material> MaterialPtr;
+	class MaterialPtr : public std::shared_ptr<Material>
+	{
+	public:
+		MaterialPtr(Material* mat = nullptr);
+
+		static MaterialPtr invalid;
+	};
 
 	class Material
 	{

@@ -81,16 +81,17 @@ namespace loco
 
 		typedef std::vector<VertexAttribDecl> VertexDecl;
 
-		struct TextureHandle		{ uint16_t idx; static TextureHandle invalid; };
-		struct VertexDeclHandle		{ uint16_t idx; };
-		struct VertexBufferHandle	{ uint16_t idx; };
-		struct IndexBufferHandle	{ uint16_t idx; };
+		struct TextureHandle		{ uint16_t idx; static TextureHandle invalid; bool operator==(TextureHandle const& in) const; };
+		struct VertexDeclHandle		{ uint16_t idx; static VertexDeclHandle invalid; };
+		struct VertexBufferHandle	{ uint16_t idx; static VertexBufferHandle invalid; bool operator==(VertexBufferHandle const& in) const; };
+		struct IndexBufferHandle	{ uint16_t idx; static IndexBufferHandle invalid; bool operator==(IndexBufferHandle const& in) const; };
 		struct ShaderHandle			{ uint16_t idx; static ShaderHandle invalid; };
 		struct ProgramHandle		{ uint16_t idx; static ProgramHandle invalid; };
-		struct UniformHandle		{ uint16_t idx; };
+		struct UniformHandle		{ uint16_t idx; static UniformHandle invalid; };
 
 		void init();
 		void reset(unsigned width, unsigned height);
+		void create_default_resources();
 		void shutdown();
 
 		TextureHandle create_texture(const Memory* memory);
@@ -112,8 +113,8 @@ namespace loco
 		IndexBufferHandle create_index_buffer(const Memory* memory);
 		void destroy_index_buffer(IndexBufferHandle handle);
 
-		void bind_material(const Material& mat);
-		void submit(uint8_t view_id, const Mesh& mesh, const Material& mat, const void* model_matrix);
+		void bind_material(const Material* material);
+		void submit(uint8_t view_id, const Mesh& mesh, const Material* material, const void* model_matrix);
 	};
 }
 

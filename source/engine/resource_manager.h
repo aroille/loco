@@ -79,9 +79,8 @@ namespace loco
 			}
 			else
 			{
-				LOCO_ASSERTF(false, "Resource file not found : %s", debug_name != nullptr ? debug_name : "");
-				//return T::invalid;
-				return T();
+				//LOCO_ASSERTF(false, "Resource file not found : %s", debug_name != nullptr ? debug_name : "");
+				return T::invalid;
 			}		
 		}
 

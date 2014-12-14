@@ -2,6 +2,7 @@
 #include "bgfx.h"
 #include "memory_utils.h"
 #include "resource_manager.h"
+#include "loco.h"
 
 #define LOCO_TO_BGFX(handle) { handle.idx }
 #define BGFX_TO_LOCO(handle) { handle.idx }
@@ -10,9 +11,29 @@ namespace loco
 {
 namespace renderer
 {
-	TextureHandle TextureHandle::invalid = { 0 };
-	ShaderHandle ShaderHandle::invalid = { 0 };
-	ProgramHandle ProgramHandle::invalid = { 0 };
+	bool TextureHandle::operator==(TextureHandle const& in) const
+	{
+		return idx == in.idx;
+	};
+
+	bool VertexBufferHandle::operator==(VertexBufferHandle const& in) const
+	{
+		return idx == in.idx;
+	};
+
+	bool IndexBufferHandle::operator==(IndexBufferHandle const& in) const
+	{
+		return idx == in.idx;
+	};
+
+	TextureHandle TextureHandle::invalid = { BGFX_INVALID_HANDLE };
+
+	VertexDeclHandle VertexDeclHandle::invalid = { BGFX_INVALID_HANDLE };
+	VertexBufferHandle VertexBufferHandle::invalid = { BGFX_INVALID_HANDLE };
+	IndexBufferHandle IndexBufferHandle::invalid = { BGFX_INVALID_HANDLE };
+	ShaderHandle ShaderHandle::invalid = { BGFX_INVALID_HANDLE };
+	ProgramHandle ProgramHandle::invalid = { BGFX_INVALID_HANDLE };
+	UniformHandle UniformHandle::invalid = { BGFX_INVALID_HANDLE };
 
 	bgfx::UniformType::Enum UniformType_convert[UniformType::Count] =
 	{
@@ -28,10 +49,38 @@ namespace renderer
 	typedef std::map<uint32_t, ProgramHandle> ProgramMap;
 	ProgramMap _programs;
 
+	Texture		default_texture;
+	Mesh		default_mesh;
+	MaterialPtr	default_material;
+
 	//==========================================================================
 	void init()
 	{
 		bgfx::init();
+	}
+
+	void create_default_resources()
+	{
+		char resource_path[LOCO_PATH_LENGTH];
+
+		// load default texture
+		strcpy(resource_path, loco::default_resource_relativ_path);
+		strcat(resource_path, "texture/default");
+		default_texture = loco::resources.get<Texture>(resource_path);
+		LOCO_ASSERTF(!(default_texture == Texture::invalid), "[RENDERER] Can't load default texture : %s", resource_path);
+
+		// load default mesh
+		strcpy(resource_path, loco::default_resource_relativ_path);
+		strcat(resource_path, "mesh/bunny");
+		default_mesh = loco::resources.get<Mesh>(resource_path);
+		LOCO_ASSERTF(!(default_mesh == Mesh::invalid), "[RENDERER] Can't load default mesh : %s", resource_path);
+
+		// load default material
+		strcpy(resource_path, loco::default_resource_relativ_path);
+		strcat(resource_path, "material/default");
+		default_material = loco::resources.get<MaterialPtr>(resource_path);
+		LOCO_ASSERTF(!(default_material == MaterialPtr::invalid), "[RENDERER] Can't load default material : %s", resource_path);
+
 	}
 
 	//==========================================================================
@@ -162,17 +211,19 @@ namespace renderer
 	}
 
 	//==========================================================================
-	void bind_material(const Material& mat)
+	void bind_material(const Material* material)
 	{
+		const Material* m = (material == nullptr) ? default_material.get() : material;
+
 		// programs
-		bgfx::setProgram(LOCO_TO_BGFX(mat._program));
+		bgfx::setProgram(LOCO_TO_BGFX(m->_program));
 
 		// numeric parameters
 		{
-			std::vector<Material::UniformInfo>::const_iterator it = mat._uniform_infos.cbegin();
-			while (it != mat._uniform_infos.cend())
+			std::vector<Material::UniformInfo>::const_iterator it = m->_uniform_infos.cbegin();
+			while (it != m->_uniform_infos.cend())
 			{
-				bgfx::setUniform(LOCO_TO_BGFX((*it).uniform), mat._uniform_buffer.data() + (*it).buffer_offset, (*it).array_size);
+				bgfx::setUniform(LOCO_TO_BGFX((*it).uniform), m->_uniform_buffer.data() + (*it).buffer_offset, (*it).array_size);
 				it++;
 			}
 		}
@@ -180,10 +231,11 @@ namespace renderer
 		// samplers
 		{
 			uint8_t tex_unit = 0;
-			std::vector<Material::TextureInfo>::const_iterator it = mat._texture_infos.cbegin();
-			while (it != mat._texture_infos.cend())
+			std::vector<Material::TextureInfo>::const_iterator it = m->_texture_infos.cbegin();
+			while (it != m->_texture_infos.cend())
 			{
-				bgfx::setTexture(tex_unit, LOCO_TO_BGFX((*it).uniform), LOCO_TO_BGFX((*it).texture), (*it).flags);
+				const Texture& texture = ((*it).texture == Texture::invalid) ? default_texture : (*it).texture;
+				bgfx::setTexture(tex_unit, LOCO_TO_BGFX((*it).uniform), LOCO_TO_BGFX(texture), (*it).flags);
 				tex_unit++;
 				it++;
 			}
@@ -193,19 +245,21 @@ namespace renderer
 		bgfx::setState(BGFX_STATE_DEFAULT | BGFX_STATE_CULL_CCW);
 	}
 
-	void submit(uint8_t view_id, const Mesh& mesh, const Material& mat, const void* model_matrix)
+	void submit(uint8_t view_id, const Mesh& mesh, const Material* material, const void* model_matrix)
 	{
-		for (unsigned i = 0; i < mesh.submeshes.size(); i++)
+		const Mesh& m = (mesh == Mesh::invalid) ? default_mesh : mesh;
+
+		for (unsigned i = 0; i < m.submeshes.size(); i++)
 		{
 			// set material
-			bind_material(mat);
+			bind_material(material);
 
 			// set model matrix
 			bgfx::setTransform(model_matrix);
 
 			// set vertex and index buffer
-			bgfx::setVertexBuffer(bgfx::VertexBufferHandle LOCO_TO_BGFX(mesh.submeshes[i].vertex_buffer));
-			bgfx::setIndexBuffer(bgfx::IndexBufferHandle LOCO_TO_BGFX(mesh.submeshes[i].index_buffer));
+			bgfx::setVertexBuffer(bgfx::VertexBufferHandle LOCO_TO_BGFX(m.submeshes[i].vertex_buffer));
+			bgfx::setIndexBuffer(bgfx::IndexBufferHandle LOCO_TO_BGFX(m.submeshes[i].index_buffer));
 			
 			// submit draw call
 			bgfx::submit(view_id);

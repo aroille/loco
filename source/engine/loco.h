@@ -11,12 +11,13 @@
 
 namespace loco
 {
-	extern char resource_root_path[LOCO_PATH_LENGTH];
 	extern unsigned resource_root_path_length;
+	extern char resource_root_path[LOCO_PATH_LENGTH];
+	extern char default_resource_relativ_path[LOCO_PATH_LENGTH];
 
 	extern ResourceManager resources;
 
-	void init(const char* resources_path, const char* loco_resources_relativ_path);
+	void init(const char* resources_path, const char* default_resources_relativ_path);
 	void shutdown();
 
 	Entity create_entity();

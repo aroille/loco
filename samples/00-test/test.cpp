@@ -8,11 +8,10 @@
 #include "bgfx_temp.h"
 #include <bx/timer.h>
 
+loco::World main_world;
 
 using loco::Matrix4x4;
 bgfx::VertexDecl PosColorVertex::ms_decl;
-
-loco::World main_world;
 
 int _main_(int argc, char** argv)
 {
@@ -23,8 +22,9 @@ int _main_(int argc, char** argv)
 
 	// init loco
 	loco::init(resource_root_path, "loco/");	
-	loco::entry::set_window_size(loco::entry::WindowHandle{ 0 }, width, height);
 	loco::resources.load_folder("sponza/");
+	loco::entry::set_window_size(loco::entry::WindowHandle{ 0 }, width, height);
+	
 
 	// Create entities
 	loco::Entity e_1 = loco::create_entity();
@@ -55,41 +55,10 @@ int _main_(int argc, char** argv)
 	// test load material
 	loco::MaterialPtr simple_mat = loco::resources.get<loco::MaterialPtr>("sponza/sponza");
 
-
-	//loco::MeshRendererComponent mesh_renderer_cpn = mesh_render_components->create(e_1);
-
-	//bool b = loco::resources.is_loaded(texture);
-
-	//typedef std::shared_ptr<loco::Material> MaterialPtr;
-	//MaterialPtr mat = std::make_shared<loco::Material>();
-	//mat->set("u_texColor", texture1);
-	
-	//MaterialPtr mat2 = mat;
-	
-	
 	/*
-	loco::MeshComponent mesh_cp = mesh_components->create(e_1);
-	mesh_components->set_mesh(mesh_cp, mesh);
-	*/
-	
-	/*
-
-	//LOCO_RESOURCE
-	loco::resources::Mesh mesh = loco::resources::get<loco::resources::Mesh>("common\mesh\box");
-	if (mesh == loco::resources::invalid)
-	{
-		mesh_components->set_mesh(mesh_cp, mesh);
-	}
-
-	loco::resources::Mesh mesh = loco::resources::get(loco::resources::Type::Enum::MESH, "common\mesh\box");
-	loco::resources::Mesh mesh = loco::resources::get_mesh("common\mesh\box");
-	
-	loco::MeshComponent mesh_cp = mesh_components->create(e_1);
-	mesh_components->set_mesh(mesh_cp, mesh);
-	mesh_components->set_material(mesh_cp, mat);
-
-	loco::resources::unload("level\01");
-	loco::resources::unload("common");
+	loco::MeshComponent mesh_cp = main_world.mesh_components->create(e_1);
+	mesh_cp->set_mesh(mesh_cp, mesh);
+	mesh_cp->set_material(mesh_cp, mat);
 	*/
 		
 	// Create parent/child relations between the transform 
@@ -114,7 +83,6 @@ int _main_(int argc, char** argv)
 	Matrix4x4 tf_world_3 = main_world.transforms.world_matrix(tf_3);
 	Matrix4x4 tf_world_4 = main_world.transforms.world_matrix(tf_4);
 	Matrix4x4 tf_world_5 = main_world.transforms.world_matrix(tf_5);
-	
 
 	float at[3] = { 0.0f, 0.0f, 0.0f };
 	float eye[3] = { 0.0f, 0.0f, -35.0f };
@@ -139,9 +107,9 @@ int _main_(int argc, char** argv)
 
 	//loco::entry::WindowState state;
 	//while (!loco::entry::process_window_events(state, debug, reset))
+
 	loco::entry::MouseState mouseState;
 	while (!loco::entry::process_events(width, height, debug, reset, &mouseState))
-	//while (true)
 	{
 		int64_t now = bx::getHPCounter();
 		static int64_t last = now;
@@ -189,7 +157,7 @@ int _main_(int argc, char** argv)
 				float mtx[16];
 				bx::mtxMul(mtx, mtx_scale, mtx_pos);
 				
-				loco::renderer::submit(0, mesh, *simple_mat, mtx);
+				loco::renderer::submit(0, mesh, simple_mat.get(), mtx);
 			}
 		}
 

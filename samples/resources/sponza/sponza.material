@@ -14,8 +14,8 @@
 	albedo 			= [0.1, 0.5, 0.8, 1.0],
 	emissive 		= [0, 0, 1],
 
-	u_texColor 		= "loco/texture/default",
-	//u_texColor 		= "sponza/sponza",
+	//u_texColor 		= "loco/texture/default",
+	u_texColor 		= "sponza/sponza",
 	
 	// textures
 	//albedo_tex 	= "test_albedo.dds",

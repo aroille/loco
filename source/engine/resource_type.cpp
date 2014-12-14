@@ -5,7 +5,18 @@
 
 namespace loco
 {
-	Mesh Mesh::invalid = {};
+	Mesh Mesh::invalid = { { { renderer::VertexBufferHandle::invalid, renderer::IndexBufferHandle::invalid } } };
+	bool Mesh::operator == (Mesh const& in) const
+	{
+		return submeshes == in.submeshes;
+	}
+
+	bool SubMesh::operator == (SubMesh const& in) const
+	{
+		return (vertex_buffer == in.vertex_buffer) && (index_buffer == in.index_buffer);
+	}
+	
+	MaterialPtr MaterialPtr::invalid = MaterialPtr(nullptr);
 
 	unsigned UniformType_size[renderer::UniformType::Enum::Count] =
 	{
@@ -17,6 +28,12 @@ namespace loco
 		16,//Matrix4x4,
 		0, //Texture,
 	};
+
+	MaterialPtr::MaterialPtr(Material* mat)
+		: std::shared_ptr<Material>(mat)
+	{
+
+	}
 
 	void Material::set_shader(renderer::ShaderHandle vertex_shader, renderer::ShaderHandle pixel_shader)
 	{
