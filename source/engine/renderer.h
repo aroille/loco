@@ -85,7 +85,7 @@ namespace loco
 		struct VertexDeclHandle		{ uint16_t idx; static VertexDeclHandle invalid; };
 		struct VertexBufferHandle	{ uint16_t idx; static VertexBufferHandle invalid; bool operator==(VertexBufferHandle const& in) const; };
 		struct IndexBufferHandle	{ uint16_t idx; static IndexBufferHandle invalid; bool operator==(IndexBufferHandle const& in) const; };
-		struct ShaderHandle			{ uint16_t idx; static ShaderHandle invalid; };
+		struct ShaderHandle			{ uint16_t idx; static ShaderHandle invalid; bool operator==(ShaderHandle const& in) const; };
 		struct ProgramHandle		{ uint16_t idx; static ProgramHandle invalid; };
 		struct UniformHandle		{ uint16_t idx; static UniformHandle invalid; };
 

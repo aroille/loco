@@ -10,6 +10,11 @@ namespace loco
 		return ResourceType::Mesh;
 	}
 
+	template<> const char* ResourceManager::resource_type_name<Mesh>() const
+	{
+		return "Mesh";
+	}
+
 	template<> std::map<ResourceName, Mesh>& ResourceManager::resource_map()
 	{
 		return _meshes;

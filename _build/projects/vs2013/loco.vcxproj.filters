@@ -105,6 +105,9 @@
     <ClInclude Include="..\..\..\source\engine\resource_material_json.h">
       <Filter>engine</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\source\core\log.h">
+      <Filter>core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\entity\entity_manager.cpp">
@@ -181,6 +184,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\engine\resource_material_json.cpp">
       <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\log.cpp">
+      <Filter>core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -26,6 +26,11 @@ namespace renderer
 		return idx == in.idx;
 	};
 
+	bool ShaderHandle::operator==(ShaderHandle const& in) const
+	{
+		return idx == in.idx;
+	};
+
 	TextureHandle TextureHandle::invalid = { BGFX_INVALID_HANDLE };
 
 	VertexDeclHandle VertexDeclHandle::invalid = { BGFX_INVALID_HANDLE };
@@ -56,7 +61,9 @@ namespace renderer
 	//==========================================================================
 	void init()
 	{
+		log.info(LOCO_LOG_RENDERER, "Initializing");
 		bgfx::init();
+		log.info(LOCO_LOG_RENDERER, "%s", bgfx::getRendererName(bgfx::getRendererType()));
 	}
 
 	void create_default_resources()
@@ -67,19 +74,19 @@ namespace renderer
 		strcpy(resource_path, loco::default_resource_relativ_path);
 		strcat(resource_path, "texture/default");
 		default_texture = loco::resources.get<Texture>(resource_path);
-		LOCO_ASSERTF(!(default_texture == Texture::invalid), "[RENDERER] Can't load default texture : %s", resource_path);
+		LOCO_ASSERTF(!(default_texture == Texture::invalid), LOCO_LOG_RENDERER, "Can't load default texture : %s", resource_path);
 
 		// load default mesh
 		strcpy(resource_path, loco::default_resource_relativ_path);
 		strcat(resource_path, "mesh/bunny");
 		default_mesh = loco::resources.get<Mesh>(resource_path);
-		LOCO_ASSERTF(!(default_mesh == Mesh::invalid), "[RENDERER] Can't load default mesh : %s", resource_path);
+		LOCO_ASSERTF(!(default_mesh == Mesh::invalid), LOCO_LOG_RENDERER, "Can't load default mesh : %s", resource_path);
 
 		// load default material
 		strcpy(resource_path, loco::default_resource_relativ_path);
 		strcat(resource_path, "material/default");
 		default_material = loco::resources.get<MaterialPtr>(resource_path);
-		LOCO_ASSERTF(!(default_material == MaterialPtr::invalid), "[RENDERER] Can't load default material : %s", resource_path);
+		LOCO_ASSERTF(!(default_material == MaterialPtr::invalid), LOCO_LOG_RENDERER, "Can't load default material : %s", resource_path);
 
 	}
 

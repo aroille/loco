@@ -2,21 +2,21 @@
 #include "loco.h"
 #include "renderer.h"
 
-
-
 namespace loco
 {
 	unsigned resource_root_path_length;
 	char resource_root_path[LOCO_PATH_LENGTH];
 	char default_resource_relativ_path[LOCO_PATH_LENGTH];
 	
-
 	ResourceManager resources;
+	Log log;
 
 	EntityManager _entity_manager;
 
 	void init(const char* resources_path, const char* default_resources_path)
 	{
+		log.info(LOCO_LOG, "Initializing");
+
 		// init resources root path
 		strcpy(resource_root_path, resources_path);
 		resource_root_path_length = strlen(resource_root_path);

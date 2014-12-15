@@ -25,7 +25,6 @@ int _main_(int argc, char** argv)
 	loco::resources.load_folder("sponza/");
 	loco::entry::set_window_size(loco::entry::WindowHandle{ 0 }, width, height);
 	
-
 	// Create entities
 	loco::Entity e_1 = loco::create_entity();
 	loco::Entity e_2 = loco::create_entity();
@@ -157,7 +156,8 @@ int _main_(int argc, char** argv)
 				float mtx[16];
 				bx::mtxMul(mtx, mtx_scale, mtx_pos);
 				
-				loco::renderer::submit(0, mesh, simple_mat.get(), mtx);
+				//loco::renderer::submit(0, mesh, simple_mat.get(), mtx);
+				loco::renderer::submit(0, mesh, loco::resources.get<loco::MaterialPtr>("sponza/sponza").get(), mtx);
 			}
 		}
 

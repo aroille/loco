@@ -5,11 +5,14 @@
 
 namespace loco
 {
-	void load_material(const Memory* mem, Material* mat)
+	bool load_material(const Memory* mem, Material* mat)
 	{		
-		const char* vs_param("vs_shader");
-		const char* ps_param("ps_shader");
-		
+		const char* vs_param_name("vs_shader");
+		const char* ps_param_name("ps_shader");
+
+		std::string vs_param_value;
+		std::string ps_param_value;
+
 		// create input for jsonxx
 		std::string input;
 		input.append((char*)(mem->data), mem->size);
@@ -18,13 +21,26 @@ namespace loco
 		jsonxx::Object o;
 		o.parse(input);
 		
-		// check shader parameter existance
-		LOCO_ASSERTF(o.has<jsonxx::String>(vs_param), "Material parsing error, \"%s\" parameter is missing", vs_param);
-		LOCO_ASSERTF(o.has<jsonxx::String>(ps_param), "Material parsing error, \"%s\" parameter is missing", ps_param);
+		// check vertex shader parameter existance
+		if (!o.has<jsonxx::String>(vs_param_name))
+		{
+			log.error(LOCO_LOG_RESOURCE_MANAGER, "Material parsing error, \"%s\" parameter is missing", vs_param_name);
+			return false;
+		}
+
+		// check pixel shader parameter existance
+		if (!o.has<jsonxx::String>(ps_param_name))
+		{
+			log.error(LOCO_LOG_RESOURCE_MANAGER, "Material parsing error, \"%s\" parameter is missing", ps_param_name);
+			return false;
+		}
 
 		// Assign shaders
-		Shader vs_shader = loco::resources.get<Shader>(o.get<jsonxx::String>(vs_param).c_str());
-		Shader ps_shader = loco::resources.get<Shader>(o.get<jsonxx::String>(ps_param).c_str());
+		Shader vs_shader = loco::resources.get<Shader>(o.get<jsonxx::String>(vs_param_name).c_str());
+		Shader ps_shader = loco::resources.get<Shader>(o.get<jsonxx::String>(ps_param_name).c_str());
+		if (vs_shader == Shader::invalid || ps_shader == Shader::invalid)
+			return false;
+
 		mat->set_shader(vs_shader, ps_shader);
 
 		// Set material parameters
@@ -36,7 +52,7 @@ namespace loco
 		auto i = o.kv_map().begin();
 		for (i; i != o.kv_map().end(); i++)
 		{
-			if (strcmp(i->first.c_str(), vs_param)==0 || strcmp(i->first.c_str(), ps_param)==0)
+			if (strcmp(i->first.c_str(), vs_param_name) == 0 || strcmp(i->first.c_str(), ps_param_name) == 0)
 				continue;
 
 			switch (i->second->type_)
@@ -94,7 +110,11 @@ namespace loco
 
 					for (uint32_t j = 0; j < i->second->array_value_->size(); j++)
 					{
-						LOCO_ASSERTF(i->second->array_value_->has<jsonxx::Number>(j), "Material parsing error, parameter \"%s\" is an array of unsupported types", i->first.c_str());
+						if (!i->second->array_value_->has<jsonxx::Number>(j))
+						{
+							log.error(LOCO_LOG_RESOURCE_MANAGER, "Material parsing error, parameter \"%s\" is an array of unsupported types", i->first.c_str());
+							break;
+						}
 						data.push_back((float)i->second->array_value_->get<jsonxx::Number>(j));
 					}
 
@@ -102,12 +122,12 @@ namespace loco
 					break;
 
 				default:
-					LOCO_ASSERTF(false, "Material parsing error, parameter \"%s\" type is not supported ", i->first.c_str());
+					log.error(LOCO_LOG_RESOURCE_MANAGER, "Material parsing error, parameter \"%s\" type is not supported ", i->first.c_str());
 					break;
 			}
 		}
 
-		return;
+		return true;
 	}
 }
 

@@ -42,7 +42,7 @@ namespace loco
 	void TransformSystem::destroy(Entity e)
 	{
 		TransformComponent c = lookup(e);
-		LOCO_ASSERTF(is_valid(c), "TransformComponent not found for entity (id:%s)", e.id);
+		LOCO_ASSERTF(is_valid(c), "TransformSystem", "TransformComponent not found for entity (id:%s)", e.id);
 
 		_map.erase(_data.entity[c.i].id);
 

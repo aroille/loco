@@ -37,7 +37,7 @@ namespace loco
 		auto fi = _files.find(root_folder);
 		if ((fi != _files.cend()))
 		{
-			LOCO_ASSERTF(false, "Loading of a folder already loaded : %s", folder_path);
+			LOCO_ASSERTF(false, LOCO_LOG_RESOURCE_MANAGER, "Loading of a folder already loaded : %s", folder_path);
 			return 0;
 		}
 
@@ -104,7 +104,7 @@ namespace loco
 		auto folder_files_it = _files.find(folder_path);
 		if ((folder_files_it == _files.cend()))
 		{
-			LOCO_ASSERTF(false, "Unloading of a folder not loaded : %s", folder_path);
+			LOCO_ASSERTF(false, LOCO_LOG_RESOURCE_MANAGER, "Unloading of a folder not loaded : %s", folder_path);
 			return false;
 		}
 
@@ -124,11 +124,13 @@ namespace loco
 	//==========================================================================
 	bool ResourceManager::load_resource(ResourceInfo& ri, const HashedString& root_folder)
 	{
+		log.info(LOCO_LOG_RESOURCE_MANAGER, "Loading %s", ri.file_info.path);
+
 		// if resource already loaded, unload previous resource version
 		auto fi = _files[root_folder].find(ri.id);
 		if ((fi != _files[root_folder].end()))
 		{
-			LOCO_ASSERTF(false, "The following resource is already loaded : %s", ri.file_info.path);
+			LOCO_ASSERTF(false, LOCO_LOG_RESOURCE_MANAGER, "The following resource is already loaded : %s", ri.file_info.path);
 			return false;
 		}
 
@@ -137,6 +139,10 @@ namespace loco
 		{
 			create_resource(ri.id, ri.file_info.mem);
 			_files[root_folder][ri.id] = ri.file_info;
+		}
+		else
+		{
+			log.error(LOCO_LOG_RESOURCE_MANAGER, "File reading fail : %s", ri.file_info.path);
 		}
 		
 		return read_success;
@@ -149,7 +155,7 @@ namespace loco
 		auto fi = _files[root_folder].find(id);
 		if ((fi == _files[root_folder].end()))
 		{
-			LOCO_ASSERTF(false, "Unloading a resource not loaded : (%d,&d,%d)", id.name, id.type, root_folder);
+			LOCO_ASSERTF(false, LOCO_LOG_RESOURCE_MANAGER, "Unloading a resource not loaded : (%d,&d,%d)", id.name, id.type, root_folder);
 			return false;
 		}
 
@@ -222,7 +228,7 @@ namespace loco
 			break;
 
 		default:
-			LOCO_ASSERTF(false, "Resources of type %d are not handled by the resource manager", id.type);
+			LOCO_ASSERTF(false, LOCO_LOG_RESOURCE_MANAGER, "Resources of type %d are not handled by the resource manager", id.type);
 		}
 	}
 
@@ -248,7 +254,7 @@ namespace loco
 			break;
 
 		default:
-			LOCO_ASSERTF(false, "Resources of type %d are not handled by the resource manager", id.type);
+			LOCO_ASSERTF(false, LOCO_LOG_RESOURCE_MANAGER, "Resources of type %d are not handled by the resource manager", id.type);
 		}
 	}
 
@@ -274,7 +280,7 @@ namespace loco
 			break;
 
 		default:
-			LOCO_ASSERTF(false, "Resources of type %d are not handled by the resource manager", id.type);
+			LOCO_ASSERTF(false, LOCO_LOG_RESOURCE_MANAGER, "Resources of type %d are not handled by the resource manager", id.type);
 		}
 	}
 	

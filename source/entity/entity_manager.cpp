@@ -26,7 +26,7 @@ namespace loco
 			_generation.push_back(0);
 			idx = _generation.size() - 1;
 
-			LOCO_ASSERTF(idx < (1 << ENTITY_INDEX_BITS), "Entity cache overflow. %d (max: %d)", idx + 1, (1 << ENTITY_INDEX_BITS));
+			LOCO_ASSERTF(idx < (1 << ENTITY_INDEX_BITS), "EntityManager", "Entity cache overflow. %d (max: %d)", idx + 1, (1 << ENTITY_INDEX_BITS));
 		}
 		return make_entity(idx, _generation[idx]);
 	}

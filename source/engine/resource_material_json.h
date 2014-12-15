@@ -5,7 +5,7 @@
 #include "memory_utils.h"
 namespace loco
 {
-	void load_material(const Memory* mem, Material* mat);
+	bool load_material(const Memory* mem, Material* mat);
 
 } // loco
 

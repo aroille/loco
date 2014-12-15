@@ -16,7 +16,7 @@ namespace loco
 		File* file = FileSystem::open(fi.path, FileSystem::Mode::READ | FileSystem::Mode::BINARY);
 		if (file == nullptr)
 		{
-			LOCO_ASSERTF(false, "Can't open file : %s", fi.path);
+			LOCO_ASSERTF(false, "FileSystem", "Can't open file : %s", fi.path);
 			return false;
 		}
 		
@@ -31,7 +31,7 @@ namespace loco
 			unsigned readed_size = FileSystem::read(file, fi.mem->data, fi.mem->size);
 			if (readed_size != fi.mem->size)
 			{
-				LOCO_ASSERTF(false, "Error while reading file : %s", fi.path);
+				LOCO_ASSERTF(false, "FileSystem", "Error while reading file : %s", fi.path);
 				release(fi.mem);
 				fi.mem = nullptr;
 				FileSystem::close(file);

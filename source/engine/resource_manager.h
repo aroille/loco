@@ -79,7 +79,7 @@ namespace loco
 			}
 			else
 			{
-				//LOCO_ASSERTF(false, "Resource file not found : %s", debug_name != nullptr ? debug_name : "");
+				log.error(LOCO_LOG_RESOURCE_MANAGER, "%s not found : %s", resource_type_name<T>(), debug_name ? debug_name : "");
 				return T::invalid;
 			}		
 		}
@@ -110,11 +110,15 @@ namespace loco
 					unsigned long long modif_date = file_modification_date(file_info.path);
 					if (modif_date > file_info.last_modif_date)
 					{
+						log.info(LOCO_LOG_RESOURCE_MANAGER, "Hot reloading %s", file_info.path);
+						const Memory* old_mem = file_info.mem;
 						
-						release(file_info.mem);
-						file_read(file_info);
-						resource_map<T>()[id.name] = replace<T>(resource_map<T>()[id.name], file_info.mem);
-
+						bool read_success = file_read(file_info);
+						if (read_success)
+						{
+							release(old_mem);
+							resource_map<T>()[id.name] = replace<T>(resource_map<T>()[id.name], file_info.mem);
+						}
 						file_info.last_modif_date = modif_date;
 					}
 				}
@@ -174,6 +178,7 @@ namespace loco
 
 		/// function to specialize per resource type
 		template<typename T> ResourceType::Enum resource_type() const;
+		template<typename T> const char* resource_type_name() const;
 		template<typename T> std::map<ResourceName, T>& resource_map();
 		template<typename T> T create(const Memory* mem) const;
 		template<typename T> T replace(T& current, const Memory* replace) const;

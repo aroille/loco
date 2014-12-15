@@ -8,6 +8,11 @@ namespace loco
 		return ResourceType::Texture;
 	}
 
+	template<> const char* ResourceManager::resource_type_name<Texture>() const
+	{
+		return "Texture";
+	}
+
 	template<> std::map<ResourceName, Texture>& ResourceManager::resource_map()
 	{ 
 		return _textures; 

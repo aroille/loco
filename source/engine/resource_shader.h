@@ -8,6 +8,11 @@ namespace loco
 		return ResourceType::Shader;
 	}
 
+	template<> const char* ResourceManager::resource_type_name<Shader>() const
+	{
+		return "Shader";
+	}
+
 	template<> std::map<ResourceName, Shader>& ResourceManager::resource_map()
 	{ 
 		return _shaders; 
