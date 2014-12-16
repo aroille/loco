@@ -1,7 +1,7 @@
 	
 	// shaders
-	vs_shader 		= "loco/shaders/dx9/vs_test",
-	ps_shader 		= "loco/shaders/dx9/fs_test",
+	vs_shader 		= "loco/shader/vs_default",
+	ps_shader 		= "loco/shader/ps_default",
 
 	// common parameters
 	//transparent 		= true,

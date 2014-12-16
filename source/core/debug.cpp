@@ -24,15 +24,15 @@ namespace loco
 		sprintf_s(msg_buffer, sizeof(msg_buffer), "ASSERT %s(%d) : %s", file, line, format);
 		log.log(Log::Fatal, module, msg_buffer, args);
 		
-		// popup message
-		sprintf_s(msg_buffer, sizeof(msg_buffer), "%s(%d) \n", file, line);
-		vsprintf_s(msg_buffer + strlen(msg_buffer), sizeof(msg_buffer) - strlen(msg_buffer), format, args);
-
-		char message_title[512];
-		sprintf_s(message_title, sizeof(message_title), "%s :: Assertion Failed", module);
-
+		// popup message on windows
 		#ifdef WIN32
-		MessageBox(NULL, msg_buffer, message_title, MB_OK | MB_ICONERROR);
+			sprintf_s(msg_buffer, sizeof(msg_buffer), "%s(%d) \n", file, line);
+			vsprintf_s(msg_buffer + strlen(msg_buffer), sizeof(msg_buffer) - strlen(msg_buffer), format, args);
+
+			char message_title[512];
+			sprintf_s(message_title, sizeof(message_title), "%s :: Assertion Failed", module);
+
+			MessageBox(NULL, msg_buffer, message_title, MB_OK | MB_ICONERROR);
 		#endif
 
 		va_end(args);

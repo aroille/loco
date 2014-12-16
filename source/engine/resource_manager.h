@@ -108,7 +108,12 @@ namespace loco
 						continue;
 					
 					unsigned long long modif_date = file_modification_date(file_info.path);
-					if (modif_date > file_info.last_modif_date)
+					if (modif_date == 0 && modif_date < file_info.last_modif_date)
+					{
+						log.warning(LOCO_LOG_RESOURCE_MANAGER, "Hot reloading, the file no longer exists %s", file_info.path);
+						file_info.last_modif_date = modif_date;
+					}
+					else if (modif_date > file_info.last_modif_date)
 					{
 						log.info(LOCO_LOG_RESOURCE_MANAGER, "Hot reloading %s", file_info.path);
 						const Memory* old_mem = file_info.mem;
@@ -125,6 +130,15 @@ namespace loco
 			}
 		}
 
+		static void init_default_resources();
+
+		static bool			default_resource_init;
+
+		static Shader		default_vertex_shader;
+		static Shader		default_pixel_shader;
+		static Texture		default_texture;
+		static Mesh			default_mesh;
+		static MaterialPtr	default_material;
 
 	private:
 

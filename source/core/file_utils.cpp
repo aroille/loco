@@ -5,7 +5,7 @@
 
 #include "debug.h"
 #include "file_system.h"
-
+#include "loco.h"
 #include <Windows.h>
 
 namespace loco
@@ -16,7 +16,7 @@ namespace loco
 		File* file = FileSystem::open(fi.path, FileSystem::Mode::READ | FileSystem::Mode::BINARY);
 		if (file == nullptr)
 		{
-			LOCO_ASSERTF(false, "FileSystem", "Can't open file : %s", fi.path);
+			log.warning("FileSystem", "Can't open file : %s", fi.path);
 			return false;
 		}
 		
@@ -31,7 +31,7 @@ namespace loco
 			unsigned readed_size = FileSystem::read(file, fi.mem->data, fi.mem->size);
 			if (readed_size != fi.mem->size)
 			{
-				LOCO_ASSERTF(false, "FileSystem", "Error while reading file : %s", fi.path);
+				log.warning("FileSystem", "Error while reading file : %s", fi.path);
 				release(fi.mem);
 				fi.mem = nullptr;
 				FileSystem::close(file);
@@ -60,8 +60,10 @@ namespace loco
 	unsigned long long file_modification_date(char* file_path)
 	{
 		WIN32_FILE_ATTRIBUTE_DATA file_attribute_data;
-		GetFileAttributesEx(file_path, GetFileExInfoStandard, &file_attribute_data);
-		return ((unsigned long long)file_attribute_data.ftLastWriteTime.dwHighDateTime << 32) | file_attribute_data.ftLastWriteTime.dwLowDateTime;
+		if (GetFileAttributesEx(file_path, GetFileExInfoStandard, &file_attribute_data))
+			return ((unsigned long long)file_attribute_data.ftLastWriteTime.dwHighDateTime << 32) | file_attribute_data.ftLastWriteTime.dwLowDateTime;
+		else
+			return 0;
 	}
 
 	void files_in_directory(char* folder_path, bool recursive, std::list<FileInfo>* result)

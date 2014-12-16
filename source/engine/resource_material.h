@@ -2,6 +2,7 @@
 #define RESOURCE_MATERIAL_H_HEADER_GUARD
 
 #include "resource_material_json.h"
+#include "loco.h"
 
 namespace loco
 {
@@ -27,8 +28,10 @@ namespace loco
 
 		if (!load_success)
 		{
+			LOCO_ASSERTF(ResourceManager::default_resource_init, LOCO_LOG_RESOURCE_MANAGER, "The default material is not available.");
+			log.error(LOCO_LOG_RESOURCE_MANAGER, "Use of default material");
 			delete mat;
-			return MaterialPtr::invalid;
+			return ResourceManager::default_material.duplicate();
 		}
 		else
 		{
@@ -45,13 +48,12 @@ namespace loco
 
 		if (!load_success)
 		{
-			current.reset();
-			return MaterialPtr::invalid;
+			LOCO_ASSERTF(ResourceManager::default_resource_init, LOCO_LOG_RESOURCE_MANAGER, "The default material is not available.");
+			log.error(LOCO_LOG_RESOURCE_MANAGER, "Use of default material");
+			*(current.get()) = *(ResourceManager::default_material.get());
 		}
-		else
-		{
-			return current;
-		}
+
+		return current;
 	}
 
 	template<> void ResourceManager::destroy(const MaterialPtr& material) const

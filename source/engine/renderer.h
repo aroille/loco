@@ -17,6 +17,21 @@ namespace loco
 
 	namespace renderer
 	{
+		struct Type
+		{
+			/// Renderer type enumeration.
+			enum Enum
+			{
+				Null,         //!< No rendering.
+				Direct3D9,    //!< Direct3D 9.0
+				Direct3D11,   //!< Direct3D 11.0
+				OpenGLES = 4, //!< OpenGL ES 2.0+
+				OpenGL,       //!< OpenGL 2.1+
+
+				Count
+			};
+		};
+
 		struct VertexAttrib
 		{
 			enum Enum
@@ -93,6 +108,15 @@ namespace loco
 		void reset(unsigned width, unsigned height);
 		void create_default_resources();
 		void shutdown();
+		Type::Enum type();
+		const char* type_name(Type::Enum type);
+
+		void bind_material(const Material* material);
+		void submit(uint8_t view_id, const Mesh& mesh, const Material* material, const void* model_matrix);
+
+		extern char shader_extention[16];
+
+		// resources management functions :
 
 		TextureHandle create_texture(const Memory* memory);
 		void destroy_texture(TextureHandle handle);
@@ -113,8 +137,6 @@ namespace loco
 		IndexBufferHandle create_index_buffer(const Memory* memory);
 		void destroy_index_buffer(IndexBufferHandle handle);
 
-		void bind_material(const Material* material);
-		void submit(uint8_t view_id, const Mesh& mesh, const Material* material, const void* model_matrix);
 	};
 }
 

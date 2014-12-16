@@ -11,6 +11,17 @@ namespace loco
 {
 namespace renderer
 {
+	char shader_extentions[Type::Count][16] =
+	{
+		"shader_none",
+		"shader_dx9",
+		"shader_dx11",
+		"shader_gles",
+		"shader_glsl"
+	};
+
+	char shader_extention[16];
+
 	bool TextureHandle::operator==(TextureHandle const& in) const
 	{
 		return idx == in.idx;
@@ -54,40 +65,13 @@ namespace renderer
 	typedef std::map<uint32_t, ProgramHandle> ProgramMap;
 	ProgramMap _programs;
 
-	Texture		default_texture;
-	Mesh		default_mesh;
-	MaterialPtr	default_material;
-
 	//==========================================================================
 	void init()
 	{
 		log.info(LOCO_LOG_RENDERER, "Initializing");
 		bgfx::init();
 		log.info(LOCO_LOG_RENDERER, "%s", bgfx::getRendererName(bgfx::getRendererType()));
-	}
-
-	void create_default_resources()
-	{
-		char resource_path[LOCO_PATH_LENGTH];
-
-		// load default texture
-		strcpy(resource_path, loco::default_resource_relativ_path);
-		strcat(resource_path, "texture/default");
-		default_texture = loco::resources.get<Texture>(resource_path);
-		LOCO_ASSERTF(!(default_texture == Texture::invalid), LOCO_LOG_RENDERER, "Can't load default texture : %s", resource_path);
-
-		// load default mesh
-		strcpy(resource_path, loco::default_resource_relativ_path);
-		strcat(resource_path, "mesh/bunny");
-		default_mesh = loco::resources.get<Mesh>(resource_path);
-		LOCO_ASSERTF(!(default_mesh == Mesh::invalid), LOCO_LOG_RENDERER, "Can't load default mesh : %s", resource_path);
-
-		// load default material
-		strcpy(resource_path, loco::default_resource_relativ_path);
-		strcat(resource_path, "material/default");
-		default_material = loco::resources.get<MaterialPtr>(resource_path);
-		LOCO_ASSERTF(!(default_material == MaterialPtr::invalid), LOCO_LOG_RENDERER, "Can't load default material : %s", resource_path);
-
+		strcpy(shader_extention, shader_extentions[renderer::type()]);
 	}
 
 	//==========================================================================
@@ -102,6 +86,18 @@ namespace renderer
 	void shutdown()
 	{
 		bgfx::shutdown();
+	}
+
+	//==========================================================================
+	Type::Enum type()
+	{
+		return (Type::Enum)bgfx::getRendererType();
+	}
+
+	//==========================================================================
+	const char* type_name(Type::Enum type)
+	{
+		return bgfx::getRendererName((bgfx::RendererType::Enum) type);
 	}
 
 	//==========================================================================
@@ -220,7 +216,7 @@ namespace renderer
 	//==========================================================================
 	void bind_material(const Material* material)
 	{
-		const Material* m = (material == nullptr) ? default_material.get() : material;
+		const Material* m = (material == nullptr) ? ResourceManager::default_material.get() : material;
 
 		// programs
 		bgfx::setProgram(LOCO_TO_BGFX(m->_program));
@@ -241,7 +237,7 @@ namespace renderer
 			std::vector<Material::TextureInfo>::const_iterator it = m->_texture_infos.cbegin();
 			while (it != m->_texture_infos.cend())
 			{
-				const Texture& texture = ((*it).texture == Texture::invalid) ? default_texture : (*it).texture;
+				const Texture& texture = ((*it).texture == Texture::invalid) ? ResourceManager::default_texture : (*it).texture;
 				bgfx::setTexture(tex_unit, LOCO_TO_BGFX((*it).uniform), LOCO_TO_BGFX(texture), (*it).flags);
 				tex_unit++;
 				it++;
@@ -249,12 +245,19 @@ namespace renderer
 		}
 
 		// render states
-		bgfx::setState(BGFX_STATE_DEFAULT | BGFX_STATE_CULL_CCW);
+		bgfx::setState(0 \
+			| BGFX_STATE_RGB_WRITE \
+			| BGFX_STATE_ALPHA_WRITE \
+			| BGFX_STATE_DEPTH_TEST_LESS \
+			| BGFX_STATE_DEPTH_WRITE \
+			| BGFX_STATE_CULL_CCW \
+			| BGFX_STATE_MSAA \
+			);
 	}
 
 	void submit(uint8_t view_id, const Mesh& mesh, const Material* material, const void* model_matrix)
 	{
-		const Mesh& m = (mesh == Mesh::invalid) ? default_mesh : mesh;
+		const Mesh& m = (mesh == Mesh::invalid) ? ResourceManager::default_mesh : mesh;
 
 		for (unsigned i = 0; i < m.submeshes.size(); i++)
 		{

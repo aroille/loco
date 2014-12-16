@@ -18,15 +18,62 @@
 
 namespace loco
 {
+
+	bool		ResourceManager::default_resource_init = false;
+	Shader		ResourceManager::default_vertex_shader = Shader::invalid;
+	Shader		ResourceManager::default_pixel_shader = Shader::invalid;
+	Texture		ResourceManager::default_texture = Texture::invalid;
+	Mesh		ResourceManager::default_mesh = Mesh::invalid;
+	MaterialPtr	ResourceManager::default_material = MaterialPtr::invalid ;
+
 	//==========================================================================
 	bool compare_resource_type(const ResourceManager::ResourceInfo& first, const ResourceManager::ResourceInfo& second)
 	{
 		return (first.id.type < second.id.type);
 	}
 
+	//==========================================================================
 	ResourceManager::~ResourceManager()
 	{
 		unload_all();
+	}
+
+	//==========================================================================
+	void ResourceManager::init_default_resources()
+	{
+		char resource_path[LOCO_PATH_LENGTH];
+
+		// init default vertex shader
+		strcpy(resource_path, loco::default_resource_relativ_path);
+		strcat(resource_path, "shader/vs_default");
+		default_vertex_shader = loco::resources.get<Shader>(resource_path);
+		LOCO_ASSERTF(!(default_vertex_shader == Shader::invalid), LOCO_LOG_RENDERER, "Can't load default vertex shader %s", resource_path);
+
+		// init default pixel shader
+		strcpy(resource_path, loco::default_resource_relativ_path);
+		strcat(resource_path, "shader/ps_default");
+		default_pixel_shader = loco::resources.get<Shader>(resource_path);
+		LOCO_ASSERTF(!(default_pixel_shader == Shader::invalid), LOCO_LOG_RENDERER, "Can't load default pixel shader %s", resource_path);
+
+		// init default texture
+		strcpy(resource_path, loco::default_resource_relativ_path);
+		strcat(resource_path, "texture/default");
+		default_texture = loco::resources.get<Texture>(resource_path);
+		LOCO_ASSERTF(!(default_texture == Texture::invalid), LOCO_LOG_RENDERER, "Can't load default texture %s", resource_path);
+
+		// init default mesh
+		strcpy(resource_path, loco::default_resource_relativ_path);
+		strcat(resource_path, "mesh/bunny");
+		default_mesh = loco::resources.get<Mesh>(resource_path);
+		LOCO_ASSERTF(!(default_mesh == Mesh::invalid), LOCO_LOG_RENDERER, "Can't load default mesh %s", resource_path);
+
+		// init default material
+		strcpy(resource_path, loco::default_resource_relativ_path);
+		strcat(resource_path, "material/default");
+		default_material = loco::resources.get<MaterialPtr>(resource_path);
+		LOCO_ASSERTF(!(default_material == MaterialPtr::invalid), LOCO_LOG_RENDERER, "Can't load default material %s", resource_path);
+
+		default_resource_init = true;
 	}
 
 	//==========================================================================
@@ -189,7 +236,7 @@ namespace loco
 			id.type = ResourceManager::ResourceType::Mesh;
 		else if (strcmp(fi.extention, "material") == 0)
 			id.type = ResourceManager::ResourceType::Material;
-		else if (strcmp(fi.extention, "shader") == 0)
+		else if (strcmp(fi.extention, renderer::shader_extention) == 0)
 			id.type = ResourceManager::ResourceType::Shader;
 		else
 			id.type = ResourceManager::ResourceType::Unknown;

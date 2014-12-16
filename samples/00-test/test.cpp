@@ -24,7 +24,7 @@ int _main_(int argc, char** argv)
 	loco::init(resource_root_path, "loco/");	
 	loco::resources.load_folder("sponza/");
 	loco::entry::set_window_size(loco::entry::WindowHandle{ 0 }, width, height);
-	
+
 	// Create entities
 	loco::Entity e_1 = loco::create_entity();
 	loco::Entity e_2 = loco::create_entity();
@@ -48,8 +48,8 @@ int _main_(int argc, char** argv)
 	loco::Texture texture2 = loco::resources.get<loco::Texture>(res_name);
 
 	// test load shaders
-	loco::Shader vertex_shader = loco::resources.get<loco::Shader>("loco/shaders/dx9/vs_test");
-	loco::Shader pixel_shader = loco::resources.get<loco::Shader>("loco/shaders/dx9/fs_test");
+	loco::Shader vertex_shader = loco::resources.get<loco::Shader>("loco/shader/vs_default");
+	loco::Shader pixel_shader = loco::resources.get<loco::Shader>("loco/shader/ps_default");
 
 	// test load material
 	loco::MaterialPtr simple_mat = loco::resources.get<loco::MaterialPtr>("sponza/sponza");
@@ -120,6 +120,7 @@ int _main_(int argc, char** argv)
 
 		float time = (float)((now - timeOffset) / freq);
 
+		loco::resources.hot_reload<loco::Shader>();
 		loco::resources.hot_reload<loco::MaterialPtr>();
 
 		float view[16];
@@ -156,8 +157,9 @@ int _main_(int argc, char** argv)
 				float mtx[16];
 				bx::mtxMul(mtx, mtx_scale, mtx_pos);
 				
-				//loco::renderer::submit(0, mesh, simple_mat.get(), mtx);
-				loco::renderer::submit(0, mesh, loco::resources.get<loco::MaterialPtr>("sponza/sponza").get(), mtx);
+				simple_mat->set_shader(loco::resources.get<loco::Shader>("loco/shader/vs_default"), loco::resources.get<loco::Shader>("loco/shader/ps_default"));
+				loco::renderer::submit(0, mesh, simple_mat.get(), mtx);
+				//loco::renderer::submit(0, mesh, loco::resources.get<loco::MaterialPtr>("sponza/sponza").get(), mtx);
 			}
 		}
 

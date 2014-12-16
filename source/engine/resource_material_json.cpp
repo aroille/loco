@@ -39,7 +39,11 @@ namespace loco
 		Shader vs_shader = loco::resources.get<Shader>(o.get<jsonxx::String>(vs_param_name).c_str());
 		Shader ps_shader = loco::resources.get<Shader>(o.get<jsonxx::String>(ps_param_name).c_str());
 		if (vs_shader == Shader::invalid || ps_shader == Shader::invalid)
-			return false;
+		{
+			vs_shader = ResourceManager::default_vertex_shader;
+			ps_shader = ResourceManager::default_pixel_shader;
+			log.error(LOCO_LOG_RESOURCE_MANAGER, "Use of default vertex and pixel shaders", ps_param_name);
+		}
 
 		mat->set_shader(vs_shader, ps_shader);
 

@@ -18,6 +18,11 @@ namespace loco
 	
 	MaterialPtr MaterialPtr::invalid = MaterialPtr(nullptr);
 
+	MaterialPtr MaterialPtr::duplicate() const
+	{
+		return MaterialPtr(new Material(*(this->get())));
+	}
+
 	unsigned UniformType_size[renderer::UniformType::Enum::Count] =
 	{
 		1, //Float,

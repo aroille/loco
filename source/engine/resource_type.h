@@ -45,6 +45,7 @@ namespace loco
 		MaterialPtr(Material* mat = nullptr);
 
 		static MaterialPtr invalid;
+		MaterialPtr duplicate() const;
 	};
 
 	class Material
@@ -70,7 +71,7 @@ namespace loco
 
 		void set(const char* name, renderer::UniformType::Enum type, const float* data, unsigned size = 1);
 		void set(const char* name, renderer::TextureHandle texture, uint32_t flags = 0);
-
+	
 		std::map<HashedString, unsigned> _uniform_map;
 		std::map<HashedString, unsigned> _texture_map;
 

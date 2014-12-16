@@ -1,12 +1,7 @@
 $input a_position, a_normal, a_tangent, a_texcoord0
 $output v_texcoord0
 
-/*
- * Copyright 2011-2014 Branimir Karadzic. All rights reserved.
- * License: http://www.opensource.org/licenses/BSD-2-Clause
- */
-
-#include "../common/common.sh"
+#include "common.sh"
 
 void main()
 {
