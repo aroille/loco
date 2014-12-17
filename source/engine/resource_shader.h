@@ -20,7 +20,7 @@ namespace loco
 
 	template<> Shader ResourceManager::create(const Memory* mem) const
 	{
-		return renderer::create_shader(mem);
+		return renderer.create_shader(mem);
 	}
 
 	template<> Shader ResourceManager::replace(Shader& current, const Memory* mem) const
@@ -28,14 +28,14 @@ namespace loco
 		if (mem->size == 0)
 			return current;
 
-		Shader new_shader = renderer::create_shader(mem);
-		renderer::destroy_shader(current);
+		Shader new_shader = renderer.create_shader(mem);
+		renderer.destroy_shader(current);
 		return new_shader;
 	}
 
 	template<> void ResourceManager::destroy(const Shader& shader) const
 	{
-		renderer::destroy_shader(shader);
+		renderer.destroy_shader(shader);
 	}
 }
 

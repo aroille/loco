@@ -50,7 +50,7 @@ namespace loco
 		// Set material parameters
 		std::vector<float> data;
 		Texture texture;
-		renderer::UniformType::Enum uniform_type;
+		Renderer::UniformType::Enum uniform_type;
 		uint8_t uniform_array_size;
 
 		auto i = o.kv_map().begin();
@@ -65,12 +65,12 @@ namespace loco
 
 				case jsonxx::Value::NUMBER_:
 					data.push_back((float)i->second->number_value_);
-					mat->set(i->first.c_str(), renderer::UniformType::Float, data.data(), 1);
+					mat->set(i->first.c_str(), Renderer::UniformType::Float, data.data(), 1);
 					break;
 
 				case jsonxx::Value::BOOL_:
 					data.push_back((float)i->second->bool_value_);
-					mat->set(i->first.c_str(), renderer::UniformType::Float, data.data(), 1);
+					mat->set(i->first.c_str(), Renderer::UniformType::Float, data.data(), 1);
 					break;
 
 				case jsonxx::Value::STRING_:
@@ -82,32 +82,32 @@ namespace loco
 					switch (i->second->array_value_->size())
 					{
 						case 2:
-							uniform_type = renderer::UniformType::Vector2;
+							uniform_type = Renderer::UniformType::Vector2;
 							uniform_array_size = 1;
 							break;
 
 						case 3:
-							uniform_type = renderer::UniformType::Vector3;
+							uniform_type = Renderer::UniformType::Vector3;
 							uniform_array_size = 1;
 							break;
 
 						case 4:
-							uniform_type = renderer::UniformType::Vector4;
+							uniform_type = Renderer::UniformType::Vector4;
 							uniform_array_size = 1;
 							break;
 
 						case 9:
-							uniform_type = renderer::UniformType::Matrix3x3;
+							uniform_type = Renderer::UniformType::Matrix3x3;
 							uniform_array_size = 1;
 							break;
 
 						case 16:
-							uniform_type = renderer::UniformType::Matrix4x4;
+							uniform_type = Renderer::UniformType::Matrix4x4;
 							uniform_array_size = 1;
 							break;
 
 						default:
-							uniform_type = renderer::UniformType::Float;
+							uniform_type = Renderer::UniformType::Float;
 							uniform_array_size = i->second->array_value_->size();
 							break;
 					}

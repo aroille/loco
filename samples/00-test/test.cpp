@@ -158,7 +158,7 @@ int _main_(int argc, char** argv)
 				bx::mtxMul(mtx, mtx_scale, mtx_pos);
 				
 				simple_mat->set_shader(loco::resources.get<loco::Shader>("loco/shader/vs_default"), loco::resources.get<loco::Shader>("loco/shader/ps_default"));
-				loco::renderer::submit(0, mesh, simple_mat.get(), mtx);
+				loco::renderer.submit(0, mesh, simple_mat.get(), mtx);
 				//loco::renderer::submit(0, mesh, loco::resources.get<loco::MaterialPtr>("sponza/sponza").get(), mtx);
 			}
 		}

@@ -236,7 +236,7 @@ namespace loco
 			id.type = ResourceManager::ResourceType::Mesh;
 		else if (strcmp(fi.extention, "material") == 0)
 			id.type = ResourceManager::ResourceType::Material;
-		else if (strcmp(fi.extention, renderer::shader_extention) == 0)
+		else if (strcmp(fi.extention, renderer.shader_extention) == 0)
 			id.type = ResourceManager::ResourceType::Shader;
 		else
 			id.type = ResourceManager::ResourceType::Unknown;

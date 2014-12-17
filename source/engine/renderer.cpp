@@ -9,9 +9,7 @@
 
 namespace loco
 {
-namespace renderer
-{
-	char shader_extentions[Type::Count][16] =
+	char shader_extentions[Renderer::Type::Count][16] =
 	{
 		"shader_none",
 		"shader_dx9",
@@ -20,38 +18,35 @@ namespace renderer
 		"shader_glsl"
 	};
 
-	char shader_extention[16];
-
-	bool TextureHandle::operator==(TextureHandle const& in) const
+	bool Renderer::TextureHandle::operator==(TextureHandle const& in) const
 	{
 		return idx == in.idx;
 	};
 
-	bool VertexBufferHandle::operator==(VertexBufferHandle const& in) const
+	bool Renderer::VertexBufferHandle::operator==(VertexBufferHandle const& in) const
 	{
 		return idx == in.idx;
 	};
 
-	bool IndexBufferHandle::operator==(IndexBufferHandle const& in) const
+	bool Renderer::IndexBufferHandle::operator==(IndexBufferHandle const& in) const
 	{
 		return idx == in.idx;
 	};
 
-	bool ShaderHandle::operator==(ShaderHandle const& in) const
+	bool Renderer::ShaderHandle::operator==(ShaderHandle const& in) const
 	{
 		return idx == in.idx;
 	};
 
-	TextureHandle TextureHandle::invalid = { BGFX_INVALID_HANDLE };
+	Renderer::TextureHandle Renderer::TextureHandle::invalid = { BGFX_INVALID_HANDLE };
+	Renderer::VertexDeclHandle Renderer::VertexDeclHandle::invalid = { BGFX_INVALID_HANDLE };
+	Renderer::VertexBufferHandle Renderer::VertexBufferHandle::invalid = { BGFX_INVALID_HANDLE };
+	Renderer::IndexBufferHandle Renderer::IndexBufferHandle::invalid = { BGFX_INVALID_HANDLE };
+	Renderer::ShaderHandle Renderer::ShaderHandle::invalid = { BGFX_INVALID_HANDLE };
+	Renderer::ProgramHandle Renderer::ProgramHandle::invalid = { BGFX_INVALID_HANDLE };
+	Renderer::UniformHandle Renderer::UniformHandle::invalid = { BGFX_INVALID_HANDLE };
 
-	VertexDeclHandle VertexDeclHandle::invalid = { BGFX_INVALID_HANDLE };
-	VertexBufferHandle VertexBufferHandle::invalid = { BGFX_INVALID_HANDLE };
-	IndexBufferHandle IndexBufferHandle::invalid = { BGFX_INVALID_HANDLE };
-	ShaderHandle ShaderHandle::invalid = { BGFX_INVALID_HANDLE };
-	ProgramHandle ProgramHandle::invalid = { BGFX_INVALID_HANDLE };
-	UniformHandle UniformHandle::invalid = { BGFX_INVALID_HANDLE };
-
-	bgfx::UniformType::Enum UniformType_convert[UniformType::Count] =
+	bgfx::UniformType::Enum UniformType_convert[Renderer::UniformType::Count] =
 	{
 		bgfx::UniformType::Uniform1fv,
 		bgfx::UniformType::Uniform2fv,
@@ -62,20 +57,26 @@ namespace renderer
 		bgfx::UniformType::Uniform1iv
 	};
 
-	typedef std::map<uint32_t, ProgramHandle> ProgramMap;
+	typedef std::map<uint32_t, Renderer::ProgramHandle> ProgramMap;
 	ProgramMap _programs;
 
 	//==========================================================================
-	void init()
+	void set_uniform(Renderer::UniformHandle handle, const void* value, unsigned array_size)
+	{
+		bgfx::setUniform(LOCO_TO_BGFX(handle), value, array_size);
+	}
+
+	//==========================================================================
+	void Renderer::init()
 	{
 		log.info(LOCO_LOG_RENDERER, "Initializing");
 		bgfx::init();
 		log.info(LOCO_LOG_RENDERER, "%s", bgfx::getRendererName(bgfx::getRendererType()));
-		strcpy(shader_extention, shader_extentions[renderer::type()]);
+		strcpy(shader_extention, shader_extentions[type()]);
 	}
 
 	//==========================================================================
-	void reset(unsigned width, unsigned height)
+	void Renderer::reset(unsigned width, unsigned height)
 	{
 		uint32_t reset = BGFX_RESET_VSYNC;
 
@@ -83,38 +84,38 @@ namespace renderer
 	}
 
 	//==========================================================================
-	void shutdown()
+	void Renderer::shutdown()
 	{
 		bgfx::shutdown();
 	}
 
 	//==========================================================================
-	Type::Enum type()
+	Renderer::Type::Enum Renderer::type()
 	{
 		return (Type::Enum)bgfx::getRendererType();
 	}
 
 	//==========================================================================
-	const char* type_name(Type::Enum type)
+	const char* Renderer::type_name(Type::Enum type)
 	{
 		return bgfx::getRendererName((bgfx::RendererType::Enum) type);
 	}
 
 	//==========================================================================
-	TextureHandle create_texture(const Memory* memory)
+	Renderer::TextureHandle Renderer::create_texture(const Memory* memory)
 	{
 		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, memory->size);
 		return BGFX_TO_LOCO(bgfx::createTexture(bgfx_mem));
 	}
 
 	//==========================================================================
-	void destroy_texture(TextureHandle handle)
+	void Renderer::destroy_texture(TextureHandle handle)
 	{
 		bgfx::destroyTexture(LOCO_TO_BGFX(handle));
 	}
 
 	//==========================================================================
-	ProgramHandle create_program(ShaderHandle vsh, ShaderHandle fsh)
+	Renderer::ProgramHandle Renderer::create_program(ShaderHandle vsh, ShaderHandle fsh)
 	{
 		ProgramHandle handle;
 
@@ -134,45 +135,39 @@ namespace renderer
 	}
 
 	//==========================================================================
-	void destroy_program(ProgramHandle handle)
+	void Renderer::destroy_program(ProgramHandle handle)
 	{
 		bgfx::destroyProgram(LOCO_TO_BGFX(handle));
 	}
 
 	//==========================================================================
-	ShaderHandle create_shader(const Memory* memory)
+	Renderer::ShaderHandle Renderer::create_shader(const Memory* memory)
 	{
 		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, memory->size);
 		return BGFX_TO_LOCO(bgfx::createShader(bgfx_mem));
 	}
 
 	//==========================================================================
-	void destroy_shader(ShaderHandle handle)
+	void Renderer::destroy_shader(ShaderHandle handle)
 	{
 		bgfx::destroyShader(LOCO_TO_BGFX(handle));
 	}
 
 	//==========================================================================
-	UniformHandle create_uniform(const char* name, UniformType::Enum type, unsigned array_size)
+	Renderer::UniformHandle Renderer::create_uniform(const char* name, UniformType::Enum type, unsigned array_size)
 	{
 		bgfx::UniformHandle bgfx_handle = bgfx::createUniform(name, UniformType_convert[type], array_size);
 		return BGFX_TO_LOCO(bgfx_handle);
 	}
 
 	//==========================================================================
-	void set_uniform(UniformHandle handle, const void* value, unsigned array_size)
-	{
-		bgfx::setUniform(LOCO_TO_BGFX(handle), value, array_size);
-	}
-
-	//==========================================================================
-	void destroy_uniform(UniformHandle handle)
+	void Renderer::destroy_uniform(UniformHandle handle)
 	{
 		bgfx::destroyUniform(LOCO_TO_BGFX(handle));
 	}
 
 	//==========================================================================
-	VertexBufferHandle create_vertex_buffer(const Memory* memory, const VertexDecl& decl)
+	Renderer::VertexBufferHandle Renderer::create_vertex_buffer(const Memory* memory, const VertexDecl& decl)
 	{
 		bgfx::VertexDecl bgfx_decl;
 		bgfx_decl.begin();
@@ -188,33 +183,33 @@ namespace renderer
 	}
 
 	//==========================================================================
-	VertexBufferHandle create_vertex_buffer(const Memory* memory, const bgfx::VertexDecl& bgfx_decl)
+	Renderer::VertexBufferHandle Renderer::create_vertex_buffer(const Memory* memory, const bgfx::VertexDecl& bgfx_decl)
 	{
 		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, memory->size);
 		return BGFX_TO_LOCO(bgfx::createVertexBuffer(bgfx_mem, bgfx_decl));
 	}
 
 	//==========================================================================
-	void destroy_vertex_buffer(VertexBufferHandle handle)
+	void Renderer::destroy_vertex_buffer(VertexBufferHandle handle)
 	{
 		bgfx::destroyVertexBuffer(LOCO_TO_BGFX(handle));
 	}
 
 	//==========================================================================
-	IndexBufferHandle create_index_buffer(const Memory* memory)
+	Renderer::IndexBufferHandle Renderer::create_index_buffer(const Memory* memory)
 	{
 		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, memory->size);
 		return BGFX_TO_LOCO(bgfx::createIndexBuffer(bgfx_mem));
 	}
 
 	//==========================================================================
-	void destroy_index_buffer(IndexBufferHandle handle)
+	void Renderer::destroy_index_buffer(IndexBufferHandle handle)
 	{
 		bgfx::destroyIndexBuffer(LOCO_TO_BGFX(handle));
 	}
 
 	//==========================================================================
-	void bind_material(const Material* material)
+	void Renderer::bind_material(const Material* material)
 	{
 		const Material* m = (material == nullptr) ? ResourceManager::default_material.get() : material;
 
@@ -255,7 +250,7 @@ namespace renderer
 			);
 	}
 
-	void submit(uint8_t view_id, const Mesh& mesh, const Material* material, const void* model_matrix)
+	void Renderer::submit(uint8_t view_id, const Mesh& mesh, const Material* material, const void* model_matrix)
 	{
 		const Mesh& m = (mesh == Mesh::invalid) ? ResourceManager::default_mesh : mesh;
 
@@ -275,6 +270,4 @@ namespace renderer
 			bgfx::submit(view_id);
 		}
 	}
-
-} // renderer
 } // loco

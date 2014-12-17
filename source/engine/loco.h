@@ -15,6 +15,7 @@ namespace loco
 	extern char resource_root_path[LOCO_PATH_LENGTH];
 	extern char default_resource_relativ_path[LOCO_PATH_LENGTH];
 	
+	extern Renderer	renderer;
 	extern ResourceManager resources;
 	extern Log log;
 

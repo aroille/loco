@@ -12,7 +12,6 @@
 namespace loco
 {
 	struct Memory;
-	
 	typedef HashedString ResourceName;
 
 	class ResourceManager

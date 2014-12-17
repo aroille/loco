@@ -1,11 +1,11 @@
 
 #include "resource_type.h"
-
+#include "loco.h"
 #include "debug.h"
 
 namespace loco
 {
-	Mesh Mesh::invalid = { { { renderer::VertexBufferHandle::invalid, renderer::IndexBufferHandle::invalid } } };
+	Mesh Mesh::invalid = { { { Renderer::VertexBufferHandle::invalid, Renderer::IndexBufferHandle::invalid } } };
 	bool Mesh::operator == (Mesh const& in) const
 	{
 		return submeshes == in.submeshes;
@@ -23,7 +23,7 @@ namespace loco
 		return MaterialPtr(new Material(*(this->get())));
 	}
 
-	unsigned UniformType_size[renderer::UniformType::Enum::Count] =
+	unsigned UniformType_size[Renderer::UniformType::Enum::Count] =
 	{
 		1, //Float,
 		2, //Vector2,
@@ -40,12 +40,12 @@ namespace loco
 
 	}
 
-	void Material::set_shader(renderer::ShaderHandle vertex_shader, renderer::ShaderHandle pixel_shader)
+	void Material::set_shader(Renderer::ShaderHandle vertex_shader, Renderer::ShaderHandle pixel_shader)
 	{
-		_program = renderer::create_program(vertex_shader, pixel_shader);
+		_program = renderer.create_program(vertex_shader, pixel_shader);
 	}
 
-	void Material::set(const char* name, renderer::UniformType::Enum type, const float* data, unsigned size)
+	void Material::set(const char* name, Renderer::UniformType::Enum type, const float* data, unsigned size)
 	{
 		UniformInfo& info = create_uniform_param(name, type, size);
 		LOCO_ASSERTF(size == info.array_size, "Material parameter \"%s\" size doesn't match with the previous definition (previous size:%d, next size:%d)", name, info.array_size, size);
@@ -53,14 +53,14 @@ namespace loco
 		memcpy((void*)(_uniform_buffer.data() + info.buffer_offset), data, sizeof(float)* size * UniformType_size[info.type]);
 	}
 
-	void Material::set(const char* name, renderer::TextureHandle texture, uint32_t flags)
+	void Material::set(const char* name, Renderer::TextureHandle texture, uint32_t flags)
 	{
 		TextureInfo& info = create_texture_param(name);
 		info.texture = texture;
 		info.flags = flags;
 	}
 
-	Material::UniformInfo&  Material::create_uniform_param(const char* name, renderer::UniformType::Enum type, unsigned array_size)
+	Material::UniformInfo&  Material::create_uniform_param(const char* name, Renderer::UniformType::Enum type, unsigned array_size)
 	{
 		unsigned uniform_index = 0;
 		HashedString hashed_name = hash_string(name);
@@ -71,7 +71,7 @@ namespace loco
 			info.type = type;
 			info.array_size = array_size;
 			info.buffer_offset = _uniform_buffer.size();
-			info.uniform = renderer::create_uniform(name, type, array_size);
+			info.uniform = renderer.create_uniform(name, type, array_size);
 
 			uniform_index = _uniform_infos.size();
 			_uniform_map[hashed_name] = _uniform_infos.size();
@@ -80,7 +80,7 @@ namespace loco
 		}
 		else
 		{
-			renderer::UniformType::Enum old_type = _uniform_infos[it->second].type;
+			Renderer::UniformType::Enum old_type = _uniform_infos[it->second].type;
 			LOCO_ASSERTF(type == old_type, "Material parameter \"%s\" type doesn't match with the previous definition \n(previous type:%d, new type:%d)", name, old_type, type);
 			uniform_index = it->second;
 		}
@@ -95,10 +95,10 @@ namespace loco
 		if (it == _texture_map.end())
 		{
 			TextureInfo info;
-			info.uniform = renderer::create_uniform(name, renderer::UniformType::Texture, 1);
+			info.uniform = renderer.create_uniform(name, Renderer::UniformType::Texture, 1);
 			info.texture = { 0 };
 			info.flags = 0;
-
+			
 			_texture_map[hashed_name] = _texture_infos.size();
 			_texture_infos.push_back(info);
 

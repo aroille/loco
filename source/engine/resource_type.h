@@ -12,18 +12,18 @@ namespace loco
 {
 	/// Texture ==========================================
 
-	typedef renderer::TextureHandle Texture;
+	typedef Renderer::TextureHandle Texture;
 
 	/// Shader ===========================================
 
-	typedef renderer::ShaderHandle Shader;
+	typedef Renderer::ShaderHandle Shader;
 
 	/// Mesh =============================================
 
 	struct SubMesh
 	{
-		renderer::VertexBufferHandle vertex_buffer;
-		renderer::IndexBufferHandle index_buffer;
+		Renderer::VertexBufferHandle vertex_buffer;
+		Renderer::IndexBufferHandle index_buffer;
 
 		bool operator==(SubMesh const& in) const;
 	};
@@ -54,35 +54,35 @@ namespace loco
 
 		struct UniformInfo
 		{
-			renderer::UniformHandle			uniform;
+			Renderer::UniformHandle			uniform;
 			uint16_t						buffer_offset;
 			uint16_t						array_size;
-			renderer::UniformType::Enum		type;
+			Renderer::UniformType::Enum		type;
 		};
 
 		struct TextureInfo
 		{
-			renderer::UniformHandle			uniform;
-			renderer::TextureHandle			texture;
+			Renderer::UniformHandle			uniform;
+			Renderer::TextureHandle			texture;
 			uint32_t						flags;
 		};
 
-		void set_shader(renderer::ShaderHandle vertex_shader, renderer::ShaderHandle pixel_shader);
+		void set_shader(Renderer::ShaderHandle vertex_shader, Renderer::ShaderHandle pixel_shader);
 
-		void set(const char* name, renderer::UniformType::Enum type, const float* data, unsigned size = 1);
-		void set(const char* name, renderer::TextureHandle texture, uint32_t flags = 0);
+		void set(const char* name, Renderer::UniformType::Enum type, const float* data, unsigned size = 1);
+		void set(const char* name, Renderer::TextureHandle texture, uint32_t flags = 0);
 	
 		std::map<HashedString, unsigned> _uniform_map;
 		std::map<HashedString, unsigned> _texture_map;
 
-		renderer::ProgramHandle _program;
+		Renderer::ProgramHandle _program;
 		std::vector<UniformInfo> _uniform_infos;
 		std::vector<TextureInfo> _texture_infos;
 		std::vector<float> _uniform_buffer;
 
 	private:
 
-		UniformInfo&  create_uniform_param(const char* name, renderer::UniformType::Enum type, unsigned array_size);
+		UniformInfo&  create_uniform_param(const char* name, Renderer::UniformType::Enum type, unsigned array_size);
 		TextureInfo&  create_texture_param(const char* name);
 	};
 

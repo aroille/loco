@@ -15,8 +15,9 @@ namespace loco
 	class Material;
 	struct Mesh;
 
-	namespace renderer
+	class Renderer
 	{
+	public:
 		struct Type
 		{
 			/// Renderer type enumeration.
@@ -111,10 +112,7 @@ namespace loco
 		Type::Enum type();
 		const char* type_name(Type::Enum type);
 
-		void bind_material(const Material* material);
-		void submit(uint8_t view_id, const Mesh& mesh, const Material* material, const void* model_matrix);
-
-		extern char shader_extention[16];
+		char shader_extention[16];
 
 		// resources management functions :
 
@@ -136,6 +134,12 @@ namespace loco
 
 		IndexBufferHandle create_index_buffer(const Memory* memory);
 		void destroy_index_buffer(IndexBufferHandle handle);
+
+		// draw
+
+		void bind_material(const Material* material);
+		void submit(uint8_t view_id, const Mesh& mesh, const Material* material, const void* model_matrix);
+
 
 	};
 }

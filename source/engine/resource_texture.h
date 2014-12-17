@@ -20,7 +20,7 @@ namespace loco
 
 	template<> Texture ResourceManager::create(const Memory* mem) const
 	{
-		return renderer::create_texture(mem);
+		return renderer.create_texture(mem);
 	}
 
 	template<> Texture ResourceManager::replace(Texture& current, const Memory* mem) const
@@ -30,7 +30,7 @@ namespace loco
 
 	template<> void ResourceManager::destroy(const Texture& texture) const
 	{
-		renderer::destroy_texture(texture);
+		renderer.destroy_texture(texture);
 	}
 }
 

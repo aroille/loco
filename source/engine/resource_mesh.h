@@ -34,8 +34,8 @@ namespace loco
 	{
 		for (unsigned i = 0; i < mesh.submeshes.size(); i++)
 		{
-			renderer::destroy_index_buffer(mesh.submeshes[i].index_buffer);
-			renderer::destroy_vertex_buffer(mesh.submeshes[i].vertex_buffer);
+			renderer.destroy_index_buffer(mesh.submeshes[i].index_buffer);
+			renderer.destroy_vertex_buffer(mesh.submeshes[i].vertex_buffer);
 		}
 	}
 }
