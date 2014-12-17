@@ -3,11 +3,15 @@
 
 #include <stdint.h> // uint16_t
 #include <vector>
+#include <map>
 
-namespace bgfx
-{
-	struct VertexDecl;
-}
+///
+#define LOCO_RENDERER_HANDLE(_name) \
+struct _name { \
+	uint16_t idx; \
+	static _name invalid; \
+	bool operator==(_name const& in) const; \
+};
 
 namespace loco
 {
@@ -15,6 +19,19 @@ namespace loco
 	class Material;
 	struct Mesh;
 
+	/// LOCO Renderer 
+	///
+	/// In charge of:
+	///		- Create / Update / Destroy GPU Resource
+	///		- Submit draw call from resource manager resources (Mesh, Material)
+	/// 
+	/// @remarks
+	///		Memory* provide as parameters to Renderer methods, such as 
+	///		create_texture(Memory*), must be valid for at least 2 frames
+	///
+	/// @remarks
+	///		Renderer is the only class talking to the backend abstraction library BGFX
+	///
 	class Renderer
 	{
 	public:
@@ -33,26 +50,27 @@ namespace loco
 			};
 		};
 
-		struct VertexAttrib
+		struct Attrib
 		{
+			/// Corresponds to vertex shader attribute
 			enum Enum
 			{
-				Position, 
-				Normal,
-				Tangent,
-				Bitangent,
-				Color0,
-				Color1,
-				Indices,
-				Weight,
-				TexCoord0,
-				TexCoord1,
-				TexCoord2,
-				TexCoord3,
-				TexCoord4,
-				TexCoord5,
-				TexCoord6,
-				TexCoord7,
+				Position,  //!< a_position
+				Normal,    //!< a_normal
+				Tangent,   //!< a_tangent
+				Bitangent, //!< a_bitangent
+				Color0,    //!< a_color0
+				Color1,    //!< a_color1
+				Indices,   //!< a_indices
+				Weight,    //!< a_weight
+				TexCoord0, //!< a_texcoord0
+				TexCoord1, //!< a_texcoord1
+				TexCoord2, //!< a_texcoord2
+				TexCoord3, //!< a_texcoord3
+				TexCoord4, //!< a_texcoord4
+				TexCoord5, //!< a_texcoord5
+				TexCoord6, //!< a_texcoord6
+				TexCoord7, //!< a_texcoord7
 
 				Count
 			};
@@ -60,6 +78,7 @@ namespace loco
 
 		struct AttribType
 		{
+			/// Vertex attribute type
 			enum Enum
 			{
 				Uint8,
@@ -71,8 +90,27 @@ namespace loco
 			};
 		};
 
+		/// Attribute declaration
+		struct VertexAttribDecl
+		{
+			Attrib::Enum attrib;	///< Attribute semantics
+			uint8_t num;			///< 1, 2, 3 or 4
+			AttribType::Enum type;	///< Attribute type
+			bool normalized;		///< When using fixed point AttribType (f.e. Uint8)
+									///   value will be normalized for vertex shader usage. When normalized
+									///   is set to true, AttribType::Uint8 value in range 0-255 will be
+									///   in range 0.0-1.0 in vertex shader.
+			bool asInt;				///< Packaging rule for vertexPack, vertexUnpack, and
+									///   vertexConvert for AttribType::Uint8 and AttribType::Int16.
+									///   Unpacking code must be implemented inside vertex shader.
+		};
+
+		/// Vertex declaration
+		typedef std::vector<VertexAttribDecl> VertexDecl;
+
 		struct UniformType
 		{
+			/// Shader uniform type enumeration
 			enum Enum
 			{
 				Float,
@@ -86,61 +124,86 @@ namespace loco
 			};
 		};
 
-		struct VertexAttribDecl
-		{
-			VertexAttrib::Enum attrib;
-			uint8_t num;
-			AttribType::Enum type;
-			bool normalized;
-			bool asInt;
-		};
+		/// GPU resource handles :
 
-		typedef std::vector<VertexAttribDecl> VertexDecl;
+		LOCO_RENDERER_HANDLE(TextureHandle);
+		LOCO_RENDERER_HANDLE(VertexDeclHandle);
+		LOCO_RENDERER_HANDLE(VertexBufferHandle);
+		LOCO_RENDERER_HANDLE(IndexBufferHandle);
+		LOCO_RENDERER_HANDLE(ShaderHandle);
+		LOCO_RENDERER_HANDLE(ProgramHandle);
+		LOCO_RENDERER_HANDLE(UniformHandle);
 
-		struct TextureHandle		{ uint16_t idx; static TextureHandle invalid; bool operator==(TextureHandle const& in) const; };
-		struct VertexDeclHandle		{ uint16_t idx; static VertexDeclHandle invalid; };
-		struct VertexBufferHandle	{ uint16_t idx; static VertexBufferHandle invalid; bool operator==(VertexBufferHandle const& in) const; };
-		struct IndexBufferHandle	{ uint16_t idx; static IndexBufferHandle invalid; bool operator==(IndexBufferHandle const& in) const; };
-		struct ShaderHandle			{ uint16_t idx; static ShaderHandle invalid; bool operator==(ShaderHandle const& in) const; };
-		struct ProgramHandle		{ uint16_t idx; static ProgramHandle invalid; };
-		struct UniformHandle		{ uint16_t idx; static UniformHandle invalid; };
-
+		/// Initialize renderer
 		void init();
-		void reset(unsigned width, unsigned height);
-		void create_default_resources();
+
+		/// Shutdown renderer
 		void shutdown();
+
+		/// Return the type of the current backend
 		Type::Enum type();
+
+		/// Return the name of the backend
 		const char* type_name(Type::Enum type);
 
-		char shader_extention[16];
+		/// Set Main window size
+		void reset(unsigned width, unsigned height);
 
-		// resources management functions :
+		/// Return shader_extention name (according to the current backend)
+		inline const char* shader_extention() { return _shader_extention; }
 
+		/// Create texture from memory buffer
 		TextureHandle create_texture(const Memory* memory);
+
+		/// Destroy texture
 		void destroy_texture(TextureHandle handle);
 
-		ProgramHandle create_program(ShaderHandle vertex_shader, ShaderHandle fragment_shader);
+		/// Create program with vertex and pixel shaders
+		ProgramHandle create_program(ShaderHandle vertex_shader, ShaderHandle pixel_shader);
+		
+		/// Destroy program
 		void destroy_program(ProgramHandle handle);
 
+		/// Create shader from memory buffer.
 		ShaderHandle create_shader(const Memory* memory);
+
+		/// Destroy shader
 		void destroy_shader(ShaderHandle handle);
 
+		/// Create shader uniform 
 		UniformHandle create_uniform(const char* name, UniformType::Enum type, unsigned array_size);
+		
+		/// Destroy shader uniform
 		void destroy_uniform(UniformHandle handle);
 
+		/// Create static vertex buffer from memory buffer
 		VertexBufferHandle create_vertex_buffer(const Memory* memory, const VertexDecl& decl);
-		VertexBufferHandle create_vertex_buffer(const Memory* memory, const bgfx::VertexDecl& decl);
+
+		/// Destroy static vertex buffer.
 		void destroy_vertex_buffer(VertexBufferHandle handle);
 
+		/// Create static index buffer from memory buffer
 		IndexBufferHandle create_index_buffer(const Memory* memory);
+
+		/// Destroy static index buffer.
 		void destroy_index_buffer(IndexBufferHandle handle);
 
-		// draw
-
-		void bind_material(const Material* material);
+		/// Submit draw call
+		///
+		/// @param view_id View target
+		/// @param Mesh mesh to draw
+		/// @param material Material used on every submeshes of mesh
+		/// @param model_matrix World transform matrix of the mesh
+		///
 		void submit(uint8_t view_id, const Mesh& mesh, const Material* material, const void* model_matrix);
 
+	private:
+		/// Bind a material
+		void bind_material(const Material* material);
 
+	private:
+		char _shader_extention[16];						///< shader extention name (according to the current backend)
+		std::map<uint32_t, ProgramHandle> _programs;	///< key create from vertex and pixel shader handles
 	};
 }
 

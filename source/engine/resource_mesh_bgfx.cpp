@@ -12,6 +12,7 @@ namespace stl = tinystl;
 
 #include "memory_utils.h"
 #include "resource_manager.h"
+#include "loco.h"
 
 struct Aabb
 {
@@ -77,7 +78,7 @@ namespace bgfx_helper
 
 	struct Mesh
 	{
-		void load(bx::ReaderSeekerI* _reader)
+		void load(bx::MemoryReader* _reader)
 		{
 #define BGFX_CHUNK_MAGIC_VB  BX_MAKEFOURCC('V', 'B', ' ', 0x1)
 #define BGFX_CHUNK_MAGIC_IB  BX_MAKEFOURCC('I', 'B', ' ', 0x0)
@@ -101,14 +102,34 @@ namespace bgfx_helper
 
 						read(_reader, m_decl);
 
-						uint16_t stride = m_decl.getStride();
+						// convert vertex attribute declaration from bgfx to loco
+						loco::Renderer::VertexDecl loco_decl;
+						for (unsigned i = 0; i < (int)loco::Renderer::Attrib::Count; i++)
+						{
+							loco::Renderer::Attrib::Enum type = (loco::Renderer::Attrib::Enum)i;
+							if (m_decl.has((bgfx::Attrib::Enum)type))
+							{
+								loco::Renderer::VertexAttribDecl d;
+								d.attrib = type;
+			
+								m_decl.decode((bgfx::Attrib::Enum)type, d.num, (bgfx::AttribType::Enum&)d.type, d.normalized, d.asInt);
+								loco_decl.push_back(d);
+							}
+						}
 
+						uint16_t stride = m_decl.getStride();
+						
 						uint16_t numVertices;
 						read(_reader, numVertices);
-						const bgfx::Memory* mem = bgfx::alloc(numVertices*stride);
-						read(_reader, mem->data, mem->size);
 
-						group.m_vbh = bgfx::createVertexBuffer(mem, m_decl);
+						//const bgfx::Memory* mem = bgfx::alloc(numVertices*stride);
+						//read(_reader, mem->data, mem->size);
+						//group.m_vbh = bgfx::createVertexBuffer(mem, m_decl);
+						loco::Memory mem;
+						mem.data = const_cast<uint8_t*>(_reader->getDataPtr());
+						mem.size = numVertices*stride;
+						_reader->seek(mem.size, bx::Whence::Current);
+						group.m_vbh.idx = loco::renderer.create_vertex_buffer(&mem, loco_decl).idx;
 					}
 					break;
 

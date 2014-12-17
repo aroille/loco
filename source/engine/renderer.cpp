@@ -7,8 +7,28 @@
 #define LOCO_TO_BGFX(handle) { handle.idx }
 #define BGFX_TO_LOCO(handle) { handle.idx }
 
+#define LOCO_RENDERER_HANDLE_DEF(_name) \
+bool Renderer::_name::operator==(_name const& in) const \
+{ return idx == in.idx; }; \
+Renderer::_name Renderer::_name::invalid = { UINT16_MAX };
+
+struct _name {
+\
+	uint16_t idx; \
+	static _name invalid; \
+	bool operator==(_name const& in) const; \
+};
+
 namespace loco
 {
+	LOCO_RENDERER_HANDLE_DEF(TextureHandle);
+	LOCO_RENDERER_HANDLE_DEF(VertexDeclHandle);
+	LOCO_RENDERER_HANDLE_DEF(VertexBufferHandle);
+	LOCO_RENDERER_HANDLE_DEF(IndexBufferHandle);
+	LOCO_RENDERER_HANDLE_DEF(ShaderHandle);
+	LOCO_RENDERER_HANDLE_DEF(ProgramHandle);
+	LOCO_RENDERER_HANDLE_DEF(UniformHandle);
+
 	char shader_extentions[Renderer::Type::Count][16] =
 	{
 		"shader_none",
@@ -17,34 +37,6 @@ namespace loco
 		"shader_gles",
 		"shader_glsl"
 	};
-
-	bool Renderer::TextureHandle::operator==(TextureHandle const& in) const
-	{
-		return idx == in.idx;
-	};
-
-	bool Renderer::VertexBufferHandle::operator==(VertexBufferHandle const& in) const
-	{
-		return idx == in.idx;
-	};
-
-	bool Renderer::IndexBufferHandle::operator==(IndexBufferHandle const& in) const
-	{
-		return idx == in.idx;
-	};
-
-	bool Renderer::ShaderHandle::operator==(ShaderHandle const& in) const
-	{
-		return idx == in.idx;
-	};
-
-	Renderer::TextureHandle Renderer::TextureHandle::invalid = { BGFX_INVALID_HANDLE };
-	Renderer::VertexDeclHandle Renderer::VertexDeclHandle::invalid = { BGFX_INVALID_HANDLE };
-	Renderer::VertexBufferHandle Renderer::VertexBufferHandle::invalid = { BGFX_INVALID_HANDLE };
-	Renderer::IndexBufferHandle Renderer::IndexBufferHandle::invalid = { BGFX_INVALID_HANDLE };
-	Renderer::ShaderHandle Renderer::ShaderHandle::invalid = { BGFX_INVALID_HANDLE };
-	Renderer::ProgramHandle Renderer::ProgramHandle::invalid = { BGFX_INVALID_HANDLE };
-	Renderer::UniformHandle Renderer::UniformHandle::invalid = { BGFX_INVALID_HANDLE };
 
 	bgfx::UniformType::Enum UniformType_convert[Renderer::UniformType::Count] =
 	{
@@ -57,22 +49,13 @@ namespace loco
 		bgfx::UniformType::Uniform1iv
 	};
 
-	typedef std::map<uint32_t, Renderer::ProgramHandle> ProgramMap;
-	ProgramMap _programs;
-
-	//==========================================================================
-	void set_uniform(Renderer::UniformHandle handle, const void* value, unsigned array_size)
-	{
-		bgfx::setUniform(LOCO_TO_BGFX(handle), value, array_size);
-	}
-
 	//==========================================================================
 	void Renderer::init()
 	{
 		log.info(LOCO_LOG_RENDERER, "Initializing");
 		bgfx::init();
 		log.info(LOCO_LOG_RENDERER, "%s", bgfx::getRendererName(bgfx::getRendererType()));
-		strcpy(shader_extention, shader_extentions[type()]);
+		strcpy(_shader_extention, shader_extentions[type()]);
 	}
 
 	//==========================================================================
@@ -115,11 +98,11 @@ namespace loco
 	}
 
 	//==========================================================================
-	Renderer::ProgramHandle Renderer::create_program(ShaderHandle vsh, ShaderHandle fsh)
+	Renderer::ProgramHandle Renderer::create_program(ShaderHandle vsh, ShaderHandle psh)
 	{
 		ProgramHandle handle;
 
-		uint32_t key = vsh.idx + (fsh.idx << 16);
+		uint32_t key = vsh.idx + (psh.idx << 16);
 		auto it = _programs.find(key);
 		if (it != _programs.end())
 		{
@@ -127,7 +110,7 @@ namespace loco
 		}
 		else
 		{
-			handle = BGFX_TO_LOCO(bgfx::createProgram(LOCO_TO_BGFX(vsh), LOCO_TO_BGFX(fsh), false));
+			handle = BGFX_TO_LOCO(bgfx::createProgram(LOCO_TO_BGFX(vsh), LOCO_TO_BGFX(psh), false));
 			_programs[key] = handle;
 		}
 
@@ -178,13 +161,6 @@ namespace loco
 		}
 		bgfx_decl.end();
 
-		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, memory->size);
-		return BGFX_TO_LOCO(bgfx::createVertexBuffer(bgfx_mem, bgfx_decl));
-	}
-
-	//==========================================================================
-	Renderer::VertexBufferHandle Renderer::create_vertex_buffer(const Memory* memory, const bgfx::VertexDecl& bgfx_decl)
-	{
 		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, memory->size);
 		return BGFX_TO_LOCO(bgfx::createVertexBuffer(bgfx_mem, bgfx_decl));
 	}
@@ -250,6 +226,7 @@ namespace loco
 			);
 	}
 
+	//==========================================================================
 	void Renderer::submit(uint8_t view_id, const Mesh& mesh, const Material* material, const void* model_matrix)
 	{
 		const Mesh& m = (mesh == Mesh::invalid) ? ResourceManager::default_mesh : mesh;
