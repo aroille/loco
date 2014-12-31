@@ -12,13 +12,6 @@ bool Renderer::_name::operator==(_name const& in) const \
 { return idx == in.idx; }; \
 Renderer::_name Renderer::_name::invalid = { UINT16_MAX };
 
-struct _name {
-\
-	uint16_t idx; \
-	static _name invalid; \
-	bool operator==(_name const& in) const; \
-};
-
 namespace loco
 {
 	LOCO_RENDERER_HANDLE_DEF(TextureHandle);

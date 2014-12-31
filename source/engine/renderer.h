@@ -26,7 +26,7 @@ namespace loco
 	///		- Submit draw call from resource manager resources (Mesh, Material)
 	/// 
 	/// @remarks
-	///		Memory* provide as parameters to Renderer methods, such as 
+	///		Memory* provide as parameters to every Renderer methods, such as 
 	///		create_texture(Memory*), must be valid for at least 2 frames
 	///
 	/// @remarks
@@ -124,8 +124,7 @@ namespace loco
 			};
 		};
 
-		/// GPU resource handles :
-
+		// GPU resource handles :
 		LOCO_RENDERER_HANDLE(TextureHandle);
 		LOCO_RENDERER_HANDLE(VertexDeclHandle);
 		LOCO_RENDERER_HANDLE(VertexBufferHandle);

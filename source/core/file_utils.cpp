@@ -44,6 +44,7 @@ namespace loco
 		return true;
 	}
 
+	//==========================================================================
 	void extention(char* file_path, char* result)
 	{
 		unsigned size = strlen(file_path);
@@ -57,6 +58,7 @@ namespace loco
 			strcpy(result, "");
 	}
 
+	//==========================================================================
 	unsigned long long file_modification_date(char* file_path)
 	{
 		WIN32_FILE_ATTRIBUTE_DATA file_attribute_data;
@@ -66,6 +68,7 @@ namespace loco
 			return 0;
 	}
 
+	//==========================================================================
 	void files_in_directory(char* folder_path, bool recursive, std::list<FileInfo>* result)
 	{
 		char search_path[LOCO_PATH_LENGTH];

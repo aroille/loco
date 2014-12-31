@@ -1,7 +1,6 @@
 
 #include "resource_type.h"
 #include "loco.h"
-#include "debug.h"
 
 namespace loco
 {
