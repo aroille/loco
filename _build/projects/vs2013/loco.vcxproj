@@ -19,9 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\source\core\core.h" />
     <ClInclude Include="..\..\..\source\core\debug.h" />
     <ClInclude Include="..\..\..\source\core\defines.h" />
     <ClInclude Include="..\..\..\source\core\file_system.h" />
+    <ClInclude Include="..\..\..\source\core\handle.h" />
     <ClInclude Include="..\..\..\source\core\jsonxx\jsonxx.h" />
     <ClInclude Include="..\..\..\source\core\log.h" />
     <ClInclude Include="..\..\..\source\core\math_types.h" />
@@ -42,7 +44,7 @@
     <ClInclude Include="..\..\..\source\engine\resource_type.h" />
     <ClInclude Include="..\..\..\source\engine\world.h" />
     <ClInclude Include="..\..\..\source\entity\entity.h" />
-    <ClInclude Include="..\..\..\source\entity\entity_manager.h" />
+    <ClInclude Include="..\..\..\source\entity\mesh_renderer_component.h" />
     <ClInclude Include="..\..\..\source\entity\transform_component.h" />
     <ClInclude Include="..\..\..\source\entry\cmd.h" />
     <ClInclude Include="..\..\..\source\entry\dbg.h" />
@@ -53,6 +55,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\source\core\debug.cpp" />
     <ClCompile Include="..\..\..\source\core\file_system.cpp" />
+    <ClCompile Include="..\..\..\source\core\handle.cpp" />
     <ClCompile Include="..\..\..\source\core\jsonxx\jsonxx.cc" />
     <ClCompile Include="..\..\..\source\core\log.cpp" />
     <ClCompile Include="..\..\..\source\core\math_static.cpp" />
@@ -64,7 +67,7 @@
     <ClCompile Include="..\..\..\source\engine\resource_material_json.cpp" />
     <ClCompile Include="..\..\..\source\engine\resource_type.cpp" />
     <ClCompile Include="..\..\..\source\engine\resource_mesh_bgfx.cpp" />
-    <ClCompile Include="..\..\..\source\entity\entity_manager.cpp" />
+    <ClCompile Include="..\..\..\source\entity\mesh_renderer_component.cpp" />
     <ClCompile Include="..\..\..\source\entity\transform_component.cpp" />
     <ClCompile Include="..\..\..\source\entry\cmd.cpp" />
     <ClCompile Include="..\..\..\source\entry\dbg.cpp" />

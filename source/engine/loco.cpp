@@ -12,7 +12,7 @@ namespace loco
 	ResourceManager resources;
 	Log log;
 
-	EntityManager _entity_manager;
+	HandleManagerI24G8 _entity_manager;
 
 	void init(const char* resources_path, const char* default_resources_path)
 	{

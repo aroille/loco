@@ -18,12 +18,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\source\entity\entity.h">
-      <Filter>entity</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\source\entity\entity_manager.h">
-      <Filter>entity</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\source\core\debug.h">
       <Filter>core</Filter>
     </ClInclude>
@@ -108,11 +102,20 @@
     <ClInclude Include="..\..\..\source\core\log.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\source\entity\mesh_renderer_component.h">
+      <Filter>entity</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\handle.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\core.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\entity\entity.h">
+      <Filter>entity</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\source\entity\entity_manager.cpp">
-      <Filter>entity</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\source\core\debug.cpp">
       <Filter>core</Filter>
     </ClCompile>
@@ -186,6 +189,12 @@
       <Filter>engine</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\core\log.cpp">
+      <Filter>core</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\entity\mesh_renderer_component.cpp">
+      <Filter>entity</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\core\handle.cpp">
       <Filter>core</Filter>
     </ClCompile>
   </ItemGroup>
