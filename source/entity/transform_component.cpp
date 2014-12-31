@@ -3,7 +3,7 @@
 
 namespace loco
 {
-	const TransformComponent TransformComponent::invalid = { 0xffffffff };
+	const TransformSystem::Component TransformSystem::Component::invalid = { 0xffffffff };
 
 
 	TransformSystem::TransformSystem()
@@ -17,21 +17,21 @@ namespace loco
 		free(_data.buffer);
 	}
 
-	TransformComponent TransformSystem::create(Entity e)
+	TransformSystem::Component TransformSystem::create(Entity e)
 	{
 		LOCO_ASSERTF(!is_valid(lookup(e)), "An entity can't have several transform components in the same world");
 
 		if ((_data.size + 1) >= _data.capacity)
 			allocate(_data.capacity * 2);
 
-		TransformComponent c = make_component(_data.size);
+		Component c = make_component(_data.size);
 		_data.entity[c.i] = e;
 		_data.local[c.i] = Matrix4x4::identity;
 		_data.world[c.i] = Matrix4x4::identity;
-		_data.parent[c.i] = TransformComponent::invalid;
-		_data.first_child[c.i] = TransformComponent::invalid;
-		_data.next_sibling[c.i] = TransformComponent::invalid;
-		_data.prev_sibling[c.i] = TransformComponent::invalid;
+		_data.parent[c.i] = Component::invalid;
+		_data.first_child[c.i] = Component::invalid;
+		_data.next_sibling[c.i] = Component::invalid;
+		_data.prev_sibling[c.i] = Component::invalid;
 
 		_map[e.id] = c.i;
 		++_data.size;
@@ -41,7 +41,7 @@ namespace loco
 
 	void TransformSystem::destroy(Entity e)
 	{
-		TransformComponent c = lookup(e);
+		Component c = lookup(e);
 		LOCO_ASSERTF(is_valid(c), "TransformSystem", "TransformComponent not found for entity (id:%s)", e.id);
 
 		_map.erase(_data.entity[c.i].id);
@@ -49,7 +49,7 @@ namespace loco
 		// unlink c and children of c
 		unlink(c);
 
-		TransformComponent child = _data.first_child[c.i];
+		Component child = _data.first_child[c.i];
 		while (is_valid(child))
 		{
 			unlink(child);
@@ -66,7 +66,7 @@ namespace loco
 		--_data.size;
 	}
 
-	void TransformSystem::link(TransformComponent child, TransformComponent parent)
+	void TransformSystem::link(Component child, Component parent)
 	{
 		LOCO_ASSERTF(is_valid(child), "Child transform componennt invalid");
 		LOCO_ASSERTF(is_valid(parent), "Parent transform component invalid");
@@ -77,7 +77,7 @@ namespace loco
 
 		// if parent has already childrens
 		// add the new children at the beginning of the linked list
-		TransformComponent parent_first_child = _data.first_child[parent.i];
+		Component parent_first_child = _data.first_child[parent.i];
 		if (is_valid(parent_first_child))
 		{
 			_data.prev_sibling[parent_first_child.i] = child;
@@ -91,11 +91,11 @@ namespace loco
 	}
 
 
-	void TransformSystem::unlink(TransformComponent child)
+	void TransformSystem::unlink(Component child)
 	{
 		LOCO_ASSERTF(is_valid(child), "Child transform component invalid");
 
-		TransformComponent parent = _data.parent[child.i];
+		Component parent = _data.parent[child.i];
 		if (!is_valid(parent))
 			return;
 
@@ -105,7 +105,7 @@ namespace loco
 			if (is_valid(_data.next_sibling[child.i]))
 				_data.first_child[parent.i] = _data.next_sibling[child.i];
 			else
-				_data.first_child[parent.i] = TransformComponent::invalid;
+				_data.first_child[parent.i] = Component::invalid;
 		}
 
 		// update siblings 
@@ -121,51 +121,51 @@ namespace loco
 		transform(Matrix4x4::identity, child);
 	}
 
-	TransformComponent TransformSystem::lookup(Entity e)
+	TransformSystem::Component TransformSystem::lookup(Entity e)
 	{
 		auto it = _map.find(e.id);
-		return (it == _map.end()) ? TransformComponent::invalid : make_component(it->second);
+		return (it == _map.end()) ? Component::invalid : make_component(it->second);
 	}
 
-	bool TransformSystem::is_valid(TransformComponent c)
+	bool TransformSystem::is_valid(Component c)
 	{
-		return (c.i != TransformComponent::invalid.i);
+		return (c.i != Component::invalid.i);
 	}
 
-	Matrix4x4 TransformSystem::local_matrix(TransformComponent c)
+	Matrix4x4 TransformSystem::local_matrix(Component c)
 	{
 		return _data.local[c.i];
 	}
 
-	void TransformSystem::set_local_matrix(TransformComponent c, const Matrix4x4& m)
+	void TransformSystem::set_local_matrix(Component c, const Matrix4x4& m)
 	{
 		_data.local[c.i] = m;
-		TransformComponent parent = _data.parent[c.i];
+		Component parent = _data.parent[c.i];
 		Matrix4x4 parent_tm = is_valid(parent) ? _data.world[parent.i] : Matrix4x4::identity;
 		transform(parent_tm, c);
 	}
 
-	Matrix4x4 TransformSystem::world_matrix(TransformComponent c)
+	Matrix4x4 TransformSystem::world_matrix(Component c)
 	{
 		return _data.world[c.i];
 	}
 
-	TransformComponent TransformSystem::parent(TransformComponent c)
+	TransformSystem::Component TransformSystem::parent(Component c)
 	{
 		return _data.parent[c.i];
 	}
 
-	TransformComponent TransformSystem::first_child(TransformComponent c)
+	TransformSystem::Component TransformSystem::first_child(Component c)
 	{
 		return _data.first_child[c.i];
 	}
 
-	TransformComponent TransformSystem::next_sibling(TransformComponent c)
+	TransformSystem::Component TransformSystem::next_sibling(Component c)
 	{
 		return _data.next_sibling[c.i];
 	}
 
-	TransformComponent TransformSystem::prev_sibling(TransformComponent c)
+	TransformSystem::Component TransformSystem::prev_sibling(Component c)
 	{
 		return _data.prev_sibling[c.i];
 	}
@@ -176,7 +176,7 @@ namespace loco
 
 		ComponentData new_data;
 		unsigned alignement = 16; // Matrix4x4 need to be aligned on 16 octets (Matrix4x4* are first members of the struct)
-		const unsigned bytes = sz * (sizeof(Entity)+2 * sizeof(Matrix4x4)+4 * sizeof(TransformComponent) + alignement);
+		const unsigned bytes = sz * (sizeof(Entity)+2 * sizeof(Matrix4x4)+4 * sizeof(Component) + alignement);
 		new_data.buffer = (char*)malloc(bytes);
 		new_data.size= _data.size;
 		new_data.capacity = sz;
@@ -187,7 +187,7 @@ namespace loco
 		new_data.world = new_data.local + sz;
 		new_data.entity = (Entity*)(new_data.world + sz);
 
-		new_data.parent = (TransformComponent *)(new_data.world + sz);
+		new_data.parent = (Component *)(new_data.world + sz);
 		new_data.first_child = new_data.parent + sz;
 		new_data.next_sibling = new_data.first_child + sz;
 		new_data.prev_sibling = new_data.next_sibling + sz;
@@ -195,26 +195,26 @@ namespace loco
 		memcpy(new_data.entity, _data.entity, _data.size * sizeof(Entity));
 		memcpy(new_data.local, _data.local, _data.size * sizeof(Matrix4x4));
 		memcpy(new_data.world, _data.world, _data.size * sizeof(Matrix4x4));
-		memcpy(new_data.parent, _data.parent, _data.size * sizeof(TransformComponent));
-		memcpy(new_data.first_child, _data.first_child, _data.size * sizeof(TransformComponent));
-		memcpy(new_data.next_sibling, _data.next_sibling, _data.size * sizeof(TransformComponent));
-		memcpy(new_data.prev_sibling, _data.prev_sibling, _data.size * sizeof(TransformComponent));
+		memcpy(new_data.parent, _data.parent, _data.size * sizeof(Component));
+		memcpy(new_data.first_child, _data.first_child, _data.size * sizeof(Component));
+		memcpy(new_data.next_sibling, _data.next_sibling, _data.size * sizeof(Component));
+		memcpy(new_data.prev_sibling, _data.prev_sibling, _data.size * sizeof(Component));
 
 		free(_data.buffer);
 		_data = new_data;
 	}
 
-	TransformComponent TransformSystem::make_component(unsigned i)
+	TransformSystem::Component TransformSystem::make_component(unsigned i)
 	{
-		TransformComponent c = { i };
+		Component c = { i };
 		return c;
 	}
 
-	void TransformSystem::transform(const Matrix4x4& parent, TransformComponent c)
+	void TransformSystem::transform(const Matrix4x4& parent, Component c)
 	{
 		_data.world[c.i] = parent * _data.local[c.i];
 
-		TransformComponent child = _data.first_child[c.i];
+		Component child = _data.first_child[c.i];
 		while (is_valid(child))
 		{
 			transform(_data.world[c.i], child);
@@ -224,7 +224,7 @@ namespace loco
 
 	void TransformSystem::move_instance(unsigned from, unsigned to)
 	{
-		TransformComponent new_component = make_component(to);
+		Component new_component = make_component(to);
 		
 		_data.entity[to] = _data.entity[from];
 		_data.local[to] = _data.local[from];
@@ -241,7 +241,7 @@ namespace loco
 		}
 
 		// update the "parent" value of the children
-		TransformComponent child = _data.first_child[to];
+		Component child = _data.first_child[to];
 		while (is_valid(child))
 		{
 			_data.parent[child.i] = new_component;

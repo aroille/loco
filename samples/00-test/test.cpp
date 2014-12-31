@@ -1,12 +1,12 @@
 
 #include "loco.h"
-#include "math_types.h"
-#include "defines.h"
 #include "entry.h"
-#include "resource_manager.h"
+
 #include <bgfxplatform.h>
 #include "bgfx_temp.h"
 #include <bx/timer.h>
+
+#include <stdint.h>
 
 loco::World main_world;
 
@@ -19,6 +19,13 @@ int _main_(int argc, char** argv)
 	uint32_t height = 720;
 	
 	char* resource_root_path = argc > 1 ? argv[1] : "resources/";
+
+	loco::HandleI24G8 h;
+	loco::HandleManagerI24G8 handle_i24_g24_mgr;
+	loco::HandleManagerI8G8 handle_i8_g8_mgr;
+	h = handle_i24_g24_mgr.create();
+	h = handle_i24_g24_mgr.create();
+	h.generation();
 
 	// init loco
 	loco::init(resource_root_path, "loco/");	
@@ -33,11 +40,11 @@ int _main_(int argc, char** argv)
 	loco::Entity e_5 = loco::create_entity();
 
 	// Add transform component to each entities
-	loco::TransformComponent tf_1 = main_world.transforms.create(e_1);
-	loco::TransformComponent tf_2 = main_world.transforms.create(e_2);
-	loco::TransformComponent tf_3 = main_world.transforms.create(e_3);
-	loco::TransformComponent tf_4 = main_world.transforms.create(e_4);
-	loco::TransformComponent tf_5 = main_world.transforms.create(e_5);
+	loco::TransformSystem::Component tf_1 = main_world.transforms.create(e_1);
+	loco::TransformSystem::Component tf_2 = main_world.transforms.create(e_2);
+	loco::TransformSystem::Component tf_3 = main_world.transforms.create(e_3);
+	loco::TransformSystem::Component tf_4 = main_world.transforms.create(e_4);
+	loco::TransformSystem::Component tf_5 = main_world.transforms.create(e_5);
 
 	// test load mesh
 	loco::Mesh mesh = loco::resources.get<loco::Mesh>("sponza/sponza");
