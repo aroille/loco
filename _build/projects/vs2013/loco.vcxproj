@@ -55,7 +55,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\source\core\debug.cpp" />
     <ClCompile Include="..\..\..\source\core\file_system.cpp" />
-    <ClCompile Include="..\..\..\source\core\handle.cpp" />
     <ClCompile Include="..\..\..\source\core\jsonxx\jsonxx.cc" />
     <ClCompile Include="..\..\..\source\core\log.cpp" />
     <ClCompile Include="..\..\..\source\core\math_static.cpp" />

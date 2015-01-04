@@ -3,7 +3,7 @@
 
 #include "entity.h"
 #include "math_types.h"
-
+#include "handle.h"
 #include <unordered_map>
 
 namespace loco
@@ -15,14 +15,7 @@ namespace loco
 	{
 		public:
 
-			/// Transform component (just a handle)
-			struct Component
-			{
-				unsigned i;
-				//---------
-				bool operator==(Component const& in) const { return i == in.i; };
-				static const Component invalid;
-			};
+			typedef HandleI24G8 Component;
 
 			TransformSystem();
 			~TransformSystem();
@@ -33,11 +26,11 @@ namespace loco
 			/// Get transform component attached to entity e
 			Component lookup(Entity e);
 
+			/// Check if component c is valid
+			bool is_valid(Component c);
+
 			/// Free the transform component attached to entity e
 			void destroy(Entity e);
-
-			/// Check if component c is different from TransformComponent::invalid
-			bool is_valid(Component c);
 
 			/// Create child/parent relationship between two transform component
 			void link(Component child, Component parent);
@@ -68,38 +61,60 @@ namespace loco
 
 		private:
 
+			struct DataIndex
+			{
+				unsigned i;
+				//---------
+				bool operator==(DataIndex const& in) const { return i == in.i; };
+				static const DataIndex invalid;
+			};
+
 			struct ComponentData
 			{
-				unsigned size;				///< Number of used instance
-				unsigned capacity;			///< Number of allocated instance in arrays
-				char* buffer;				///< Buffer with instance data
+				unsigned size;					///< Number of used instance
+				unsigned capacity;				///< Number of allocated instance in arrays
+				char* buffer;					///< Buffer with instance data
+					
+				Matrix4x4* local;				///< Local transform relative to parent
+				Matrix4x4* world;				///< World transform
+				Entity* entity;					///< The entity owning this instance
+				Component* component;			///< The component owning this instance data
+				DataIndex* parent;				///< Parent instance of this instance
+				DataIndex* first_child;			///< First child of this instance
+				DataIndex* next_sibling;		///< The next sibling of this instance
+				DataIndex* prev_sibling;		///< The prev sibling of this instance
 
-				Matrix4x4* local;			///< Local transform relative to parent
-				Matrix4x4* world;			///< World transform
-				Entity* entity;				///< The entity owning this instance
-				Component* parent;			///< Parent instance of this instance
-				Component* first_child;		///< First child of this instance
-				Component* next_sibling;		///< The next sibling of this instance
-				Component* prev_sibling;		///< The next sibling of this instance
+				DataIndex* lut;					///< Look at table : Component / ComponentData index
 			};
 			ComponentData _data;
 
-			/// Map an Entity (key) with a TransformComponent (value)
-			std::unordered_map<unsigned, unsigned> _map;
+			/// Map an Entity (key) with a Component (value)
+			std::unordered_map<unsigned, Component> _map;
+
+			/// Detach child from its parent 
+			void unlink(DataIndex child);
+
+			/// Check if component c is valid
+			bool is_valid(DataIndex c);
 
 			/// Increase the capicity of the data buffer to an component count of sz
 			void allocate(unsigned sz);
 
 			/// Return an component from an index
-			Component make_component(unsigned i);
+			inline DataIndex data_index(Component c) 
+			{ 
+				return _data.lut[c.index()]; 
+			};
 
-			/// Update the world matrix of component c and of its children
-			void transform(const Matrix4x4& parent, Component c);
+			/// Update the world matrix of component at index i and of its children
+			void transform(const Matrix4x4& parent, DataIndex i);
 
 			/// Move a component at index 'from' to a new location at index 'to'
 			/// This function will also update all transform component with reference to this component
 			/// The memory at index 'to' shoudn't be used by another component before the move;
 			void move_instance(unsigned from, unsigned to);
+
+			HandleManagerI24G8	_handle_mgr;
 	};
 }
 

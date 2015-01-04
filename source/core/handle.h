@@ -1,6 +1,7 @@
 #ifndef HANDLE_H_HEADER_GUARD
 #define HANDLE_H_HEADER_GUARD
 
+#include "debug.h"
 #include <stdint.h>
 #include <deque>
 #include <vector>
@@ -78,7 +79,7 @@ namespace loco
 	template <typename T, typename U, typename V, size_t MIN_FREE_INDICES>
 	bool GenericHandleManager<T, U, V, MIN_FREE_INDICES>::is_alive(T handle) const
 	{
-		return _generation[handle.index()] == handle.generation();
+		return (_generation.size() > handle.index()) && (_generation[handle.index()] == handle.generation());
 	};
 
 	//==========================================================================

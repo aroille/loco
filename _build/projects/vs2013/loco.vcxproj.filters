@@ -194,9 +194,6 @@
     <ClCompile Include="..\..\..\source\entity\mesh_renderer_component.cpp">
       <Filter>entity</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\core\handle.cpp">
-      <Filter>core</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\source\entry\entry_ios.mm">
