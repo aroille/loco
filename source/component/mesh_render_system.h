@@ -1,5 +1,5 @@
-#ifndef MESH_RENDER_COMPONENT_H_HEADER_GUARD
-#define MESH_RENDER_COMPONENT_H_HEADER_GUARD
+#ifndef MESH_RENDER_SYSTEM_H_HEADER_GUARD
+#define MESH_RENDER_SYSTEM_H_HEADER_GUARD
 
 #include "entity.h"
 #include "math_types.h"
@@ -55,4 +55,4 @@ namespace loco
 	};
 }
 
-#endif // MESH_RENDER_COMPONENT_H_HEADER_GUARD
+#endif // MESH_RENDER_SYSTEM_H_HEADER_GUARD

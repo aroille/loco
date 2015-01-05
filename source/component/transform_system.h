@@ -1,5 +1,5 @@
-#ifndef TRANSFORM_COMPONENT_H_HEADER_GUARD
-#define TRANSFORM_COMPONENT_H_HEADER_GUARD
+#ifndef TRANSFORM_SYSTEM_H_HEADER_GUARD
+#define TRANSFORM_SYSTEM_H_HEADER_GUARD
 
 #include "entity.h"
 #include "math_types.h"
@@ -120,5 +120,5 @@ namespace loco
 	};
 }
 
-#endif //TRANSFORM_COMPONENT_H_HEADER_GUARD
+#endif //TRANSFORM_SYSTEM_H_HEADER_GUARD
 

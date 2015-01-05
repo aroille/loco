@@ -48,6 +48,7 @@ int _main_(int argc, char** argv)
 
 	// test load mesh
 	loco::Mesh mesh = loco::resources.get<loco::Mesh>("sponza/sponza");
+	//loco::Mesh mesh = loco::resources.get<loco::Mesh>("loco/mesh/bunny");
 
 	// test load texture
 	loco::ResourceName res_name = loco::resources.get_name("loco/texture/default");
@@ -59,7 +60,7 @@ int _main_(int argc, char** argv)
 	loco::Shader pixel_shader = loco::resources.get<loco::Shader>("loco/shader/ps_default");
 
 	// test load material
-	loco::MaterialPtr simple_mat = loco::resources.get<loco::MaterialPtr>("sponza/sponza");
+	loco::Material simple_mat = loco::resources.get<loco::Material>("sponza/sponza");
 
 	/*
 	loco::MeshComponent mesh_cp = main_world.mesh_components->create(e_1);
@@ -81,11 +82,12 @@ int _main_(int argc, char** argv)
 	main_world.transforms.set_local_matrix(tf_5, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 5, 0, 0, 1 } } });
 
 	// destroy a parent/child relation
+	main_world.transforms.destroy(e_2);
 	main_world.transforms.unlink(tf_3);
 
 	// get the world transform matrix 
 	Matrix4x4 tf_world_1 = main_world.transforms.world_matrix(tf_1);
-	Matrix4x4 tf_world_2 = main_world.transforms.world_matrix(tf_2);
+	//Matrix4x4 tf_world_2 = main_world.transforms.world_matrix(tf_2);
 	Matrix4x4 tf_world_3 = main_world.transforms.world_matrix(tf_3);
 	Matrix4x4 tf_world_4 = main_world.transforms.world_matrix(tf_4);
 	Matrix4x4 tf_world_5 = main_world.transforms.world_matrix(tf_5);
@@ -128,7 +130,8 @@ int _main_(int argc, char** argv)
 		float time = (float)((now - timeOffset) / freq);
 
 		loco::resources.hot_reload<loco::Shader>();
-		loco::resources.hot_reload<loco::MaterialPtr>();
+		loco::resources.hot_reload<loco::Material>();
+		loco::resources.hot_reload<loco::Mesh>();
 
 		float view[16];
 		float proj[16];

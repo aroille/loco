@@ -69,8 +69,10 @@ namespace loco
 			move_instance(_data.size - 1, i.i);
 			_map[_data.entity[i.i].id] = _data.component[i.i];
 		}
-
 		--_data.size;
+
+		// destroy component handle
+		_handle_mgr.destroy(c);
 	}
 
 	TransformSystem::Component TransformSystem::lookup(Entity e)
