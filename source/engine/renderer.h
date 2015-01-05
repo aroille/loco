@@ -17,7 +17,7 @@ namespace loco
 {
 	struct Memory;
 	class MaterialData;
-	struct Mesh;
+	class Mesh;
 
 	/// LOCO Renderer 
 	///

@@ -11,34 +11,33 @@
 namespace loco
 {
 	/// Texture ==========================================
-
 	typedef Renderer::TextureHandle Texture;
 
 	/// Shader ===========================================
-
 	typedef Renderer::ShaderHandle Shader;
 
 	/// Mesh =============================================
-
 	struct SubMesh
 	{
 		Renderer::VertexBufferHandle vertex_buffer;
 		Renderer::IndexBufferHandle index_buffer;
-
-		bool operator==(SubMesh const& in) const;
 	};
 
-	struct Mesh
+	struct MeshData
 	{
 		std::vector<SubMesh> submeshes;
+	};
+
+	class Mesh : public std::shared_ptr<MeshData>
+	{
+	public:
+		Mesh(MeshData* mesh = nullptr);
 
 		static Mesh invalid;
-		bool operator==(Mesh const& in) const;
+		Mesh duplicate() const;
 	};
 
 	/// Material =========================================
-
-	//typedef std::shared_ptr<Material> MaterialPtr;
 	class Material : public std::shared_ptr<MaterialData>
 	{
 	public:

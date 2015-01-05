@@ -197,21 +197,20 @@ namespace bgfx_helper
 		GroupArray m_groups;
 	};
 
-	loco::Mesh load_mesh(const loco::Memory* mem)
+	bool load_mesh(const loco::Memory* mem, loco::MeshData* mesh)
 	{
 		bx::MemoryReader reader(mem->data, mem->size);
 		bgfx_helper::Mesh bgfx_mesh;
 		bgfx_mesh.load(&reader);
 
-		loco::Mesh mesh;
 		for (unsigned i = 0; i < bgfx_mesh.m_groups.size(); i++)
 		{
 			loco::SubMesh submesh;
 			submesh.vertex_buffer = { bgfx_mesh.m_groups[i].m_vbh.idx };
 			submesh.index_buffer = { bgfx_mesh.m_groups[i].m_ibh.idx };
-			mesh.submeshes.push_back(submesh);
+			mesh->submeshes.push_back(submesh);
 		}
-		return mesh;
+		return true;
 	}
 
 } // bgfx_helper

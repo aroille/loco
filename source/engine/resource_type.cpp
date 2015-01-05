@@ -4,23 +4,34 @@
 
 namespace loco
 {
-	Mesh Mesh::invalid = { { { Renderer::VertexBufferHandle::invalid, Renderer::IndexBufferHandle::invalid } } };
-	bool Mesh::operator == (Mesh const& in) const
+
+
+	Mesh Mesh::invalid = Mesh(nullptr);
+
+	Mesh::Mesh(MeshData* mat)
+		: std::shared_ptr<MeshData>(mat)
 	{
-		return submeshes == in.submeshes;
+
 	}
 
-	bool SubMesh::operator == (SubMesh const& in) const
+	Mesh Mesh::duplicate() const
 	{
-		return (vertex_buffer == in.vertex_buffer) && (index_buffer == in.index_buffer);
+		return Mesh(new MeshData(*(this->get())));
 	}
-	
+
 	Material Material::invalid = Material(nullptr);
+
+	Material::Material(MaterialData* mat)
+		: std::shared_ptr<MaterialData>(mat)
+	{
+
+	}
 
 	Material Material::duplicate() const
 	{
 		return Material(new MaterialData(*(this->get())));
 	}
+
 
 	unsigned UniformType_size[Renderer::UniformType::Enum::Count] =
 	{
@@ -32,12 +43,6 @@ namespace loco
 		16,//Matrix4x4,
 		0, //Texture,
 	};
-
-	Material::Material(MaterialData* mat)
-		: std::shared_ptr<MaterialData>(mat)
-	{
-
-	}
 
 	void MaterialData::set_shader(Renderer::ShaderHandle vertex_shader, Renderer::ShaderHandle pixel_shader)
 	{

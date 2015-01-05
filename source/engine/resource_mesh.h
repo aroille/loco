@@ -22,21 +22,44 @@ namespace loco
 
 	template<> Mesh ResourceManager::create(const Memory* mem) const
 	{
-		return bgfx_helper::load_mesh(mem);
+		MeshData* mesh = new MeshData();
+		bool load_success = bgfx_helper::load_mesh(mem, mesh);
+
+		if (!load_success)
+		{
+			LOCO_ASSERTF(ResourceManager::default_resource_init, LOCO_LOG_RESOURCE_MANAGER, "The default mesh is not available.");
+			log.error(LOCO_LOG_RESOURCE_MANAGER, "Use of default mesh");
+			delete mesh;
+			return ResourceManager::default_mesh.duplicate();
+		}
+		else
+		{
+			return Mesh(mesh);
+		}
+		
 	}
 
 	template<> Mesh ResourceManager::replace(Mesh& current, const Memory* mem) const
 	{
+		if (current.get() == nullptr)
+			current.reset(new MeshData());
+
+
+		bool load_success = bgfx_helper::load_mesh(mem, current.get());
+
+		if (!load_success)
+		{
+			LOCO_ASSERTF(ResourceManager::default_resource_init, LOCO_LOG_RESOURCE_MANAGER, "The default mesh is not available.");
+			log.error(LOCO_LOG_RESOURCE_MANAGER, "Use of default mesh");
+			*(current.get()) = *(ResourceManager::default_mesh.get());
+		}
+
 		return current;
 	}
 
 	template<> void ResourceManager::destroy(const Mesh& mesh) const
 	{
-		for (unsigned i = 0; i < mesh.submeshes.size(); i++)
-		{
-			renderer.destroy_index_buffer(mesh.submeshes[i].index_buffer);
-			renderer.destroy_vertex_buffer(mesh.submeshes[i].vertex_buffer);
-		}
+
 	}
 }
 

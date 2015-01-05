@@ -224,7 +224,7 @@ namespace loco
 	{
 		const Mesh& m = (mesh == Mesh::invalid) ? ResourceManager::default_mesh : mesh;
 
-		for (unsigned i = 0; i < m.submeshes.size(); i++)
+		for (unsigned i = 0; i < m->submeshes.size(); i++)
 		{
 			// set material
 			bind_material(material);
@@ -233,8 +233,8 @@ namespace loco
 			bgfx::setTransform(model_matrix);
 
 			// set vertex and index buffer
-			bgfx::setVertexBuffer(bgfx::VertexBufferHandle LOCO_TO_BGFX(m.submeshes[i].vertex_buffer));
-			bgfx::setIndexBuffer(bgfx::IndexBufferHandle LOCO_TO_BGFX(m.submeshes[i].index_buffer));
+			bgfx::setVertexBuffer(bgfx::VertexBufferHandle LOCO_TO_BGFX(m->submeshes[i].vertex_buffer));
+			bgfx::setIndexBuffer(bgfx::IndexBufferHandle LOCO_TO_BGFX(m->submeshes[i].index_buffer));
 			
 			// submit draw call
 			bgfx::submit(view_id);
