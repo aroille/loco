@@ -21,6 +21,7 @@
 #define LOCO_LOG						"Loco"
 #define LOCO_LOG_RENDERER				"Renderer"
 #define LOCO_LOG_RESOURCE_MANAGER		"ResourceManager"
+#define LOCO_LOG_TRANSFORM_SYSTEM		"TransformSystem"
 
 #endif // DEFINES_H_HEADER_GUARD
 

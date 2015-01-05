@@ -1,7 +1,7 @@
 #ifndef WORLD_H_HEADER_GUARD
 #define WORLD_H_HEADER_GUARD
 
-#include "transform_component.h"
+#include "transform_system.h"
 
 namespace loco
 {

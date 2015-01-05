@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\source\component\entity.h" />
+    <ClInclude Include="..\..\..\source\component\mesh_render_system.h" />
+    <ClInclude Include="..\..\..\source\component\transform_system.h" />
     <ClInclude Include="..\..\..\source\core\core.h" />
     <ClInclude Include="..\..\..\source\core\debug.h" />
     <ClInclude Include="..\..\..\source\core\defines.h" />
@@ -43,9 +46,6 @@
     <ClInclude Include="..\..\..\source\engine\resource_manager.h" />
     <ClInclude Include="..\..\..\source\engine\resource_type.h" />
     <ClInclude Include="..\..\..\source\engine\world.h" />
-    <ClInclude Include="..\..\..\source\entity\entity.h" />
-    <ClInclude Include="..\..\..\source\entity\mesh_renderer_component.h" />
-    <ClInclude Include="..\..\..\source\entity\transform_component.h" />
     <ClInclude Include="..\..\..\source\entry\cmd.h" />
     <ClInclude Include="..\..\..\source\entry\dbg.h" />
     <ClInclude Include="..\..\..\source\entry\entry.h" />
@@ -53,6 +53,8 @@
     <ClInclude Include="..\..\..\source\entry\input.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\source\component\mesh_render_system.cpp" />
+    <ClCompile Include="..\..\..\source\component\transform_system.cpp" />
     <ClCompile Include="..\..\..\source\core\debug.cpp" />
     <ClCompile Include="..\..\..\source\core\file_system.cpp" />
     <ClCompile Include="..\..\..\source\core\jsonxx\jsonxx.cc" />
@@ -66,8 +68,6 @@
     <ClCompile Include="..\..\..\source\engine\resource_material_json.cpp" />
     <ClCompile Include="..\..\..\source\engine\resource_type.cpp" />
     <ClCompile Include="..\..\..\source\engine\resource_mesh_bgfx.cpp" />
-    <ClCompile Include="..\..\..\source\entity\mesh_renderer_component.cpp" />
-    <ClCompile Include="..\..\..\source\entity\transform_component.cpp" />
     <ClCompile Include="..\..\..\source\entry\cmd.cpp" />
     <ClCompile Include="..\..\..\source\entry\dbg.cpp" />
     <ClCompile Include="..\..\..\source\entry\entry.cpp" />
@@ -163,7 +163,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\entity;..\..\..\3rdparty\bx\include;..\..\..\3rdparty\bgfx\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\component;..\..\..\3rdparty\bx\include;..\..\..\3rdparty\bgfx\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;_CRT_SECURE_NO_WARNINGS;_MBCS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -203,7 +203,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\entity;..\..\..\3rdparty\bx\include;..\..\..\3rdparty\bgfx\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\component;..\..\..\3rdparty\bx\include;..\..\..\3rdparty\bgfx\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__STDC_LIMIT_MACROS;__STDC_FORMAT_MACROS;__STDC_CONSTANT_MACROS;WIN32;_WIN32;_HAS_EXCEPTIONS=0;_HAS_ITERATOR_DEBUGGING=0;_SCL_SECURE=0;_SECURE_SCL=0;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>

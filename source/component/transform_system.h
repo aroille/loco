@@ -88,6 +88,9 @@ namespace loco
 			};
 			ComponentData _data;
 
+			/// Handle manager (Component = handle)
+			HandleManagerI24G8	_handle_mgr;
+
 			/// Map an Entity (key) with a Component (value)
 			std::unordered_map<unsigned, Component> _map;
 
@@ -113,8 +116,7 @@ namespace loco
 			/// This function will also update all transform component with reference to this component
 			/// The memory at index 'to' shoudn't be used by another component before the move;
 			void move_instance(unsigned from, unsigned to);
-
-			HandleManagerI24G8	_handle_mgr;
+			
 	};
 }
 

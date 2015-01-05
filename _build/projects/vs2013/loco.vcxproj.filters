@@ -7,14 +7,14 @@
     <Filter Include="core">
       <UniqueIdentifier>{9d001b70-0863-437d-80f9-a9b461cfc739}</UniqueIdentifier>
     </Filter>
-    <Filter Include="entity">
-      <UniqueIdentifier>{9fb032d8-4ed2-4228-8b9d-1bf9ad05f464}</UniqueIdentifier>
-    </Filter>
     <Filter Include="entry">
       <UniqueIdentifier>{9081b878-d096-4c94-8f0c-975424b63301}</UniqueIdentifier>
     </Filter>
     <Filter Include="core\jsonxx">
       <UniqueIdentifier>{415fdf80-730a-40c4-8f44-47799e77afc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="component">
+      <UniqueIdentifier>{9fb032d8-4ed2-4228-8b9d-1bf9ad05f464}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -29,9 +29,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\source\core\matrix4x4.h">
       <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\source\entity\transform_component.h">
-      <Filter>entity</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\engine\renderer.h">
       <Filter>engine</Filter>
@@ -102,17 +99,20 @@
     <ClInclude Include="..\..\..\source\core\log.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\source\entity\mesh_renderer_component.h">
-      <Filter>entity</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\source\core\handle.h">
       <Filter>core</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\core\core.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\source\entity\entity.h">
-      <Filter>entity</Filter>
+    <ClInclude Include="..\..\..\source\component\transform_system.h">
+      <Filter>component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\component\entity.h">
+      <Filter>component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\component\mesh_render_system.h">
+      <Filter>component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -121,9 +121,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\core\math_static.cpp">
       <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\entity\transform_component.cpp">
-      <Filter>entity</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\engine\renderer.cpp">
       <Filter>engine</Filter>
@@ -191,8 +188,11 @@
     <ClCompile Include="..\..\..\source\core\log.cpp">
       <Filter>core</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\source\entity\mesh_renderer_component.cpp">
-      <Filter>entity</Filter>
+    <ClCompile Include="..\..\..\source\component\transform_system.cpp">
+      <Filter>component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\component\mesh_render_system.cpp">
+      <Filter>component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
