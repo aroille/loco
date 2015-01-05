@@ -24,7 +24,7 @@ namespace loco
 	Shader		ResourceManager::default_pixel_shader = Shader::invalid;
 	Texture		ResourceManager::default_texture = Texture::invalid;
 	Mesh		ResourceManager::default_mesh = Mesh::invalid;
-	MaterialPtr	ResourceManager::default_material = MaterialPtr::invalid ;
+	Material	ResourceManager::default_material = Material::invalid ;
 
 	//==========================================================================
 	bool compare_resource_type(const ResourceManager::ResourceInfo& first, const ResourceManager::ResourceInfo& second)
@@ -70,8 +70,8 @@ namespace loco
 		// init default material
 		strcpy(resource_path, loco::default_resource_relativ_path);
 		strcat(resource_path, "material/default");
-		default_material = loco::resources.get<MaterialPtr>(resource_path);
-		LOCO_ASSERTF(!(default_material == MaterialPtr::invalid), LOCO_LOG_RENDERER, "Can't load default material %s", resource_path);
+		default_material = loco::resources.get<Material>(resource_path);
+		LOCO_ASSERTF(!(default_material == Material::invalid), LOCO_LOG_RENDERER, "Can't load default material %s", resource_path);
 
 		default_resource_init = true;
 	}
@@ -267,7 +267,7 @@ namespace loco
 			break;
 
 		case ResourceType::Material:
-			create_resource<MaterialPtr>(id, mem);
+			create_resource<Material>(id, mem);
 			break;
 
 		case ResourceType::Shader:
@@ -293,7 +293,7 @@ namespace loco
 			break;
 
 		case ResourceType::Material:
-			destroy_resource<MaterialPtr>(id);
+			destroy_resource<Material>(id);
 			break;
 
 		case ResourceType::Shader:
@@ -319,7 +319,7 @@ namespace loco
 			break;
 
 		case ResourceType::Material:
-			replace_resource<MaterialPtr>(id, mem);
+			replace_resource<Material>(id, mem);
 			break;
 
 		case ResourceType::Shader:

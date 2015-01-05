@@ -137,14 +137,14 @@ namespace loco
 		static Shader		default_pixel_shader;
 		static Texture		default_texture;
 		static Mesh			default_mesh;
-		static MaterialPtr	default_material;
+		static Material		default_material;
 
 	private:
 
 		typedef std::map<ResourceId, FileInfo> FileMap;
 		std::map<HashedString, FileMap>			_files;
 
-		std::map<ResourceName, MaterialPtr>		_materials;
+		std::map<ResourceName, Material>		_materials;
 		std::map<ResourceName, Mesh>			_meshes;
 		std::map<ResourceName, Shader>			_shaders;
 		std::map<ResourceName, Texture>			_textures;

@@ -39,16 +39,16 @@ namespace loco
 	/// Material =========================================
 
 	//typedef std::shared_ptr<Material> MaterialPtr;
-	class MaterialPtr : public std::shared_ptr<Material>
+	class Material : public std::shared_ptr<MaterialData>
 	{
 	public:
-		MaterialPtr(Material* mat = nullptr);
+		Material(MaterialData* mat = nullptr);
 
-		static MaterialPtr invalid;
-		MaterialPtr duplicate() const;
+		static Material invalid;
+		Material duplicate() const;
 	};
 
-	class Material
+	class MaterialData
 	{
 	public:
 

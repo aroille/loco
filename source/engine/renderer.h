@@ -16,7 +16,7 @@ struct _name { \
 namespace loco
 {
 	struct Memory;
-	class Material;
+	class MaterialData;
 	struct Mesh;
 
 	/// LOCO Renderer 
@@ -194,11 +194,11 @@ namespace loco
 		/// @param material Material used on every submeshes of mesh
 		/// @param model_matrix World transform matrix of the mesh
 		///
-		void submit(uint8_t view_id, const Mesh& mesh, const Material* material, const void* model_matrix);
+		void submit(uint8_t view_id, const Mesh& mesh, const MaterialData* material, const void* model_matrix);
 
 	private:
 		/// Bind a material
-		void bind_material(const Material* material);
+		void bind_material(const MaterialData* material);
 
 	private:
 		char _shader_extention[16];						///< shader extention name (according to the current backend)

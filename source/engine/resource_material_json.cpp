@@ -5,7 +5,7 @@
 
 namespace loco
 {
-	bool load_material(const Memory* mem, Material* mat)
+	bool load_material(const Memory* mem, MaterialData* mat)
 	{		
 		const char* vs_param_name("vs_shader");
 		const char* ps_param_name("ps_shader");

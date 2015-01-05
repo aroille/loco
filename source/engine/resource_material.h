@@ -6,24 +6,24 @@
 
 namespace loco
 {
-	template<> ResourceManager::ResourceType::Enum ResourceManager::resource_type<MaterialPtr>() const
+	template<> ResourceManager::ResourceType::Enum ResourceManager::resource_type<Material>() const
 	{ 
 		return ResourceType::Material;
 	}
 
-	template<> const char* ResourceManager::resource_type_name<MaterialPtr>() const
+	template<> const char* ResourceManager::resource_type_name<Material>() const
 	{
 		return "Material";
 	}
 
-	template<> std::map<ResourceName, MaterialPtr>& ResourceManager::resource_map()
+	template<> std::map<ResourceName, Material>& ResourceManager::resource_map()
 	{
 		return _materials;
 	}
 
-	template<> MaterialPtr ResourceManager::create(const Memory* mem) const
+	template<> Material ResourceManager::create(const Memory* mem) const
 	{
-		Material* mat = new Material();
+		MaterialData* mat = new MaterialData();
 		bool load_success = load_material(mem, mat);
 
 		if (!load_success)
@@ -35,14 +35,14 @@ namespace loco
 		}
 		else
 		{
-			return MaterialPtr(mat);
+			return Material(mat);
 		}
 	}
 	
-	template<> MaterialPtr ResourceManager::replace(MaterialPtr& current, const Memory* mem) const
+	template<> Material ResourceManager::replace(Material& current, const Memory* mem) const
 	{
 		if (current.get() == nullptr)
-			current.reset(new Material());
+			current.reset(new MaterialData());
 
 		bool load_success = load_material(mem, current.get());
 
@@ -56,7 +56,7 @@ namespace loco
 		return current;
 	}
 
-	template<> void ResourceManager::destroy(const MaterialPtr& material) const
+	template<> void ResourceManager::destroy(const Material& material) const
 	{
 	
 	}
