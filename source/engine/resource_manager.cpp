@@ -51,31 +51,31 @@ namespace resource{
 		// init default vertex shader
 		strcpy(resource_path, loco::default_resource_relativ_path);
 		strcat(resource_path, "shader/vs_default");
-		_default_resources.vertex_shader = loco::resources.get<Shader>(resource_path);
+		_default_resources.vertex_shader = loco::resource_manager.get<Shader>(resource_path);
 		LOCO_ASSERTF(!(_default_resources.vertex_shader == Shader::invalid), LOCO_LOG_RENDERER, "Can't load default vertex shader %s", resource_path);
 
 		// init default pixel shader
 		strcpy(resource_path, loco::default_resource_relativ_path);
 		strcat(resource_path, "shader/ps_default");
-		_default_resources.pixel_shader = loco::resources.get<Shader>(resource_path);
+		_default_resources.pixel_shader = loco::resource_manager.get<Shader>(resource_path);
 		LOCO_ASSERTF(!(_default_resources.pixel_shader == Shader::invalid), LOCO_LOG_RENDERER, "Can't load default pixel shader %s", resource_path);
 
 		// init default texture
 		strcpy(resource_path, loco::default_resource_relativ_path);
 		strcat(resource_path, "texture/default");
-		_default_resources.texture = loco::resources.get<Texture>(resource_path);
+		_default_resources.texture = loco::resource_manager.get<Texture>(resource_path);
 		LOCO_ASSERTF(!(_default_resources.texture == Texture::invalid), LOCO_LOG_RENDERER, "Can't load default texture %s", resource_path);
 
 		// init default material
 		strcpy(resource_path, loco::default_resource_relativ_path);
 		strcat(resource_path, "material/default");
-		_default_resources.material = loco::resources.get<Material>(resource_path);
+		_default_resources.material = loco::resource_manager.get<Material>(resource_path);
 		LOCO_ASSERTF(!(_default_resources.material == Material::invalid), LOCO_LOG_RENDERER, "Can't load default material %s", resource_path);
 
 		// init default mesh
 		strcpy(resource_path, loco::default_resource_relativ_path);
 		strcat(resource_path, "mesh/bunny");
-		_default_resources.mesh = loco::resources.get<Mesh>(resource_path);
+		_default_resources.mesh = loco::resource_manager.get<Mesh>(resource_path);
 		LOCO_ASSERTF(!(_default_resources.mesh == Mesh::invalid), LOCO_LOG_RENDERER, "Can't load default mesh %s", resource_path);
 
 		_default_resources_init = true;

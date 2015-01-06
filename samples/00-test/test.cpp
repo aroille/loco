@@ -15,22 +15,18 @@ bgfx::VertexDecl PosColorVertex::ms_decl;
 
 int _main_(int argc, char** argv)
 {
-	uint32_t width = 1280;
-	uint32_t height = 720;
-	
-	char* resource_root_path = argc > 1 ? argv[1] : "resources/";
 
-	loco::HandleI24G8 h;
-	loco::HandleManagerI24G8 handle_i24_g24_mgr;
-	loco::HandleManagerI8G8 handle_i8_g8_mgr;
-	h = handle_i24_g24_mgr.create();
-	h = handle_i24_g24_mgr.create();
-	h.generation();
 
 	// init loco
-	loco::init(resource_root_path, "loco/");	
-	loco::resources.load_folder("sponza/");
+	char* resource_root_path = argc > 1 ? argv[1] : "resources/";
+	uint32_t width = 1280;
+	uint32_t height = 720;
+
+	loco::init(resource_root_path, "loco/");
 	loco::entry::set_window_size(loco::entry::WindowHandle{ 0 }, width, height);
+
+	// load sponza
+	loco::resource_manager.load_folder("sponza/");
 
 	// Create entities
 	loco::Entity e_1 = loco::entity_manager.create();
@@ -47,20 +43,20 @@ int _main_(int argc, char** argv)
 	loco::TransformSystem::Component tf_5 = main_world.transforms.create(e_5);
 
 	// test load mesh
-	loco::Mesh mesh = loco::resources.get<loco::Mesh>("sponza/sponza");
+	loco::Mesh mesh = loco::resource_manager.get<loco::Mesh>("sponza/sponza");
 	//loco::Mesh mesh = loco::resources.get<loco::Mesh>("loco/mesh/bunny");
 
 	// test load texture
-	loco::ResourceName res_name = loco::resources.get_name("loco/texture/default");
-	loco::Texture texture1 = loco::resources.get<loco::Texture>("loco/texture/default");
-	loco::Texture texture2 = loco::resources.get<loco::Texture>(res_name);
+	loco::ResourceName res_name = loco::resource_manager.get_name("loco/texture/default");
+	loco::Texture texture1 = loco::resource_manager.get<loco::Texture>("loco/texture/default");
+	loco::Texture texture2 = loco::resource_manager.get<loco::Texture>(res_name);
 
 	// test load shaders
-	loco::Shader vertex_shader = loco::resources.get<loco::Shader>("loco/shader/vs_default");
-	loco::Shader pixel_shader = loco::resources.get<loco::Shader>("loco/shader/ps_default");
+	loco::Shader vertex_shader = loco::resource_manager.get<loco::Shader>("loco/shader/vs_default");
+	loco::Shader pixel_shader = loco::resource_manager.get<loco::Shader>("loco/shader/ps_default");
 
 	// test load material
-	loco::Material simple_mat = loco::resources.get<loco::Material>("sponza/sponza");
+	loco::Material simple_mat = loco::resource_manager.get<loco::Material>("sponza/sponza");
 
 	/*
 	loco::MeshComponent mesh_cp = main_world.mesh_components->create(e_1);
@@ -129,9 +125,9 @@ int _main_(int argc, char** argv)
 
 		float time = (float)((now - timeOffset) / freq);
 
-		loco::resources.hot_reload<loco::Shader>();
-		loco::resources.hot_reload<loco::Material>();
-		loco::resources.hot_reload<loco::Mesh>();
+		loco::resource_manager.hot_reload<loco::Shader>();
+		loco::resource_manager.hot_reload<loco::Material>();
+		loco::resource_manager.hot_reload<loco::Mesh>();
 
 		float view[16];
 		float proj[16];
@@ -167,8 +163,8 @@ int _main_(int argc, char** argv)
 				float mtx[16];
 				bx::mtxMul(mtx, mtx_scale, mtx_pos);
 				
-				simple_mat->set_shader(loco::resources.get<loco::Shader>("loco/shader/vs_default"), loco::resources.get<loco::Shader>("loco/shader/ps_default"));
-				loco::renderer.submit(0, mesh, simple_mat.get(), mtx, loco::resources.get_default());
+				simple_mat->set_shader(loco::resource_manager.get<loco::Shader>("loco/shader/vs_default"), loco::resource_manager.get<loco::Shader>("loco/shader/ps_default"));
+				loco::renderer.submit(0, mesh, mtx, loco::resource_manager.get_default());
 			}
 		}
 

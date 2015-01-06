@@ -13,7 +13,7 @@ namespace loco
 	using namespace resource;
 
 	extern EntityManager entity_manager;
-	extern ResourceManager resources;
+	extern ResourceManager resource_manager;
 	extern Renderer	renderer;
 	extern Log log;
 
@@ -23,10 +23,6 @@ namespace loco
 
 	void init(const char* resources_path, const char* default_resources_relativ_path);
 	void shutdown();
-
-	Entity create_entity();
-	bool is_entity_alive(Entity e);
-	void destroy_entity(Entity e);
 }
 
 #endif // LOCO_H_HEADER_GUARD

@@ -9,7 +9,7 @@ namespace loco
 	char default_resource_relativ_path[LOCO_PATH_LENGTH];
 	
 	EntityManager entity_manager;
-	ResourceManager resources;
+	ResourceManager resource_manager;
 	Renderer renderer;
 	Log log;
 	
@@ -28,13 +28,13 @@ namespace loco
 		renderer.reset(1280, 720);
 
 		// load default resources
-		loco::resources.load_folder(default_resource_relativ_path);
-		loco::resources.init_default_resources();
+		loco::resource_manager.load_folder(default_resource_relativ_path);
+		loco::resource_manager.init_default_resources();
 	}
 
 	void shutdown()
 	{
-		resources.unload_all();
+		resource_manager.unload_all();
 		renderer.shutdown();
 	}
 

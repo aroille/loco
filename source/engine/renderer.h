@@ -201,7 +201,7 @@ namespace loco
 		/// @param material Material used on every submeshes of mesh
 		/// @param model_matrix World transform matrix of the mesh
 		///
-		void submit(uint8_t view_id, const Mesh& mesh, const MaterialData* material, const void* model_matrix, const DefaultResources& default_resources);
+		void submit(uint8_t view_id, const Mesh& mesh, const void* model_matrix, const DefaultResources& default_resources);
 
 	private:
 		/// Bind a material

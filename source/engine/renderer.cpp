@@ -222,14 +222,14 @@ namespace loco
 	}
 
 	//==========================================================================
-	void Renderer::submit(uint8_t view_id, const Mesh& mesh, const MaterialData* material, const void* model_matrix, const DefaultResources& default_resources)
+	void Renderer::submit(uint8_t view_id, const Mesh& mesh, const void* model_matrix, const DefaultResources& default_resources)
 	{
 		const Mesh& m = (mesh == Mesh::invalid) ? default_resources.mesh : mesh;
 
 		for (unsigned i = 0; i < m->submeshes.size(); i++)
 		{
 			// set material
-			bind_material(material, default_resources);
+			bind_material(m->materials[i].get(), default_resources);
 
 			// set model matrix
 			bgfx::setTransform(model_matrix);

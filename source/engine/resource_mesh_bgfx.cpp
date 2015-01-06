@@ -11,7 +11,7 @@ namespace stl = tinystl;
 #include <bx/fpumath.h>
 
 #include "memory_utils.h"
-#include "resource_manager.h"
+#include "resource_type.h"
 #include "loco.h"
 
 struct Aabb
@@ -205,10 +205,11 @@ namespace bgfx_helper
 
 		for (unsigned i = 0; i < bgfx_mesh.m_groups.size(); i++)
 		{
-			loco::resource::SubMesh submesh;
+			loco::resource::SubMeshData submesh;
 			submesh.vertex_buffer = { bgfx_mesh.m_groups[i].m_vbh.idx };
 			submesh.index_buffer = { bgfx_mesh.m_groups[i].m_ibh.idx };
 			mesh->submeshes.push_back(submesh);
+			mesh->materials.push_back(loco::resource_manager.get_default().material);
 		}
 		return true;
 	}

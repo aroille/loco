@@ -39,8 +39,8 @@ namespace resource
 		}
 
 		// Assign shaders
-		Shader vs_shader = loco::resources.get<Shader>(o.get<jsonxx::String>(vs_param_name).c_str());
-		Shader ps_shader = loco::resources.get<Shader>(o.get<jsonxx::String>(ps_param_name).c_str());
+		Shader vs_shader = loco::resource_manager.get<Shader>(o.get<jsonxx::String>(vs_param_name).c_str());
+		Shader ps_shader = loco::resource_manager.get<Shader>(o.get<jsonxx::String>(ps_param_name).c_str());
 		if (vs_shader == Shader::invalid || ps_shader == Shader::invalid)
 		{
 			vs_shader = default_resources.vertex_shader;
@@ -77,7 +77,7 @@ namespace resource
 				break;
 
 			case jsonxx::Value::STRING_:
-				texture = loco::resources.get<Texture>(i->second->string_value_->c_str());
+				texture = loco::resource_manager.get<Texture>(i->second->string_value_->c_str());
 				mat->set(i->first.c_str(), texture);
 				break;
 

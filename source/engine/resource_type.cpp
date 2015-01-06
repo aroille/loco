@@ -11,7 +11,7 @@ namespace resource{
 		: std::shared_ptr<MeshData>(mat)
 	{
 
-		}
+	}
 
 	Mesh Mesh::duplicate() const
 	{
@@ -24,7 +24,7 @@ namespace resource{
 		: std::shared_ptr<MaterialData>(mat)
 	{
 
-		}
+	}
 
 	Material Material::duplicate() const
 	{
