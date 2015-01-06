@@ -1,8 +1,9 @@
 #ifndef RESOURCE_SHADER_H_HEADER_GUARD
 #define RESOURCE_SHADER_H_HEADER_GUARD
 
-namespace loco
-{
+namespace loco {
+namespace resource {
+
 	template<> ResourceManager::ResourceType::Enum ResourceManager::resource_type<Shader>() const
 	{
 		return ResourceType::Shader;
@@ -14,8 +15,8 @@ namespace loco
 	}
 
 	template<> std::map<ResourceName, Shader>& ResourceManager::resource_map()
-	{ 
-		return _shaders; 
+	{
+		return _shaders;
 	}
 
 	template<> Shader ResourceManager::create(const Memory* mem) const
@@ -37,6 +38,7 @@ namespace loco
 	{
 		renderer.destroy_shader(shader);
 	}
-}
+} // resource
+} // loco
 
 #endif // RESOURCE_SHADER_H_HEADER_GUARD

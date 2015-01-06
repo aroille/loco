@@ -14,6 +14,8 @@ Renderer::_name Renderer::_name::invalid = { UINT16_MAX };
 
 namespace loco
 {
+	using namespace resource;
+
 	LOCO_RENDERER_HANDLE_DEF(TextureHandle);
 	LOCO_RENDERER_HANDLE_DEF(VertexDeclHandle);
 	LOCO_RENDERER_HANDLE_DEF(VertexBufferHandle);

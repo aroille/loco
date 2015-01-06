@@ -16,8 +16,9 @@
 #include <list>
 #include <map>
 
-namespace loco
-{
+namespace loco{
+namespace resource{
+
 	//==========================================================================
 	bool compare_resource_type(const ResourceManager::ResourceInfo& first, const ResourceManager::ResourceInfo& second)
 	{
@@ -118,7 +119,7 @@ namespace loco
 			/*
 			auto res = _resources[type].find(res_name);
 			if (res != _resources[type].end())
-				continue;
+			continue;
 			*/
 
 			ri.file_info = *fi;
@@ -151,7 +152,7 @@ namespace loco
 	bool ResourceManager::unload_folder(const HashedString& folder_path)
 	{
 		// check if this folder is already loaded
-		
+
 		auto folder_files_it = _files.find(folder_path);
 		if ((folder_files_it == _files.cend()))
 		{
@@ -195,7 +196,7 @@ namespace loco
 		{
 			log.error(LOCO_LOG_RESOURCE_MANAGER, "File reading fail : %s", ri.file_info.path);
 		}
-		
+
 		return read_success;
 	}
 
@@ -334,6 +335,6 @@ namespace loco
 			LOCO_ASSERTF(false, LOCO_LOG_RESOURCE_MANAGER, "Resources of type %d are not handled by the resource manager", id.type);
 		}
 	}
-	
 
+} // resource
 } // loco

@@ -5,6 +5,9 @@
 
 namespace loco
 {
+namespace math
+{
+
 	struct Vector2
 	{
 		float x, y;
@@ -40,6 +43,7 @@ namespace loco
 		Matrix4x4 tm;
 		AABB aabb;
 	};
-}
+} // math
+} // loco
 
 #endif //MATH_TYPE_H_HEADER_GUARD

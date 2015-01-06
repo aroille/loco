@@ -8,6 +8,8 @@
 
 namespace loco
 {
+	using namespace math;
+
 	/// Manager for transform components
 	/// Once data capacity reached, capacity will automatically doubled
 	class TransformSystem

@@ -16,9 +16,15 @@ struct _name { \
 namespace loco
 {
 	struct Memory;
-	struct DefaultResources;
-	class MaterialData;
-	class Mesh;
+
+	namespace resource
+	{
+		struct DefaultResources;
+		class MaterialData;
+		class Mesh;
+	}
+
+	using namespace resource;
 
 	/// LOCO Renderer 
 	///

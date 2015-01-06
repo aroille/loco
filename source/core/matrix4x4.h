@@ -6,7 +6,8 @@
 
 namespace loco
 {
-
+namespace math
+{
 	BX_ALIGN_DECL_16(struct) Matrix4x4
 	{
 		// member
@@ -30,8 +31,8 @@ namespace loco
 		bx::float4x4_mul(&result.f4x4, &in.f4x4, &f4x4);
 		return result;
 	}
-	
-}
+} // math
+} // loco
 
 
 #endif // MATRIX4x4_H_HEADER_GUARD

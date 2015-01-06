@@ -10,6 +10,8 @@
 
 namespace loco
 {
+	using namespace resource;
+
 	extern EntityManager entity_manager;
 	extern ResourceManager resources;
 	extern Renderer	renderer;

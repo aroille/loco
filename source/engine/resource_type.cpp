@@ -2,9 +2,8 @@
 #include "resource_type.h"
 #include "loco.h"
 
-namespace loco
-{
-
+namespace loco{
+namespace resource{
 
 	Mesh Mesh::invalid = Mesh(nullptr);
 
@@ -12,7 +11,7 @@ namespace loco
 		: std::shared_ptr<MeshData>(mat)
 	{
 
-	}
+		}
 
 	Mesh Mesh::duplicate() const
 	{
@@ -25,7 +24,7 @@ namespace loco
 		: std::shared_ptr<MaterialData>(mat)
 	{
 
-	}
+		}
 
 	Material Material::duplicate() const
 	{
@@ -53,7 +52,7 @@ namespace loco
 	{
 		UniformInfo& info = create_uniform_param(name, type, size);
 		LOCO_ASSERTF(size == info.array_size, "Material parameter \"%s\" size doesn't match with the previous definition (previous size:%d, next size:%d)", name, info.array_size, size);
-		
+
 		memcpy((void*)(_uniform_buffer.data() + info.buffer_offset), data, sizeof(float)* size * UniformType_size[info.type]);
 	}
 
@@ -102,7 +101,7 @@ namespace loco
 			info.uniform = renderer.create_uniform(name, Renderer::UniformType::Texture, 1);
 			info.texture = { 0 };
 			info.flags = 0;
-			
+
 			_texture_map[hashed_name] = _texture_infos.size();
 			_texture_infos.push_back(info);
 
@@ -113,4 +112,5 @@ namespace loco
 		return _texture_infos[it->second];
 	}
 
+} // resource
 } // loco

@@ -8,8 +8,9 @@
 #include <memory>
 #include <vector>
 
-namespace loco
-{
+namespace loco{
+namespace resource{
+
 	/// Texture ==========================================
 	typedef Renderer::TextureHandle Texture;
 
@@ -70,7 +71,7 @@ namespace loco
 
 		void set(const char* name, Renderer::UniformType::Enum type, const float* data, unsigned size = 1);
 		void set(const char* name, Renderer::TextureHandle texture, uint32_t flags = 0);
-	
+
 		std::map<HashedString, unsigned> _uniform_map;
 		std::map<HashedString, unsigned> _texture_map;
 
@@ -94,6 +95,7 @@ namespace loco
 		Mesh		mesh;
 		Material	material;
 	};
-}
+} // resource
+} // loco
 
 #endif // RESOURCE_TYPE_H_HEADER_GUARD

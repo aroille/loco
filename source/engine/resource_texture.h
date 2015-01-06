@@ -1,8 +1,9 @@
 #ifndef RESOURCE_TEXTURE_H_HEADER_GUARD
 #define RESOURCE_TEXTURE_H_HEADER_GUARD
 
-namespace loco
-{
+namespace loco{
+namespace resource{
+
 	template<> ResourceManager::ResourceType::Enum ResourceManager::resource_type<Texture>() const
 	{
 		return ResourceType::Texture;
@@ -14,8 +15,8 @@ namespace loco
 	}
 
 	template<> std::map<ResourceName, Texture>& ResourceManager::resource_map()
-	{ 
-		return _textures; 
+	{
+		return _textures;
 	}
 
 	template<> Texture ResourceManager::create(const Memory* mem) const
@@ -32,6 +33,7 @@ namespace loco
 	{
 		renderer.destroy_texture(texture);
 	}
-}
+} // resource
+} // loco
 
 #endif // RESOURCE_TEXTURE_H_HEADER_GUARD

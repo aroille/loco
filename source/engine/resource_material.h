@@ -6,8 +6,11 @@
 
 namespace loco
 {
+namespace resource
+{
+
 	template<> ResourceManager::ResourceType::Enum ResourceManager::resource_type<Material>() const
-	{ 
+	{
 		return ResourceType::Material;
 	}
 
@@ -38,7 +41,7 @@ namespace loco
 			return Material(mat);
 		}
 	}
-	
+
 	template<> Material ResourceManager::replace(Material& current, const Memory* mem) const
 	{
 		if (current.get() == nullptr)
@@ -58,8 +61,9 @@ namespace loco
 
 	template<> void ResourceManager::destroy(const Material& material) const
 	{
-	
+
 	}
-}
+} // resource
+} // loco
 
 #endif // RESOURCE_MATERIAL_H_HEADER_GUARD

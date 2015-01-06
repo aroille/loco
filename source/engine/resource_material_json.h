@@ -5,8 +5,10 @@
 #include "memory_utils.h"
 namespace loco
 {
-	bool load_material(const Memory* mem, MaterialData* mat, const DefaultResources& default_resources);
-
+	namespace resource
+	{
+		bool load_material(const Memory* mem, MaterialData* mat, const DefaultResources& default_resources);
+	} // resource
 } // loco
 
 #endif // RESOURCE_MATERIAL_JSON_H_HEADER_GUARD

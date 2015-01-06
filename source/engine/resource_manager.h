@@ -9,9 +9,11 @@
 #include <vector>
 #include <map>
 
-namespace loco
-{
+namespace loco{
+
 	struct Memory;
+
+	namespace resource{
 
 	/// ResourceName
 	/// (hashed filepath (without extention) to the resource)
@@ -117,7 +119,7 @@ namespace loco
 		void create_resource(const ResourceId& id, const Memory* mem);
 		void replace_resource(const ResourceId& id, const Memory* mem);
 		void destroy_resource(const ResourceId& id);
-		
+
 		static ResourceName resource_name(const char* resource_path);
 		static ResourceId resource_id(const FileInfo& fi);
 
@@ -229,6 +231,8 @@ namespace loco
 		}
 		resource_map<T>().clear();
 	};
-}
+
+	} // resource
+} // loco
 
 #endif // RESOURCE_MANAGER_H_HEADER_GUARD
