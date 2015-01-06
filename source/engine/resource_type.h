@@ -85,7 +85,15 @@ namespace loco
 		TextureInfo&  create_texture_param(const char* name);
 	};
 
-	
+	/// Default Resources ===============================
+	struct DefaultResources
+	{
+		Shader		vertex_shader;
+		Shader		pixel_shader;
+		Texture		texture;
+		Mesh		mesh;
+		Material	material;
+	};
 }
 
 #endif // RESOURCE_TYPE_H_HEADER_GUARD

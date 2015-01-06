@@ -27,10 +27,10 @@ namespace loco
 
 		if (!load_success)
 		{
-			LOCO_ASSERTF(ResourceManager::default_resource_init, LOCO_LOG_RESOURCE_MANAGER, "The default mesh is not available.");
+			LOCO_ASSERTF(_default_resources_init, LOCO_LOG_RESOURCE_MANAGER, "The default mesh is not available.");
 			log.error(LOCO_LOG_RESOURCE_MANAGER, "Use of default mesh");
 			delete mesh;
-			return ResourceManager::default_mesh.duplicate();
+			return _default_resources.mesh.duplicate();
 		}
 		else
 		{
@@ -49,9 +49,9 @@ namespace loco
 
 		if (!load_success)
 		{
-			LOCO_ASSERTF(ResourceManager::default_resource_init, LOCO_LOG_RESOURCE_MANAGER, "The default mesh is not available.");
+			LOCO_ASSERTF(_default_resources_init, LOCO_LOG_RESOURCE_MANAGER, "The default mesh is not available.");
 			log.error(LOCO_LOG_RESOURCE_MANAGER, "Use of default mesh");
-			*(current.get()) = *(ResourceManager::default_mesh.get());
+			*(current.get()) = *(_default_resources.mesh.get());
 		}
 
 		return current;

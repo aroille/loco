@@ -16,6 +16,7 @@ struct _name { \
 namespace loco
 {
 	struct Memory;
+	struct DefaultResources;
 	class MaterialData;
 	class Mesh;
 
@@ -23,7 +24,7 @@ namespace loco
 	///
 	/// In charge of:
 	///		- Create / Update / Destroy GPU Resource
-	///		- Submit draw call from resource manager resources (Mesh, Material)
+	///		- Submit draw call using resource manager resources (Mesh, Material)
 	/// 
 	/// @remarks
 	///		Memory* provide as parameters to every Renderer methods, such as 
@@ -194,11 +195,11 @@ namespace loco
 		/// @param material Material used on every submeshes of mesh
 		/// @param model_matrix World transform matrix of the mesh
 		///
-		void submit(uint8_t view_id, const Mesh& mesh, const MaterialData* material, const void* model_matrix);
+		void submit(uint8_t view_id, const Mesh& mesh, const MaterialData* material, const void* model_matrix, const DefaultResources& default_resources);
 
 	private:
 		/// Bind a material
-		void bind_material(const MaterialData* material);
+		void bind_material(const MaterialData* material, const DefaultResources& default_resources);
 
 	private:
 		char _shader_extention[16];						///< shader extention name (according to the current backend)

@@ -24,14 +24,14 @@ namespace loco
 	template<> Material ResourceManager::create(const Memory* mem) const
 	{
 		MaterialData* mat = new MaterialData();
-		bool load_success = load_material(mem, mat);
+		bool load_success = load_material(mem, mat, _default_resources);
 
 		if (!load_success)
 		{
-			LOCO_ASSERTF(ResourceManager::default_resource_init, LOCO_LOG_RESOURCE_MANAGER, "The default material is not available.");
+			LOCO_ASSERTF(_default_resources_init, LOCO_LOG_RESOURCE_MANAGER, "The default material is not available.");
 			log.error(LOCO_LOG_RESOURCE_MANAGER, "Use of default material");
 			delete mat;
-			return ResourceManager::default_material.duplicate();
+			return _default_resources.material.duplicate();
 		}
 		else
 		{
@@ -44,13 +44,13 @@ namespace loco
 		if (current.get() == nullptr)
 			current.reset(new MaterialData());
 
-		bool load_success = load_material(mem, current.get());
+		bool load_success = load_material(mem, current.get(), _default_resources);
 
 		if (!load_success)
 		{
-			LOCO_ASSERTF(ResourceManager::default_resource_init, LOCO_LOG_RESOURCE_MANAGER, "The default material is not available.");
+			LOCO_ASSERTF(_default_resources_init, LOCO_LOG_RESOURCE_MANAGER, "The default material is not available.");
 			log.error(LOCO_LOG_RESOURCE_MANAGER, "Use of default material");
-			*(current.get()) = *(ResourceManager::default_material.get());
+			*(current.get()) = *(_default_resources.material.get());
 		}
 
 		return current;

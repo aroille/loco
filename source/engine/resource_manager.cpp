@@ -18,18 +18,22 @@
 
 namespace loco
 {
-
-	bool		ResourceManager::default_resource_init = false;
-	Shader		ResourceManager::default_vertex_shader = Shader::invalid;
-	Shader		ResourceManager::default_pixel_shader = Shader::invalid;
-	Texture		ResourceManager::default_texture = Texture::invalid;
-	Mesh		ResourceManager::default_mesh = Mesh::invalid;
-	Material	ResourceManager::default_material = Material::invalid ;
-
 	//==========================================================================
 	bool compare_resource_type(const ResourceManager::ResourceInfo& first, const ResourceManager::ResourceInfo& second)
 	{
 		return (first.id.type < second.id.type);
+	}
+
+	//==========================================================================
+	ResourceManager::ResourceManager()
+	{
+		_default_resources_init = false;
+
+		_default_resources.vertex_shader = Shader::invalid;
+		_default_resources.pixel_shader = Shader::invalid;
+		_default_resources.texture = Texture::invalid;
+		_default_resources.mesh = Mesh::invalid;
+		_default_resources.material = Material::invalid;
 	}
 
 	//==========================================================================
@@ -46,34 +50,34 @@ namespace loco
 		// init default vertex shader
 		strcpy(resource_path, loco::default_resource_relativ_path);
 		strcat(resource_path, "shader/vs_default");
-		default_vertex_shader = loco::resources.get<Shader>(resource_path);
-		LOCO_ASSERTF(!(default_vertex_shader == Shader::invalid), LOCO_LOG_RENDERER, "Can't load default vertex shader %s", resource_path);
+		_default_resources.vertex_shader = loco::resources.get<Shader>(resource_path);
+		LOCO_ASSERTF(!(_default_resources.vertex_shader == Shader::invalid), LOCO_LOG_RENDERER, "Can't load default vertex shader %s", resource_path);
 
 		// init default pixel shader
 		strcpy(resource_path, loco::default_resource_relativ_path);
 		strcat(resource_path, "shader/ps_default");
-		default_pixel_shader = loco::resources.get<Shader>(resource_path);
-		LOCO_ASSERTF(!(default_pixel_shader == Shader::invalid), LOCO_LOG_RENDERER, "Can't load default pixel shader %s", resource_path);
+		_default_resources.pixel_shader = loco::resources.get<Shader>(resource_path);
+		LOCO_ASSERTF(!(_default_resources.pixel_shader == Shader::invalid), LOCO_LOG_RENDERER, "Can't load default pixel shader %s", resource_path);
 
 		// init default texture
 		strcpy(resource_path, loco::default_resource_relativ_path);
 		strcat(resource_path, "texture/default");
-		default_texture = loco::resources.get<Texture>(resource_path);
-		LOCO_ASSERTF(!(default_texture == Texture::invalid), LOCO_LOG_RENDERER, "Can't load default texture %s", resource_path);
-
-		// init default mesh
-		strcpy(resource_path, loco::default_resource_relativ_path);
-		strcat(resource_path, "mesh/bunny");
-		default_mesh = loco::resources.get<Mesh>(resource_path);
-		LOCO_ASSERTF(!(default_mesh == Mesh::invalid), LOCO_LOG_RENDERER, "Can't load default mesh %s", resource_path);
+		_default_resources.texture = loco::resources.get<Texture>(resource_path);
+		LOCO_ASSERTF(!(_default_resources.texture == Texture::invalid), LOCO_LOG_RENDERER, "Can't load default texture %s", resource_path);
 
 		// init default material
 		strcpy(resource_path, loco::default_resource_relativ_path);
 		strcat(resource_path, "material/default");
-		default_material = loco::resources.get<Material>(resource_path);
-		LOCO_ASSERTF(!(default_material == Material::invalid), LOCO_LOG_RENDERER, "Can't load default material %s", resource_path);
+		_default_resources.material = loco::resources.get<Material>(resource_path);
+		LOCO_ASSERTF(!(_default_resources.material == Material::invalid), LOCO_LOG_RENDERER, "Can't load default material %s", resource_path);
 
-		default_resource_init = true;
+		// init default mesh
+		strcpy(resource_path, loco::default_resource_relativ_path);
+		strcat(resource_path, "mesh/bunny");
+		_default_resources.mesh = loco::resources.get<Mesh>(resource_path);
+		LOCO_ASSERTF(!(_default_resources.mesh == Mesh::invalid), LOCO_LOG_RENDERER, "Can't load default mesh %s", resource_path);
+
+		_default_resources_init = true;
 	}
 
 	//==========================================================================

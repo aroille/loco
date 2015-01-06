@@ -29,16 +29,13 @@ namespace loco
 
 		// load default resources
 		loco::resources.load_folder(default_resource_relativ_path);
-
-		// init default resources
-		ResourceManager::init_default_resources();
+		loco::resources.init_default_resources();
 	}
 
 	void shutdown()
 	{
 		resources.unload_all();
 		renderer.shutdown();
-		
 	}
 
 } // namespace loco

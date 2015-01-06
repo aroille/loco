@@ -5,7 +5,7 @@
 
 namespace loco
 {
-	bool load_material(const Memory* mem, MaterialData* mat)
+	bool load_material(const Memory* mem, MaterialData* mat, const DefaultResources& default_resources)
 	{		
 		const char* vs_param_name("vs_shader");
 		const char* ps_param_name("ps_shader");
@@ -40,8 +40,8 @@ namespace loco
 		Shader ps_shader = loco::resources.get<Shader>(o.get<jsonxx::String>(ps_param_name).c_str());
 		if (vs_shader == Shader::invalid || ps_shader == Shader::invalid)
 		{
-			vs_shader = ResourceManager::default_vertex_shader;
-			ps_shader = ResourceManager::default_pixel_shader;
+			vs_shader = default_resources.vertex_shader;
+			ps_shader = default_resources.pixel_shader;
 			log.error(LOCO_LOG_RESOURCE_MANAGER, "Use of default vertex and pixel shaders", ps_param_name);
 		}
 

@@ -178,9 +178,9 @@ namespace loco
 	}
 
 	//==========================================================================
-	void Renderer::bind_material(const MaterialData* material)
+	void Renderer::bind_material(const MaterialData* material, const DefaultResources& default_resources)
 	{
-		const MaterialData* m = (material == nullptr) ? ResourceManager::default_material.get() : material;
+		const MaterialData* m = (material == nullptr) ? default_resources.material.get() : material;
 
 		// programs
 		bgfx::setProgram(LOCO_TO_BGFX(m->_program));
@@ -201,7 +201,7 @@ namespace loco
 			std::vector<MaterialData::TextureInfo>::const_iterator it = m->_texture_infos.cbegin();
 			while (it != m->_texture_infos.cend())
 			{
-				const Texture& texture = ((*it).texture == Texture::invalid) ? ResourceManager::default_texture : (*it).texture;
+				const Texture& texture = ((*it).texture == Texture::invalid) ? default_resources.texture : (*it).texture;
 				bgfx::setTexture(tex_unit, LOCO_TO_BGFX((*it).uniform), LOCO_TO_BGFX(texture), (*it).flags);
 				tex_unit++;
 				it++;
@@ -220,14 +220,14 @@ namespace loco
 	}
 
 	//==========================================================================
-	void Renderer::submit(uint8_t view_id, const Mesh& mesh, const MaterialData* material, const void* model_matrix)
+	void Renderer::submit(uint8_t view_id, const Mesh& mesh, const MaterialData* material, const void* model_matrix, const DefaultResources& default_resources)
 	{
-		const Mesh& m = (mesh == Mesh::invalid) ? ResourceManager::default_mesh : mesh;
+		const Mesh& m = (mesh == Mesh::invalid) ? default_resources.mesh : mesh;
 
 		for (unsigned i = 0; i < m->submeshes.size(); i++)
 		{
 			// set material
-			bind_material(material);
+			bind_material(material, default_resources);
 
 			// set model matrix
 			bgfx::setTransform(model_matrix);

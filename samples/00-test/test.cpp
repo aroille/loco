@@ -33,11 +33,11 @@ int _main_(int argc, char** argv)
 	loco::entry::set_window_size(loco::entry::WindowHandle{ 0 }, width, height);
 
 	// Create entities
-	loco::Entity e_1 = loco::create_entity();
-	loco::Entity e_2 = loco::create_entity();
-	loco::Entity e_3 = loco::create_entity();
-	loco::Entity e_4 = loco::create_entity();
-	loco::Entity e_5 = loco::create_entity();
+	loco::Entity e_1 = loco::entity_manager.create();
+	loco::Entity e_2 = loco::entity_manager.create();
+	loco::Entity e_3 = loco::entity_manager.create();
+	loco::Entity e_4 = loco::entity_manager.create();
+	loco::Entity e_5 = loco::entity_manager.create();
 
 	// Add transform component to each entities
 	loco::TransformSystem::Component tf_1 = main_world.transforms.create(e_1);
@@ -168,13 +168,15 @@ int _main_(int argc, char** argv)
 				bx::mtxMul(mtx, mtx_scale, mtx_pos);
 				
 				simple_mat->set_shader(loco::resources.get<loco::Shader>("loco/shader/vs_default"), loco::resources.get<loco::Shader>("loco/shader/ps_default"));
-				loco::renderer.submit(0, mesh, simple_mat.get(), mtx);
-				//loco::renderer::submit(0, mesh, loco::resources.get<loco::MaterialPtr>("sponza/sponza").get(), mtx);
+				loco::renderer.submit(0, mesh, simple_mat.get(), mtx, loco::resources.get_default());
 			}
 		}
 
 		//loco::renderer::render(0, world, camera, viewport);
 		bgfx::frame();
+
+		/// garbage collector
+		main_world.gc(loco::entity_manager);
 	}
 
 	loco::shutdown();
