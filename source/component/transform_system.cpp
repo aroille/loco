@@ -1,5 +1,6 @@
 #include "transform_system.h"
 #include "debug.h"
+#include "math_utils.h"
 
 namespace loco
 {
@@ -208,6 +209,24 @@ namespace loco
 		return _data.component[_data.prev_sibling[i.i].i];
 	}
 
+	void TransformSystem::gc(const EntityManager& em)
+	{
+		unsigned alive_in_row = 0;
+		while ((_data.size > 0) && (alive_in_row < 4))
+		{
+			unsigned random_pos = random_in_range(0, _data.size-1);
+			Entity e = _data.entity[random_pos];
+			if (em.is_alive(e))
+			{
+				alive_in_row++;
+				continue;
+			}
+
+			alive_in_row = 0;
+			destroy(e);
+		}
+	}
+
 	void TransformSystem::allocate(unsigned sz)
 	{
 		LOCO_ASSERT(sz > _data.size);
@@ -293,6 +312,7 @@ namespace loco
 		// update lut "component / component data index"
 		_data.lut[c.index()] = new_data_index;
 	}
+
 
 }
 

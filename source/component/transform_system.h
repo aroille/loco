@@ -8,7 +8,6 @@
 
 namespace loco
 {
-
 	/// Manager for transform components
 	/// Once data capacity reached, capacity will automatically doubled
 	class TransformSystem
@@ -58,6 +57,9 @@ namespace loco
 
 			/// Get previous sibling
 			Component prev_sibling(Component c);
+
+			/// Garbage collector
+			void gc(const EntityManager& em);
 
 		private:
 

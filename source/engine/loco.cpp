@@ -8,12 +8,11 @@ namespace loco
 	char resource_root_path[LOCO_PATH_LENGTH];
 	char default_resource_relativ_path[LOCO_PATH_LENGTH];
 	
-	Renderer renderer;
+	EntityManager entity_manager;
 	ResourceManager resources;
+	Renderer renderer;
 	Log log;
-
-	HandleManagerI24G8 _entity_manager;
-
+	
 	void init(const char* resources_path, const char* default_resources_path)
 	{
 		log.info(LOCO_LOG, "Initializing");
@@ -39,21 +38,7 @@ namespace loco
 	{
 		resources.unload_all();
 		renderer.shutdown();
-	}
-
-	Entity create_entity()
-	{
-		return _entity_manager.create();
-	}
-
-	bool is_entity_alive(Entity e)
-	{
-		return _entity_manager.is_alive(e);
-	}
-
-	void destroy_entity(Entity e)
-	{
-		_entity_manager.destroy(e);
+		
 	}
 
 } // namespace loco

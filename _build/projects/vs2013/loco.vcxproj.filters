@@ -114,6 +114,9 @@
     <ClInclude Include="..\..\..\source\component\mesh_render_system.h">
       <Filter>component</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\source\core\math_utils.h">
+      <Filter>core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\core\debug.cpp">

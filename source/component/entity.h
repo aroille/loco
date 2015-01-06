@@ -6,7 +6,7 @@
 namespace loco
 {
 	typedef HandleI24G8 Entity;
-
+	typedef HandleManagerI24G8 EntityManager;
 }
 
 #endif // ENTITY_H_HEADER_GUARD

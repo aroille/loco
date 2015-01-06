@@ -10,15 +10,14 @@
 
 namespace loco
 {
-	
+	extern EntityManager entity_manager;
+	extern ResourceManager resources;
+	extern Renderer	renderer;
+	extern Log log;
 
 	extern unsigned resource_root_path_length;
 	extern char resource_root_path[LOCO_PATH_LENGTH];
 	extern char default_resource_relativ_path[LOCO_PATH_LENGTH];
-	
-	extern Renderer	renderer;
-	extern ResourceManager resources;
-	extern Log log;
 
 	void init(const char* resources_path, const char* default_resources_relativ_path);
 	void shutdown();
