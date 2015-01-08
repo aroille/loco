@@ -46,7 +46,7 @@ namespace loco
 
 	void FileSystem::seek(File* file, size_t position)
 	{
-		fseek(file->ff, position, SEEK_SET);
+		fseek(file->ff, (long)position, SEEK_SET);
 	}
 
 	void FileSystem::seek_to_end(File* file)

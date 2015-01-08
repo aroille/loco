@@ -17,7 +17,7 @@ namespace loco
 	extern Renderer	renderer;
 	extern Log log;
 
-	extern unsigned resource_root_path_length;
+	extern size_t resource_root_path_length;
 	extern char resource_root_path[LOCO_PATH_LENGTH];
 	extern char default_resource_relativ_path[LOCO_PATH_LENGTH];
 
@@ -25,7 +25,6 @@ namespace loco
 	void shutdown();
 
 	void render(const World& world);
-	void transform_sync(World& world);
 }
 
 #endif // LOCO_H_HEADER_GUARD

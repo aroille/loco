@@ -83,7 +83,7 @@ namespace loco
 	//==========================================================================
 	Renderer::TextureHandle Renderer::create_texture(const Memory* memory)
 	{
-		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, memory->size);
+		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, (uint32_t)memory->size);
 		return BGFX_TO_LOCO(bgfx::createTexture(bgfx_mem));
 	}
 
@@ -122,7 +122,7 @@ namespace loco
 	//==========================================================================
 	Renderer::ShaderHandle Renderer::create_shader(const Memory* memory)
 	{
-		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, memory->size);
+		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, (uint32_t)memory->size);
 		return BGFX_TO_LOCO(bgfx::createShader(bgfx_mem));
 	}
 
@@ -157,7 +157,7 @@ namespace loco
 		}
 		bgfx_decl.end();
 
-		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, memory->size);
+		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, (uint32_t)memory->size);
 		return BGFX_TO_LOCO(bgfx::createVertexBuffer(bgfx_mem, bgfx_decl));
 	}
 
@@ -170,7 +170,7 @@ namespace loco
 	//==========================================================================
 	Renderer::IndexBufferHandle Renderer::create_index_buffer(const Memory* memory)
 	{
-		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, memory->size);
+		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, (uint32_t)memory->size);
 		return BGFX_TO_LOCO(bgfx::createIndexBuffer(bgfx_mem));
 	}
 

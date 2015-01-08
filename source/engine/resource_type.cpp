@@ -73,11 +73,11 @@ namespace resource{
 			UniformInfo info;
 			info.type = type;
 			info.array_size = array_size;
-			info.buffer_offset = _uniform_buffer.size();
+			info.buffer_offset = (uint16_t)_uniform_buffer.size();
 			info.uniform = renderer.create_uniform(name, type, array_size);
 
-			uniform_index = _uniform_infos.size();
-			_uniform_map[hashed_name] = _uniform_infos.size();
+			uniform_index = (unsigned)_uniform_infos.size();
+			_uniform_map[hashed_name] = (unsigned)_uniform_infos.size();
 			_uniform_infos.push_back(info);
 			_uniform_buffer.insert(_uniform_buffer.end(), UniformType_size[type] * array_size, 0.0f);
 		}
@@ -102,7 +102,7 @@ namespace resource{
 			info.texture = { 0 };
 			info.flags = 0;
 
-			_texture_map[hashed_name] = _texture_infos.size();
+			_texture_map[hashed_name] = (unsigned)_texture_infos.size();
 			_texture_infos.push_back(info);
 
 			it = _texture_map.end();

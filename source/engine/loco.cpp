@@ -4,7 +4,7 @@
 
 namespace loco
 {
-	unsigned resource_root_path_length;
+	size_t resource_root_path_length;
 	char resource_root_path[LOCO_PATH_LENGTH];
 	char default_resource_relativ_path[LOCO_PATH_LENGTH];
 	

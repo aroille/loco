@@ -9,10 +9,10 @@ namespace loco
 	struct Memory
 	{
 		uint8_t* data;
-		uint32_t size;
+		size_t size;
 	};
 
-	inline const Memory* alloc(uint32_t size)
+	inline const Memory* alloc(size_t size)
 	{
 		Memory* mem = (Memory*)malloc(sizeof(Memory)+size);
 		mem->size = size;

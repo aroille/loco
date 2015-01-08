@@ -69,6 +69,7 @@
     <ClCompile Include="..\..\..\source\engine\resource_material_json.cpp" />
     <ClCompile Include="..\..\..\source\engine\resource_type.cpp" />
     <ClCompile Include="..\..\..\source\engine\resource_mesh_bgfx.cpp" />
+    <ClCompile Include="..\..\..\source\engine\world.cpp" />
     <ClCompile Include="..\..\..\source\entry\cmd.cpp" />
     <ClCompile Include="..\..\..\source\entry\dbg.cpp" />
     <ClCompile Include="..\..\..\source\entry\entry.cpp" />
@@ -186,7 +187,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\entity;..\..\..\3rdparty\bx\include;..\..\..\3rdparty\bgfx\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\component;..\..\..\3rdparty\bx\include;..\..\..\3rdparty\bgfx\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;_CRT_SECURE_NO_WARNINGS;_MBCS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -221,7 +222,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\entity;..\..\..\3rdparty\bx\include;..\..\..\3rdparty\bgfx\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\component;..\..\..\3rdparty\bx\include;..\..\..\3rdparty\bgfx\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__STDC_LIMIT_MACROS;__STDC_FORMAT_MACROS;__STDC_CONSTANT_MACROS;WIN32;_WIN32;_HAS_EXCEPTIONS=0;_HAS_ITERATOR_DEBUGGING=0;_SCL_SECURE=0;_SECURE_SCL=0;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>

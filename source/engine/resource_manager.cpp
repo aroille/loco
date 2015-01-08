@@ -229,9 +229,9 @@ namespace resource{
 	{
 		ResourceId id;
 
-		unsigned path_length = strlen(fi.path);
-		unsigned ext_length = strlen(fi.extention);
-		unsigned size_to_hash = path_length - resource_root_path_length - ext_length - 1;
+		size_t path_length = strlen(fi.path);
+		size_t ext_length = strlen(fi.extention);
+		uint32_t size_to_hash = (uint32_t)(path_length - resource_root_path_length - ext_length - 1);
 
 		id.name = murmur_hash_64(fi.path + resource_root_path_length, size_to_hash);
 

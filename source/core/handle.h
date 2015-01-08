@@ -60,7 +60,7 @@ namespace loco
 		else
 		{
 			_generation.push_back(0);
-			idx = _generation.size() - 1;
+			idx = (unsigned)_generation.size() - 1;
 			LOCO_ASSERTF(idx < (1 << T::_index_bits), "HandleManager", "Handle cache overflow. %d (max: %d)", idx + 1, (1 << T::_index_bits));
 		}
 		return make_handle(idx, _generation[idx]);

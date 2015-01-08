@@ -111,7 +111,7 @@ namespace resource
 
 				default:
 					uniform_type = Renderer::UniformType::Float;
-					uniform_array_size = i->second->array_value_->size();
+					uniform_array_size = (uint8_t)i->second->array_value_->size();
 					break;
 				}
 

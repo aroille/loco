@@ -16,7 +16,7 @@ namespace loco
 
 	inline HashedString hash_string(const char* string)
 	{
-		return murmur_hash_64((void*)string, strlen(string));
+		return murmur_hash_64((void*)string, (uint32_t)strlen(string));
 	}
 }
 

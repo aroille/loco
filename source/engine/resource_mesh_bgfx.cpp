@@ -175,9 +175,6 @@ namespace bgfx_helper
 							group.m_prims.push_back(prim);
 						}
 
-						int j = group.m_prims.size();
-						j += 1;
-
 						m_groups.push_back(group);
 						group.reset();
 					}
@@ -188,8 +185,6 @@ namespace bgfx_helper
 					break;
 				}
 			}
-			int i = m_groups.size();
-			i += 1;
 		}
 
 		bgfx::VertexDecl m_decl;
@@ -199,7 +194,7 @@ namespace bgfx_helper
 
 	bool load_mesh(const loco::Memory* mem, loco::resource::MeshData* mesh)
 	{
-		bx::MemoryReader reader(mem->data, mem->size);
+		bx::MemoryReader reader(mem->data, (uint32_t)mem->size);
 		bgfx_helper::Mesh bgfx_mesh;
 		bgfx_mesh.load(&reader);
 

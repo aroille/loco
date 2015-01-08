@@ -21,14 +21,14 @@ namespace loco
 		}
 		
 		FileSystem::seek_to_end(file);
-		int file_size = FileSystem::tell(file);
+		size_t file_size = FileSystem::tell(file);
 		FileSystem::seek(file, 0);
 		if (file_size >= 0)
 		{
 			fi.mem = alloc(file_size);
 
 			// read file
-			unsigned readed_size = FileSystem::read(file, fi.mem->data, fi.mem->size);
+			size_t readed_size = FileSystem::read(file, fi.mem->data, fi.mem->size);
 			if (readed_size != fi.mem->size)
 			{
 				log.warning("FileSystem", "Error while reading file : %s", fi.path);
@@ -47,8 +47,8 @@ namespace loco
 	//==========================================================================
 	void extention(char* file_path, char* result)
 	{
-		unsigned size = strlen(file_path);
-		unsigned pos = size - 1;
+		size_t size = strlen(file_path);
+		size_t pos = size - 1;
 		while ((pos >= 0) && (file_path[pos] != '.'))
 			--pos;
 
