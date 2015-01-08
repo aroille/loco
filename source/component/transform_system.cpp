@@ -235,6 +235,7 @@ namespace loco
 		new_data.buffer = (char*)malloc(bytes);
 		new_data.size= _data.size;
 		new_data.capacity = sz;
+		new_data.updated_count = _data.updated_count;
 
 		unsigned offset = alignement - ((unsigned)new_data.buffer & (alignement - 1));
 
@@ -264,13 +265,19 @@ namespace loco
 
 	void TransformSystem::transform(const Matrix4x4& parent, DataIndex i)
 	{
-		_data.world[i.i] = parent * _data.local[i.i];
+		/// Move the updated component at the begining of the data buffer
+		unsigned pos = set_updated(i).i;
 
-		DataIndex child = _data.first_child[i.i];
+		/// Apply the transform
+		_data.world[pos] = parent * _data.local[pos];
+
+		DataIndex child = _data.first_child[pos];
+		DataIndex next_child;
 		while (is_valid(child))
 		{
-			transform(_data.world[i.i], child);
-			child = _data.next_sibling[child.i];
+			next_child = _data.next_sibling[child.i];
+			transform(_data.world[pos], child);
+			child = next_child;
 		}
 	}
 
@@ -280,6 +287,7 @@ namespace loco
 		DataIndex new_data_index = DataIndex{ to };
 
 		_data.entity[to] = _data.entity[from];
+		_data.component[to] = _data.component[from];
 		_data.local[to] = _data.local[from];
 		_data.world[to] = _data.world[from];
 		_data.parent[to] = _data.parent[from];
@@ -311,6 +319,29 @@ namespace loco
 		_data.lut[c.index()] = new_data_index;
 	}
 
+	void TransformSystem::swap_instance(unsigned pos_a, unsigned pos_b)
+	{
+		move_instance(pos_a, _data.size);
+		move_instance(pos_b, pos_a);
+		move_instance(_data.size, pos_b);
+	}
+
+	TransformSystem::DataIndex TransformSystem::set_updated(DataIndex i)
+	{
+		if (i.i >= _data.updated_count)
+		{
+			unsigned new_pos = _data.updated_count;
+			swap_instance(i.i, new_pos);
+			
+			++_data.updated_count;
+
+			return{ new_pos };
+		}
+		else
+		{
+			return i;
+		}
+	}
 
 } // loco
 

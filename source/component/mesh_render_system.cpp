@@ -111,4 +111,19 @@ namespace loco
 		_data = new_data;
 	}
 
+	void MeshRenderSystem::sync_transform(unsigned count, Entity* entity, Matrix4x4* transform)
+	{
+		for (unsigned i = 0; i < count; i++)
+		{
+			Entity e = *(entity + i);
+			auto it = _map.find(e.id);
+			if (it != _map.end())
+			{
+				unsigned pos = _data.lut[it->second.index()];
+				_data.transform[pos] = *(transform + i);
+			}	
+		}
+	}
+
+
 } // loco

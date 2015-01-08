@@ -13,16 +13,10 @@ namespace loco
 		MeshRenderSystem mesh_renders;
 
 		/// Garbage collector
-		void gc(const EntityManager& em)
-		{
-			transforms.gc(em);
-		}
+		void gc(const EntityManager& em);
 
 		/// Update all world component systems
-		void Update()
-		{
-			//transform_sync(this);
-		}
+		void update();
 	};
 }
 

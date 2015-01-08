@@ -179,11 +179,22 @@ int _main_(int argc, char** argv)
 				bx::mtxMul(mtx, mtx_scale, mtx_pos);
 				
 				//mat->set_shader(loco::resource_manager.get<loco::Shader>("loco/shader/vs_default"), loco::resource_manager.get<loco::Shader>("loco/shader/ps_default"));
-				//loco::renderer.submit(0, sponza_mesh, mtx, loco::resource_manager.get_default());
 
+				float mtx_sponza_scale[16];
+
+				float sponza_scale = 1.0f + fmod(time,1);
+				bx::mtxScale(mtx_sponza_scale, sponza_scale, sponza_scale, sponza_scale);
+				Matrix4x4 sponza_world_matrix;
+				memcpy(sponza_world_matrix.val, mtx_sponza_scale, sizeof(Matrix4x4));
+				main_world.transforms.set_local_matrix(tf_1, sponza_world_matrix);
+
+
+				main_world.update();
 				loco::render(main_world);
 			}
 		}
+
+		
 
 		//loco::renderer::render(0, world, camera, viewport);
 		bgfx::frame();

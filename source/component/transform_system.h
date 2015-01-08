@@ -75,6 +75,7 @@ namespace loco
 			{
 				unsigned size;					///< Number of used instance
 				unsigned capacity;				///< Number of allocated instance in arrays
+				unsigned updated_count;			///< Count of updated transform which need to be synchronized
 				char* buffer;					///< Buffer with instance data
 					
 				Matrix4x4* local;				///< Local transform relative to parent
@@ -120,6 +121,10 @@ namespace loco
 			/// This function will also update all transform component with reference to this component
 			/// The memory at index 'to' shoudn't be used by another component before the move;
 			void move_instance(unsigned from, unsigned to);
+
+			void swap_instance(unsigned a, unsigned b);
+
+			DataIndex set_updated(DataIndex i);
 			
 	};
 }

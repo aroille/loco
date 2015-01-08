@@ -41,6 +41,10 @@ namespace loco
 		/// Set Mesh
 		void set_mesh(Component c, const Mesh& mesh);
 
+		/// Synchronize transforms from TransformSystem data
+		void sync_transform(unsigned count, Entity* entity, Matrix4x4* transform);
+
+
 		struct ComponentData
 		{
 			unsigned size;				///< Number of used instance
