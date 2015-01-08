@@ -10,7 +10,7 @@ namespace loco
 	TransformSystem::TransformSystem()
 	{
 		_data = ComponentData{};
-		allocate(256);	
+		allocate(16);	
 	}
 
 	TransformSystem::~TransformSystem()
@@ -65,11 +65,9 @@ namespace loco
 		unlink(i);
 
 		// move the instance at [size-1] to the initial index of the destroyed instance
-		if (_data.size > 1)
-		{         
+		if (_data.size > 1)     
 			move_instance(_data.size - 1, i.i);
-			_map[_data.entity[i.i].id] = _data.component[i.i];
-		}
+
 		--_data.size;
 
 		// destroy component handle
@@ -233,7 +231,7 @@ namespace loco
 
 		ComponentData new_data;
 		unsigned alignement = 16; // Matrix4x4 need to be aligned on 16 octets (Matrix4x4* are first members of the struct)
-		const unsigned bytes = sz * (sizeof(Entity)+sizeof(Component)+2 * sizeof(Matrix4x4)+5 * sizeof(DataIndex)+alignement);
+		const unsigned bytes = sz * (sizeof(Entity)+sizeof(Component)+2 * sizeof(Matrix4x4)+5 * sizeof(DataIndex))+alignement;
 		new_data.buffer = (char*)malloc(bytes);
 		new_data.size= _data.size;
 		new_data.capacity = sz;
@@ -314,5 +312,5 @@ namespace loco
 	}
 
 
-}
+} // loco
 

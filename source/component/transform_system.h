@@ -2,8 +2,8 @@
 #define TRANSFORM_SYSTEM_H_HEADER_GUARD
 
 #include "entity.h"
-#include "math_types.h"
 #include "handle.h"
+#include "math_types.h"
 #include <unordered_map>
 
 namespace loco
@@ -63,8 +63,6 @@ namespace loco
 			/// Garbage collector
 			void gc(const EntityManager& em);
 
-		private:
-
 			struct DataIndex
 			{
 				unsigned i;
@@ -92,6 +90,8 @@ namespace loco
 			};
 			ComponentData _data;
 
+	private:
+
 			/// Handle manager (Component = handle)
 			HandleManagerI24G8	_handle_mgr;
 
@@ -107,7 +107,7 @@ namespace loco
 			/// Increase the capicity of the data buffer to an component count of sz
 			void allocate(unsigned sz);
 
-			/// Return an component from an index
+			/// Return a _data index from a component
 			inline DataIndex data_index(Component c) 
 			{ 
 				return _data.lut[c.index()]; 

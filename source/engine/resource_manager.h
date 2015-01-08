@@ -19,6 +19,7 @@ namespace loco{
 	/// (hashed filepath (without extention) to the resource)
 	typedef HashedString ResourceName;
 
+	/// LOCO Resource Manager
 	class ResourceManager
 	{
 	public:
