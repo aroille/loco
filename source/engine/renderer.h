@@ -1,6 +1,8 @@
 #ifndef RENDERER_H_HEADER_GUARD
 #define RENDERER_H_HEADER_GUARD
 
+#include "math_types.h"
+
 #include <stdint.h> // uint16_t
 #include <vector>
 #include <map>
@@ -25,6 +27,7 @@ namespace loco
 	}
 
 	using namespace resource;
+	using namespace math;
 
 	/// LOCO Renderer 
 	///
@@ -194,14 +197,15 @@ namespace loco
 		/// Destroy static index buffer.
 		void destroy_index_buffer(IndexBufferHandle handle);
 
-		/// Submit draw call
+		/// Submit draw calls
 		///
 		/// @param view_id View target
-		/// @param Mesh mesh to draw
-		/// @param material Material used on every submeshes of mesh
-		/// @param model_matrix World transform matrix of the mesh
+		/// @param count Number of mesh to render
+		/// @param meshes Array of mesh to render
+		/// @param transforms Array of mesh world transform matrix
+		/// @param default_resources Default resources use in case of invalid resources
 		///
-		void submit(uint8_t view_id, const Mesh& mesh, const void* model_matrix, const DefaultResources& default_resources);
+		void batch_render(uint8_t view_id, uint32_t count, const Mesh* meshes, const Matrix4x4* transforms, const DefaultResources& default_resources);
 
 	private:
 		/// Bind a material

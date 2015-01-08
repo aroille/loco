@@ -22,6 +22,7 @@
 #define LOCO_LOG_RENDERER				"Renderer"
 #define LOCO_LOG_RESOURCE_MANAGER		"ResourceManager"
 #define LOCO_LOG_TRANSFORM_SYSTEM		"TransformSystem"
+#define LOCO_LOG_MESHRENDER_SYSTEM		"MeshRenderSystem"
 
 #endif // DEFINES_H_HEADER_GUARD
 

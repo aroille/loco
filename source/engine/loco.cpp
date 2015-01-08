@@ -38,4 +38,10 @@ namespace loco
 		renderer.shutdown();
 	}
 
+	void render(const World& world)
+	{
+		MeshRenderSystem::ComponentData data = world.mesh_renders._data;
+		renderer.batch_render(0, data.size, data.mesh, data.transform, resource_manager.get_default());
+	}
+
 } // namespace loco

@@ -2,39 +2,44 @@
 #define MESH_RENDER_SYSTEM_H_HEADER_GUARD
 
 #include "entity.h"
+#include "handle.h"
 #include "math_types.h"
 #include "resource_type.h"
+#include <unordered_map>
 
 namespace loco
 {
+	using namespace math;
+
 	/// Manager of mesh render components
 	class MeshRenderSystem
 	{
 	public:
 
-		/// MeshRenderer component (just a handle)
-		struct Component
-		{
-			unsigned i;
-		};
+		/// MeshRender component (just a handle)
+		typedef HandleI24G8 Component;
 
-		/// Add a mesh renderer component to an entity
+		MeshRenderSystem();
+		~MeshRenderSystem();
+
+		/// Create a mesh render component
 		///
 		/// @remarks 
-		/// Only one mesh renderer component per entity is allowed 
+		/// Only one mesh render component per entity is allowed 
 		///
-		//Component add(Entity e);
+		Component create(Entity e);
 
-		/// Get the mesh renderer component attach to an entity
-		//Component lookup(Entity e);
+		/// Get the mesh render component attach to an entity
+		Component lookup(Entity e);
 
-		/// Remove a mesh renderer component from an entity
-		//void remove(Entity e);
+		/// Check if component c is valid
+		bool is_valid(Component c);
 
-		/// Get number of submesh of a mesh
+		/// Free a mesh render component
+		void destroy(Entity e);
 
-
-	private:
+		/// Set Mesh
+		void set_mesh(Component c, const Mesh& mesh);
 
 		struct ComponentData
 		{
@@ -42,16 +47,34 @@ namespace loco
 			unsigned capacity;			///< Number of allocated instance in arrays
 			char* buffer;				///< Buffer with instance data
 
-			SubMesh*		submesh;		///< Submesh
-			Material*		material;		///< material (shared pointer)
-			Matrix4x4*		transform;		///< World transform
-			Entity*			entity;			///< The entity owning this instance
+			Matrix4x4*	transform;		///< World transform
+			Mesh*		mesh;			///< Mesh
+			Component*	component;		///< Owner component
 
-
+			unsigned* lut;				///< Look up table : Component/DataIndex 
 		};
 		ComponentData _data;
 
+	private:
 
+		/// Handle manager (Component = handle)
+		HandleManagerI24G8	_handle_mgr;
+
+		/// Map an Entity (key) with a Component (value)
+		std::unordered_map<unsigned, Component> _map;
+
+		/// Return a _data index from a component
+		inline unsigned data_index(Component c)
+		{
+			return _data.lut[c.index()];
+		};
+
+		/// Increase the capicity of the data buffer to an component count of sz
+		void allocate(unsigned sz);
+
+		/// Move a component at index 'from' to a new location at index 'to'
+		/// The memory at index 'to' shoudn't be used by another component before the move;
+		void move_instance(unsigned from, unsigned to);
 	};
 }
 

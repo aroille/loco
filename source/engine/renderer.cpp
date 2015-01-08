@@ -15,6 +15,7 @@ Renderer::_name Renderer::_name::invalid = { UINT16_MAX };
 namespace loco
 {
 	using namespace resource;
+	using namespace math;
 
 	LOCO_RENDERER_HANDLE_DEF(TextureHandle);
 	LOCO_RENDERER_HANDLE_DEF(VertexDeclHandle);
@@ -222,24 +223,31 @@ namespace loco
 	}
 
 	//==========================================================================
-	void Renderer::submit(uint8_t view_id, const Mesh& mesh, const void* model_matrix, const DefaultResources& default_resources)
+	void Renderer::batch_render(uint8_t view_id, uint32_t count, const Mesh* meshes, const Matrix4x4* transforms, const DefaultResources& default_resources)
 	{
-		const Mesh& m = (mesh == Mesh::invalid) ? default_resources.mesh : mesh;
-
-		for (unsigned i = 0; i < m->submeshes.size(); i++)
+		for (unsigned i = 0; i < count; i++)
 		{
-			// set material
-			bind_material(m->materials[i].get(), default_resources);
+			const Mesh& m = (*meshes == Mesh::invalid) ? default_resources.mesh : *meshes;
+			const void* world_matrix = (void*)transforms;
 
-			// set model matrix
-			bgfx::setTransform(model_matrix);
+			for (unsigned j = 0; j < m->submeshes.size(); j++)
+			{
+				// set material
+				bind_material(m->materials[j].get(), default_resources);
 
-			// set vertex and index buffer
-			bgfx::setVertexBuffer(bgfx::VertexBufferHandle LOCO_TO_BGFX(m->submeshes[i].vertex_buffer));
-			bgfx::setIndexBuffer(bgfx::IndexBufferHandle LOCO_TO_BGFX(m->submeshes[i].index_buffer));
-			
-			// submit draw call
-			bgfx::submit(view_id);
+				// set model matrix
+				bgfx::setTransform(world_matrix);
+
+				// set vertex and index buffer
+				bgfx::setVertexBuffer(bgfx::VertexBufferHandle LOCO_TO_BGFX(m->submeshes[j].vertex_buffer));
+				bgfx::setIndexBuffer(bgfx::IndexBufferHandle LOCO_TO_BGFX(m->submeshes[j].index_buffer));
+
+				// submit draw call
+				bgfx::submit(view_id);
+			}
+
+			meshes++;
+			transforms++;
 		}
 	}
 } // loco
