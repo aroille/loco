@@ -1,0 +1,8 @@
+	
+	// shaders
+	vs_shader 		= "loco/shader/vs_default",
+	ps_shader 		= "loco/shader/ps_default",
+
+	// uniforms
+	u_texColor 		= "sponza/material/base_column",
+

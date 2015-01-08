@@ -9,4 +9,5 @@ void main()
 	gl_Position = mul(u_viewProj, vec4(wpos, 1.0) );
 	
 	v_texcoord0 = a_texcoord0;
+	v_texcoord0.y = 1.0 - a_texcoord0.y;
 }
