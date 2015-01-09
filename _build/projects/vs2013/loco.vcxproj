@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\source\component\entity.h" />
     <ClInclude Include="..\..\..\source\component\mesh_render_system.h" />
+    <ClInclude Include="..\..\..\source\component\system_common.h" />
     <ClInclude Include="..\..\..\source\component\transform_system.h" />
     <ClInclude Include="..\..\..\source\core\core.h" />
     <ClInclude Include="..\..\..\source\core\debug.h" />

@@ -9,8 +9,10 @@ namespace loco
 {
 	struct World
 	{
-		TransformSystem transforms;
-		MeshRenderSystem mesh_renders;
+		TransformSystem transform;
+		MeshRenderSystem mesh_render;
+
+		World();
 
 		/// Garbage collector
 		void gc(const EntityManager& em);
@@ -18,6 +20,8 @@ namespace loco
 		/// Update all world component systems
 		void update();
 	};
+
+
 }
 
 #endif // WORLD_H_HEADER_GUARD

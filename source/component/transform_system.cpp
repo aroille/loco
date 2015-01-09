@@ -82,8 +82,8 @@ namespace loco
 
 	void TransformSystem::link(Component child, Component parent)
 	{
-		LOCO_ASSERTF(is_valid(child), LOCO_LOG_TRANSFORM_SYSTEM, "Transform component not valid");
-		LOCO_ASSERTF(is_valid(parent), LOCO_LOG_TRANSFORM_SYSTEM, "Transform component not valid");
+		LOCO_ASSERTF(is_valid(child), LOCO_LOG_TRANSFORM_SYSTEM, "Children Transform component not valid");
+		LOCO_ASSERTF(is_valid(parent), LOCO_LOG_TRANSFORM_SYSTEM, "Parent Transform component not valid");
 
 		DataIndex child_i = data_index(child);
 		DataIndex parent_i = data_index(parent);

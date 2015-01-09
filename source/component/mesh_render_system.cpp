@@ -3,7 +3,9 @@
 
 namespace loco
 {
-	MeshRenderSystem::MeshRenderSystem()
+	MeshRenderSystem::MeshRenderSystem(World* world, CallbackTransformSync callback_transform_sync)
+		: _world(world)
+		, _callback_transform_sync(callback_transform_sync)
 	{
 		_data = ComponentData{};
 		allocate(16);
@@ -25,7 +27,7 @@ namespace loco
 
 		unsigned pos = _data.size;
 
-		_data.transform[pos] = Matrix4x4::identity;
+		_data.transform[pos] = _callback_transform_sync(_world, e);
 		_data.mesh[pos] = Mesh::invalid;
 		_data.component[pos] = c;
 

@@ -5,11 +5,15 @@
 #include "handle.h"
 #include "math_types.h"
 #include "resource_type.h"
+#include "system_common.h"
+
 #include <unordered_map>
 
 namespace loco
 {
 	using namespace math;
+
+	struct World;
 
 	/// Manager of mesh render components
 	class MeshRenderSystem
@@ -19,7 +23,7 @@ namespace loco
 		/// MeshRender component (just a handle)
 		typedef HandleI24G8 Component;
 
-		MeshRenderSystem();
+		MeshRenderSystem(World* world, CallbackTransformSync callback_transform_sync);
 		~MeshRenderSystem();
 
 		/// Create a mesh render component
@@ -63,6 +67,10 @@ namespace loco
 
 		/// Handle manager (Component = handle)
 		HandleManagerI24G8	_handle_mgr;
+
+		World* _world;
+
+		CallbackTransformSync _callback_transform_sync;
 
 		/// Map an Entity (key) with a Component (value)
 		std::unordered_map<unsigned, Component> _map;
