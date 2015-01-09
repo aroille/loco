@@ -1,0 +1,8 @@
+	
+	// shaders
+	vs_shader 		= "loco/shader/vs_uni_color",
+	ps_shader 		= "loco/shader/ps_uni_color",
+
+	// uniforms
+	u_color 		= [1.0, 0.0, 0.0, 1.0],
+	

@@ -11,7 +11,48 @@
 loco::World main_world;
 
 using loco::Matrix4x4;
+using loco::Vector4;
+using loco::Vector3;
+
 bgfx::VertexDecl PosColorVertex::ms_decl;
+
+
+loco::Entity create_axis(loco::World& world, float length, float thickness)
+{
+	float l = 0.5f * length ;
+	float t = 0.5f * thickness;
+	float p = l + t;
+
+	loco::Vector3 position[4] = { { 0, 0, 0 }, { p, 0, 0 }, { 0, p, 0 }, { 0, 0, p } };
+	loco::Vector3 scale[4] = { { t, t, t }, { l, t, t }, { t, l, t }, { t, t, l } };
+	loco::Vector4 color[4] = { { 1, 1, 1, 1 }, { 1, 0, 0, 1 }, { 0, 1, 0, 1 }, { 0, 0, 1, 0 } };
+
+	loco::Entity origin = loco::entity_manager.create();
+	loco::TransformSystem::Component origin_tf = world.transform.create(origin);
+
+	for (int i = 0; i < 4; i++)
+	{
+		// create entity
+		loco::Entity e = loco::entity_manager.create();
+
+		// create Transform component
+		loco::TransformSystem::Component tf = world.transform.create(e);
+		world.transform.link(tf, origin_tf);
+		world.transform.set_local_matrix(tf, Matrix4x4{ { { scale[i].x, 0, 0, 0, 0, scale[i].y, 0, 0, 0, 0, scale[i].z, 0, position[i].x, position[i].y, position[i].z, 1 } } });
+
+		// create MeshRender component
+		loco::MeshRenderSystem::Component mesh_render = world.mesh_render.create(e);
+		loco::Mesh cube = loco::resource_manager.get<loco::Mesh>("loco/mesh/cube").duplicate();
+		world.mesh_render.set_mesh(mesh_render, cube);
+
+		// set Material
+		loco::Material mat = loco::resource_manager.get<loco::Material>("loco/material/uni_color").duplicate();
+		mat->set("u_color", loco::Renderer::UniformType::Vector4, (float*)&color[i]);
+		cube->materials[0] = mat;
+	}
+
+	return origin;
+}
 
 int _main_(int argc, char** argv)
 {
@@ -23,25 +64,19 @@ int _main_(int argc, char** argv)
 	loco::init(resource_root_path, "loco/");
 	loco::entry::set_window_size(loco::entry::WindowHandle{ 0 }, width, height);
 
-	// load sponza resources
+	// Create axis display
+	loco::Entity axis = create_axis(main_world, 2.0f, 0.2f);
+	loco::TransformSystem::Component axis_tf = main_world.transform.lookup(axis);
+	main_world.transform.set_local_matrix(axis_tf, Matrix4x4{ { { 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 2.0, 0.0, 1.0 } } });
+
+	// load sponza
 	loco::resource_manager.load_folder("sponza/");
-
-	// Create entities
-	loco::Entity e_1 = loco::entity_manager.create();
-	loco::Entity e_2 = loco::entity_manager.create();
-	loco::Entity e_3 = loco::entity_manager.create();
-	loco::Entity e_4 = loco::entity_manager.create();
-	loco::Entity e_5 = loco::entity_manager.create();
-
-	// Add transform component to each entities
-	loco::TransformSystem::Component tf_1 = main_world.transforms.create(e_1);
-	loco::TransformSystem::Component tf_2 = main_world.transforms.create(e_2);
-	loco::TransformSystem::Component tf_3 = main_world.transforms.create(e_3);
-	loco::TransformSystem::Component tf_4 = main_world.transforms.create(e_4);
-	loco::TransformSystem::Component tf_5 = main_world.transforms.create(e_5);
-
-	// set sponza materials
 	loco::Mesh sponza_mesh = loco::resource_manager.get<loco::Mesh>("sponza/sponza");
+
+	loco::Entity sponza_entity = loco::entity_manager.create();
+	loco::TransformSystem::Component sponza_tf = main_world.transform.create(sponza_entity);
+	loco::MeshRenderSystem::Component sponza_mr = main_world.mesh_render.create(sponza_entity);
+	main_world.mesh_render.set_mesh(sponza_mr, sponza_mesh);
 
 	sponza_mesh->materials[0]  = loco::resource_manager.get<loco::Material>("sponza/material/first_floor_base_arch");
 	sponza_mesh->materials[1]  = loco::resource_manager.get<loco::Material>("sponza/material/arch");
@@ -64,44 +99,7 @@ int _main_(int argc, char** argv)
 	sponza_mesh->materials[18] = loco::resource_manager.get<loco::Material>("sponza/material/base_ceiling");
 	sponza_mesh->materials[19] = loco::resource_manager.get<loco::Material>("sponza/material/bricks");
 
-	//loco::Mesh mesh = loco::resources.get<loco::Mesh>("loco/mesh/bunny");
 
-	// test load texture
-	loco::ResourceName res_name = loco::resource_manager.get_name("loco/texture/default");
-	loco::Texture texture1 = loco::resource_manager.get<loco::Texture>("loco/texture/default");
-	loco::Texture texture2 = loco::resource_manager.get<loco::Texture>(res_name);
-
-	// test load shaders
-	loco::Shader vertex_shader = loco::resource_manager.get<loco::Shader>("loco/shader/vs_default");
-	loco::Shader pixel_shader = loco::resource_manager.get<loco::Shader>("loco/shader/ps_default");
-
-	// test load material
-	loco::MeshRenderSystem::Component mesh_cp = main_world.mesh_renders.create(e_1);
-	main_world.mesh_renders.set_mesh(mesh_cp, sponza_mesh);
-		
-	// Create parent/child relations between the transform 
-	main_world.transforms.link(tf_2, tf_1);
-	main_world.transforms.link(tf_3, tf_2);
-	main_world.transforms.link(tf_4, tf_2);
-	main_world.transforms.link(tf_5, tf_2);
-	
-	// setting the local transform matrix for each transform component
-	main_world.transforms.set_local_matrix(tf_1, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1 } } });
-	main_world.transforms.set_local_matrix(tf_2, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 2, 0, 0, 1 } } });
-	main_world.transforms.set_local_matrix(tf_3, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 3, 0, 0, 1 } } });
-	main_world.transforms.set_local_matrix(tf_4, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 4, 0, 0, 1 } } });
-	main_world.transforms.set_local_matrix(tf_5, Matrix4x4{ { { 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 5, 0, 0, 1 } } });
-
-	// destroy a parent/child relation
-	main_world.transforms.destroy(e_2);
-	main_world.transforms.unlink(tf_3);
-
-	// get the world transform matrix 
-	Matrix4x4 tf_world_1 = main_world.transforms.world_matrix(tf_1);
-	//Matrix4x4 tf_world_2 = main_world.transforms.world_matrix(tf_2);
-	Matrix4x4 tf_world_3 = main_world.transforms.world_matrix(tf_3);
-	Matrix4x4 tf_world_4 = main_world.transforms.world_matrix(tf_4);
-	Matrix4x4 tf_world_5 = main_world.transforms.world_matrix(tf_5);
 
 	float at[3] = { 0.0f, 0.0f, 0.0f };
 	float eye[3] = { 0.0f, 0.0f, -35.0f };
@@ -186,7 +184,7 @@ int _main_(int argc, char** argv)
 				bx::mtxScale(mtx_sponza_scale, sponza_scale, sponza_scale, sponza_scale);
 				Matrix4x4 sponza_world_matrix;
 				memcpy(sponza_world_matrix.val, mtx_sponza_scale, sizeof(Matrix4x4));
-				main_world.transforms.set_local_matrix(tf_1, sponza_world_matrix);
+				//main_world.transform.set_local_matrix(tf_1, sponza_world_matrix);
 
 
 				main_world.update();
