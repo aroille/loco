@@ -24,7 +24,6 @@ namespace loco
 	void init(const char* resources_path, const char* default_resources_relativ_path);
 	void shutdown();
 
-	void render(const World& world);
 }
 
 #endif // LOCO_H_HEADER_GUARD

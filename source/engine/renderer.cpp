@@ -181,6 +181,18 @@ namespace loco
 	}
 
 	//==========================================================================
+	void Renderer::set_view_rect(uint8_t view_id, Viewport viewport)
+	{
+		bgfx::setViewRect(view_id, viewport.x, viewport.y, viewport.width, viewport.height);
+	}
+
+	//==========================================================================
+	void Renderer::set_view_transform(uint8_t view_id, const Matrix4x4& view, const Matrix4x4& proj)
+	{
+		bgfx::setViewTransform(view_id, (const void*)view.val, (const void*)proj.val);
+	}
+
+	//==========================================================================
 	void Renderer::bind_material(const MaterialData* material, const DefaultResources& default_resources)
 	{
 		const MaterialData* m = (material == nullptr) ? default_resources.material.get() : material;

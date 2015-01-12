@@ -1,8 +1,11 @@
 #include "world.h"
+#include "debug.h"
+#include "loco.h"
 
 namespace loco
 {
-	/// Synchronize the updated transform data of each system of the world
+	// Synchronize the updated transform data for each systems of the world
+	// (Only meshRender systems are updated by this function for the moment)
 	void batch_transform_sync(World& world)
 	{
 		TransformSystem::ComponentData data = world.transform._data;
@@ -18,7 +21,7 @@ namespace loco
 		}
 	}
 
-	// callback
+	// callback, return the world matrix of an entity
 	Matrix4x4& callback_transform_sync(World* world, Entity entity)
 	{
 		return world->transform.world_matrix(world->transform.lookup(entity));
@@ -32,6 +35,7 @@ namespace loco
 
 	void World::gc(const EntityManager& em)
 	{
+		camera.gc(em);
 		transform.gc(em);
 	}
 
@@ -40,5 +44,32 @@ namespace loco
 		batch_transform_sync(*this);
 	}
 
+
+	// Render a world
+	void render(const World& world, Entity camera, Viewport viewport)
+	{
+		int view_id = 0;
+
+		// Get camera component
+		CameraSystem::Component camera_cp = world.camera.lookup(camera);
+		TransformSystem::Component camera_tf = world.transform.lookup(camera);
+
+		LOCO_ASSERTF(world.camera.is_valid(camera_cp), LOCO_LOG, "Rendering issue, camera component is missing");
+		LOCO_ASSERTF(world.transform.is_valid(camera_tf), LOCO_LOG, "Rendering issue, camera transform is missing");
+
+		// Get view & proj matrix
+		float aspect_ratio = (float)viewport.width / (float)viewport.height;
+
+		Matrix4x4 proj_mtx = world.camera.projection_matrix(camera_cp, aspect_ratio);
+		Matrix4x4 view_mtx = world.transform.world_matrix(camera_tf);
+
+		// Apply view & proj matrix
+		renderer.set_view_rect(view_id, viewport);
+		renderer.set_view_transform(view_id, view_mtx, proj_mtx);
+
+		// submit draw call
+		MeshRenderSystem::ComponentData data = world.mesh_render._data;
+		renderer.batch_render(view_id, data.size, data.mesh, data.transform, resource_manager.get_default());
+	}
 
 } // loco

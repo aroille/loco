@@ -8,7 +8,7 @@
 
 #include <stdint.h>
 
-loco::World main_world;
+loco::World world;
 
 using loco::Matrix4x4;
 using loco::Vector4;
@@ -23,9 +23,9 @@ loco::Entity create_axis(loco::World& world, float length, float thickness)
 	float t = 0.5f * thickness;
 	float p = l + t;
 
-	loco::Vector3 position[4] = { { 0, 0, 0 }, { p, 0, 0 }, { 0, p, 0 }, { 0, 0, p } };
-	loco::Vector3 scale[4] = { { t, t, t }, { l, t, t }, { t, l, t }, { t, t, l } };
-	loco::Vector4 color[4] = { { 1, 1, 1, 1 }, { 1, 0, 0, 1 }, { 0, 1, 0, 1 }, { 0, 0, 1, 0 } };
+	Vector3 position[4] = { { 0, 0, 0 }, { p, 0, 0 }, { 0, p, 0 }, { 0, 0, p } };
+	Vector3 scale[4] = { { t, t, t }, { l, t, t }, { t, l, t }, { t, t, l } };
+	Vector4 color[4] = { { 1, 1, 1, 1 }, { 1, 0, 0, 1 }, { 0, 1, 0, 1 }, { 0, 0, 1, 0 } };
 
 	loco::Entity origin = loco::entity_manager.create();
 	loco::TransformSystem::Component origin_tf = world.transform.create(origin);
@@ -54,40 +54,25 @@ loco::Entity create_axis(loco::World& world, float length, float thickness)
 	return origin;
 }
 
-int _main_(int argc, char** argv)
+loco::Entity create_sponza(loco::World& world)
 {
-	// init loco
-	char* resource_root_path = argc > 1 ? argv[1] : "resources/";
-	uint32_t width = 1280;
-	uint32_t height = 720;
-
-	loco::init(resource_root_path, "loco/");
-	loco::entry::set_window_size(loco::entry::WindowHandle{ 0 }, width, height);
-
-	// Create axis display
-	loco::Entity axis = create_axis(main_world, 2.0f, 0.2f);
-	loco::TransformSystem::Component axis_tf = main_world.transform.lookup(axis);
-	main_world.transform.set_local_matrix(axis_tf, Matrix4x4{ { { 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 2.0, 0.0, 1.0 } } });
-
-	// load sponza
-	loco::resource_manager.load_folder("sponza/");
 	loco::Mesh sponza_mesh = loco::resource_manager.get<loco::Mesh>("sponza/sponza");
 
 	loco::Entity sponza_entity = loco::entity_manager.create();
-	loco::TransformSystem::Component sponza_tf = main_world.transform.create(sponza_entity);
-	loco::MeshRenderSystem::Component sponza_mr = main_world.mesh_render.create(sponza_entity);
-	main_world.mesh_render.set_mesh(sponza_mr, sponza_mesh);
+	loco::TransformSystem::Component sponza_tf = world.transform.create(sponza_entity);
+	loco::MeshRenderSystem::Component sponza_mr = world.mesh_render.create(sponza_entity);
+	world.mesh_render.set_mesh(sponza_mr, sponza_mesh);
 
-	sponza_mesh->materials[0]  = loco::resource_manager.get<loco::Material>("sponza/material/first_floor_base_arch");
-	sponza_mesh->materials[1]  = loco::resource_manager.get<loco::Material>("sponza/material/arch");
-	sponza_mesh->materials[2]  = loco::resource_manager.get<loco::Material>("sponza/material/bricks");
-	sponza_mesh->materials[3]  = loco::resource_manager.get<loco::Material>("sponza/material/window");
-	sponza_mesh->materials[4]  = loco::resource_manager.get<loco::Material>("sponza/material/corner_bricks");
-	sponza_mesh->materials[5]  = loco::resource_manager.get<loco::Material>("sponza/material/ceiling");
-	sponza_mesh->materials[6]  = loco::resource_manager.get<loco::Material>("sponza/material/door1");
-	sponza_mesh->materials[7]  = loco::resource_manager.get<loco::Material>("sponza/material/door2");
-	sponza_mesh->materials[8]  = loco::resource_manager.get<loco::Material>("sponza/material/bricks");
-	sponza_mesh->materials[9]  = loco::resource_manager.get<loco::Material>("sponza/material/arch");
+	sponza_mesh->materials[0] = loco::resource_manager.get<loco::Material>("sponza/material/first_floor_base_arch");
+	sponza_mesh->materials[1] = loco::resource_manager.get<loco::Material>("sponza/material/arch");
+	sponza_mesh->materials[2] = loco::resource_manager.get<loco::Material>("sponza/material/bricks");
+	sponza_mesh->materials[3] = loco::resource_manager.get<loco::Material>("sponza/material/window");
+	sponza_mesh->materials[4] = loco::resource_manager.get<loco::Material>("sponza/material/corner_bricks");
+	sponza_mesh->materials[5] = loco::resource_manager.get<loco::Material>("sponza/material/ceiling");
+	sponza_mesh->materials[6] = loco::resource_manager.get<loco::Material>("sponza/material/door1");
+	sponza_mesh->materials[7] = loco::resource_manager.get<loco::Material>("sponza/material/door2");
+	sponza_mesh->materials[8] = loco::resource_manager.get<loco::Material>("sponza/material/bricks");
+	sponza_mesh->materials[9] = loco::resource_manager.get<loco::Material>("sponza/material/arch");
 	sponza_mesh->materials[10] = loco::resource_manager.get<loco::Material>("sponza/material/corner_bricks");
 	sponza_mesh->materials[11] = loco::resource_manager.get<loco::Material>("sponza/material/base_column");
 	sponza_mesh->materials[12] = loco::resource_manager.get<loco::Material>("sponza/material/base_column");
@@ -99,10 +84,37 @@ int _main_(int argc, char** argv)
 	sponza_mesh->materials[18] = loco::resource_manager.get<loco::Material>("sponza/material/base_ceiling");
 	sponza_mesh->materials[19] = loco::resource_manager.get<loco::Material>("sponza/material/bricks");
 
+	return sponza_entity;
+}
 
 
-	float at[3] = { 0.0f, 0.0f, 0.0f };
-	float eye[3] = { 0.0f, 0.0f, -35.0f };
+int _main_(int argc, char** argv)
+{
+	// init loco
+	char* resource_root_path = argc > 1 ? argv[1] : "resources/";
+	uint32_t width = 1280;
+	uint32_t height = 720;
+
+	loco::init(resource_root_path, "loco/");
+	loco::entry::set_window_size(loco::entry::WindowHandle{ 0 }, width, height);
+
+	// Create axis display
+	loco::Entity axis = create_axis(world, 2.0f, 0.2f);
+	loco::TransformSystem::Component axis_tf = world.transform.lookup(axis);
+	world.transform.set_local_matrix(axis_tf, Matrix4x4{ { { 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 2.0, 0.0, 1.0 } } });
+
+	// Create sponza
+	loco::resource_manager.load_folder("sponza/");
+	loco::Entity sponza_entity = create_sponza(world);
+	loco::TransformSystem::Component sponza_tf = world.transform.lookup(sponza_entity);
+
+	// Create camera
+	loco::Entity camera = loco::entity_manager.create();
+	loco::CameraSystem::Component camera_cp = world.camera.create(camera);
+	loco::TransformSystem::Component camera_tf = world.transform.create(camera);
+
+	// Viewport
+	loco::Viewport viewport = { 0, 0, width, height };
 
 	// Set view 0 clear state.
 	bgfx::setViewClear(0
@@ -142,63 +154,39 @@ int _main_(int argc, char** argv)
 		loco::resource_manager.hot_reload<loco::Material>();
 		loco::resource_manager.hot_reload<loco::Mesh>();
 
-		float view[16];
-		float proj[16];
+		/// Update camera transform
+		Matrix4x4 view;
 		cameraUpdate(deltaTime, mouseState.m_mx, mouseState.m_my, !!mouseState.m_buttons[loco::entry::MouseButton::Right]);
-		bx::mtxLookAt(view, m_eye, m_at, m_up);
-		bx::mtxProj(proj, 60.0f, float(width) / float(height), 0.1f, 1000.0f);
+		bx::mtxLookAt((float*)&view, m_eye, m_at, m_up);
+		world.transform.set_local_matrix(camera_tf, view);
 
-		// Set view and projection matrix for view 0.
-		bgfx::setViewTransform(0, view, proj);
-
-		// Set view 0 default viewport.
-		bgfx::setViewRect(0, 0, 0, width, height);
 
 		// This dummy draw call is here to make sure that view 0 is cleared
 		// if no other draw calls are submitted to view 0.
 		bgfx::submit(0);
 
-		// Submit 11x11 cubes.
-		for (uint32_t yy = 0; yy < 1; ++yy)
-		{
-			for (uint32_t xx = 0; xx < 1; ++xx)
-			{
-				float mtx_pos[16];
-				bx::mtxRotateXY(mtx_pos, 0 + xx*0.21f, 0 + yy*0.37f);
-				mtx_pos[12] = -15.0f + float(xx)*3.0f;
-				mtx_pos[13] = -15.0f + float(yy)*3.0f;
-				mtx_pos[14] = 0.0f;
-
-				float mtx_scale[16];
-				float scale = 10.0f;
-				bx::mtxScale(mtx_scale, scale, scale, scale);
-
-				float mtx[16];
-				bx::mtxMul(mtx, mtx_scale, mtx_pos);
 				
-				//mat->set_shader(loco::resource_manager.get<loco::Shader>("loco/shader/vs_default"), loco::resource_manager.get<loco::Shader>("loco/shader/ps_default"));
+		//mat->set_shader(loco::resource_manager.get<loco::Shader>("loco/shader/vs_default"), loco::resource_manager.get<loco::Shader>("loco/shader/ps_default"));
 
-				float mtx_sponza_scale[16];
+		/*
+		float mtx_sponza_scale[16];
+		float sponza_scale = 1.0f + (float)fmod(time,1);
+		bx::mtxScale(mtx_sponza_scale, sponza_scale, sponza_scale, sponza_scale);
+		Matrix4x4 sponza_world_matrix;
+		memcpy(sponza_world_matrix.val, mtx_sponza_scale, sizeof(Matrix4x4));
+		world.transform.set_local_matrix(sponza_tf, sponza_world_matrix);
+		*/
 
-				float sponza_scale = 1.0f + fmod(time,1);
-				bx::mtxScale(mtx_sponza_scale, sponza_scale, sponza_scale, sponza_scale);
-				Matrix4x4 sponza_world_matrix;
-				memcpy(sponza_world_matrix.val, mtx_sponza_scale, sizeof(Matrix4x4));
-				//main_world.transform.set_local_matrix(tf_1, sponza_world_matrix);
+		float fov = 60.0f + ((float)fmod(time, 1))*40;
+		world.camera.set_fov(camera_cp, fov);
 
-
-				main_world.update();
-				loco::render(main_world);
-			}
-		}
-
+		world.update();
+		loco::render(world, camera, viewport);
 		
-
-		//loco::renderer::render(0, world, camera, viewport);
 		bgfx::frame();
 
 		/// garbage collector
-		main_world.gc(loco::entity_manager);
+		world.gc(loco::entity_manager);
 	}
 
 	loco::shutdown();

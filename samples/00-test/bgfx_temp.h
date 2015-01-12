@@ -163,7 +163,7 @@ void cameraReset()
 	m_horizontalAngle = 0.01f;
 	m_verticalAngle = 0.0f;
 	m_mouseSpeed = 0.0020f;
-	m_moveSpeed = 100.0f;
+	m_moveSpeed = 10.0f;
 	m_keys = 0;
 	m_mouseDown = false;
 }

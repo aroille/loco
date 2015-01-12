@@ -2,15 +2,17 @@
 #define WORLD_H_HEADER_GUARD
 
 #include "entity.h"
-#include "transform_system.h"
+#include "camera_system.h"
 #include "mesh_render_system.h"
+#include "transform_system.h"
 
 namespace loco
 {
 	struct World
 	{
-		TransformSystem transform;
+		CameraSystem camera;
 		MeshRenderSystem mesh_render;
+		TransformSystem transform;
 
 		World();
 
@@ -21,7 +23,7 @@ namespace loco
 		void update();
 	};
 
-
+	extern void render(const World& world, Entity camera, Viewport viewport);
 }
 
 #endif // WORLD_H_HEADER_GUARD

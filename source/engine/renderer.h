@@ -17,6 +17,15 @@ struct _name { \
 
 namespace loco
 {
+	struct Viewport
+	{
+		uint16_t x;
+		uint16_t y;
+		uint16_t width;
+		uint16_t height;
+	};
+
+
 	struct Memory;
 
 	namespace resource
@@ -45,6 +54,7 @@ namespace loco
 	class Renderer
 	{
 	public:
+
 		struct Type
 		{
 			/// Renderer type enumeration.
@@ -196,6 +206,12 @@ namespace loco
 
 		/// Destroy static index buffer.
 		void destroy_index_buffer(IndexBufferHandle handle);
+
+		/// Set viewport 
+		void set_view_rect(uint8_t view_id, Viewport viewport);
+
+		/// Set view and projection matrix
+		void set_view_transform(uint8_t view_id, const Matrix4x4& view_mtx, const Matrix4x4& proj_mtx);
 
 		/// Submit draw calls
 		///
