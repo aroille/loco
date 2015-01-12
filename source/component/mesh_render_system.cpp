@@ -22,6 +22,7 @@ namespace loco
 
 		Component c = _handle_mgr.create();
 
+		// expand data buffer if necessary
 		if ((c.index() + 1) >= _data.capacity)
 			allocate(_data.capacity * 2);
 

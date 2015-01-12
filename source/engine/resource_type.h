@@ -25,7 +25,7 @@ namespace resource{
 	/// In this case, a modification of a material will modify all the shared materials
 	/// \code
 	/// Material a = b;
-	/// a->set("tex_diffuse", tex_bricks); // modify the material a and b
+	/// a->set("tex_diffuse", tex_bricks); // modify a and b
 	///	\endcode
 	///
 	/// @remarks
@@ -41,7 +41,7 @@ namespace resource{
 		static Material invalid;
 
 		/// Create a new material from an existing one.
-		/// In this case each materials has its own data
+		/// In this case each materials has its own MaterialData
 		/// \code
 		/// Material a = b.duplicate();
 		/// a->set("tex_diffuse", tex_bricks); // modify only the material a

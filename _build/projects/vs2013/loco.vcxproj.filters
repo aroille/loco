@@ -120,6 +120,9 @@
     <ClInclude Include="..\..\..\source\component\system_common.h">
       <Filter>component</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\source\component\camera_system.h">
+      <Filter>component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\core\debug.cpp">
@@ -202,6 +205,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\engine\world.cpp">
       <Filter>engine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\component\camera_system.cpp">
+      <Filter>component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\source\component\camera_system.h" />
     <ClInclude Include="..\..\..\source\component\entity.h" />
     <ClInclude Include="..\..\..\source\component\mesh_render_system.h" />
     <ClInclude Include="..\..\..\source\component\system_common.h" />
@@ -55,6 +56,7 @@
     <ClInclude Include="..\..\..\source\entry\input.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\source\component\camera_system.cpp" />
     <ClCompile Include="..\..\..\source\component\mesh_render_system.cpp" />
     <ClCompile Include="..\..\..\source\component\transform_system.cpp" />
     <ClCompile Include="..\..\..\source\core\debug.cpp" />

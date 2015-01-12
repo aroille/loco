@@ -23,6 +23,7 @@
 #define LOCO_LOG_RESOURCE_MANAGER		"ResourceManager"
 #define LOCO_LOG_TRANSFORM_SYSTEM		"TransformSystem"
 #define LOCO_LOG_MESHRENDER_SYSTEM		"MeshRenderSystem"
+#define LOCO_LOG_CAMERA_SYSTEM			"CameraSystem"
 
 #endif // DEFINES_H_HEADER_GUARD
 

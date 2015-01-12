@@ -74,7 +74,7 @@ namespace loco
 		_handle_mgr.destroy(c);
 	}
 
-	TransformSystem::Component TransformSystem::lookup(Entity e)
+	TransformSystem::Component TransformSystem::lookup(Entity e) const
 	{
 		auto it = _map.find(e.id);
 		return (it == _map.end()) ? TransformSystem::Component{ -1 } : it->second;
@@ -145,17 +145,17 @@ namespace loco
 		transform(Matrix4x4::identity, child);
 	}
 
-	bool TransformSystem::is_valid(Component c)
+	bool TransformSystem::is_valid(Component c) const
 	{
 		return _handle_mgr.is_alive(c);
 	}
 
-	bool TransformSystem::is_valid(DataIndex i)
+	bool TransformSystem::is_valid(DataIndex i) const
 	{
 		return (i.i != DataIndex::invalid.i);
 	}
 
-	Matrix4x4 TransformSystem::local_matrix(Component c)
+	Matrix4x4 TransformSystem::local_matrix(Component c) const
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_LOG_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(c);
@@ -172,35 +172,35 @@ namespace loco
 		transform(parent_tm, i);
 	}
 
-	Matrix4x4 TransformSystem::world_matrix(Component c)
+	Matrix4x4 TransformSystem::world_matrix(Component c) const
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_LOG_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(c);
 		return _data.world[i.i];
 	}
 
-	TransformSystem::Component TransformSystem::parent(Component c)
+	TransformSystem::Component TransformSystem::parent(Component c) const
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_LOG_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(c);
 		return _data.component[_data.parent[i.i].i];
 	}
 
-	TransformSystem::Component TransformSystem::first_child(Component c)
+	TransformSystem::Component TransformSystem::first_child(Component c) const
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_LOG_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(c);
 		return _data.component[_data.first_child[i.i].i];
 	}
 
-	TransformSystem::Component TransformSystem::next_sibling(Component c)
+	TransformSystem::Component TransformSystem::next_sibling(Component c) const
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_LOG_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(c);
 		return _data.component[_data.next_sibling[i.i].i];
 	}
 
-	TransformSystem::Component TransformSystem::prev_sibling(Component c)
+	TransformSystem::Component TransformSystem::prev_sibling(Component c) const
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_LOG_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(c);

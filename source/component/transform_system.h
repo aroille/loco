@@ -11,7 +11,11 @@ namespace loco
 	using namespace math;
 
 	/// Manager for transform components
+	/// (One transformSystem per world)
+	///
+	/// @remark
 	/// Once data capacity reached, capacity will automatically doubled
+	///
 	class TransformSystem
 	{
 		public:
@@ -25,10 +29,10 @@ namespace loco
 			Component create(Entity e);
 
 			/// Get transform component attached to entity e
-			Component lookup(Entity e);
+			Component lookup(Entity e) const;
 
 			/// Check if component c is valid
-			bool is_valid(Component c);
+			bool is_valid(Component c) const;
 
 			/// Free the transform component attached to entity e
 			void destroy(Entity e);
@@ -40,25 +44,25 @@ namespace loco
 			void unlink(Component child);
 
 			/// Get local transform matrix
-			Matrix4x4 local_matrix(Component c);
+			Matrix4x4 local_matrix(Component c) const;
 
 			/// Set local transform matrix (it also updates children instances)
 			void set_local_matrix(Component c, const Matrix4x4& m);
 
 			/// Get world transform matrix 
-			Matrix4x4 world_matrix(Component c);
+			Matrix4x4 world_matrix(Component c) const;
 
 			/// Get parent
-			Component parent(Component c);
+			Component parent(Component c) const;
 
 			/// Get first child
-			Component first_child(Component c);
+			Component first_child(Component c) const;
 
 			/// Get next sibling
-			Component next_sibling(Component c);
+			Component next_sibling(Component c) const;
 
 			/// Get previous sibling
-			Component prev_sibling(Component c);
+			Component prev_sibling(Component c) const;
 
 			/// Garbage collector
 			void gc(const EntityManager& em);
@@ -103,13 +107,13 @@ namespace loco
 			void unlink(DataIndex child);
 
 			/// Check if component c is valid
-			bool is_valid(DataIndex c);
+			bool is_valid(DataIndex c) const;
 
 			/// Increase the capicity of the data buffer to an component count of sz
 			void allocate(unsigned sz);
 
 			/// Return a _data index from a component
-			inline DataIndex data_index(Component c) 
+			inline DataIndex data_index(Component c) const
 			{ 
 				return _data.lut[c.index()]; 
 			};

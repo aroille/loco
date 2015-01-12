@@ -16,6 +16,7 @@ namespace loco
 	struct World;
 
 	/// Manager of mesh render components
+	/// (one meshRenderSystem per world)
 	class MeshRenderSystem
 	{
 	public:
@@ -59,7 +60,7 @@ namespace loco
 			Mesh*		mesh;			///< Mesh
 			Component*	component;		///< Owner component
 
-			unsigned* lut;				///< Look up table : Component/DataIndex 
+			unsigned* lut;				///< Look up table : Component/Data_index 
 		};
 		ComponentData _data;
 
