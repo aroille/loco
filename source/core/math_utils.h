@@ -3,7 +3,7 @@
 
 #include <stdlib.h>
 
-int random_in_range(int start, int end)
+inline int random_in_range(int start, int end)
 {
 	return rand() % (end-start+1) + start;
 }
