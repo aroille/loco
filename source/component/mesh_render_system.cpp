@@ -1,6 +1,8 @@
 #include "mesh_render_system.h"
 #include "debug.h"
 
+#define LOCO_MESHRENDER_SYSTEM "MeshRenderSystem" // log module string
+
 namespace loco
 {
 	MeshRenderSystem::MeshRenderSystem(World* world, CallbackTransformSync callback_transform_sync)
@@ -18,7 +20,7 @@ namespace loco
 
 	MeshRenderSystem::Component MeshRenderSystem::create(Entity e)
 	{
-		LOCO_ASSERTF(!is_valid(lookup(e)), LOCO_LOG_MESHRENDER_SYSTEM, "An entity can't have several MeshRender components in the same world");
+		LOCO_ASSERTF(!is_valid(lookup(e)), LOCO_MESHRENDER_SYSTEM, "An entity can't have several MeshRender components in the same world");
 
 		Component c = _handle_mgr.create();
 
@@ -54,7 +56,7 @@ namespace loco
 	void MeshRenderSystem::destroy(Entity e)
 	{
 		Component c = lookup(e);
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_MESHRENDER_SYSTEM, "MeshRender component not found for entity (id:%s)", e.id);
+		LOCO_ASSERTF(is_valid(c), LOCO_MESHRENDER_SYSTEM, "MeshRender component not found for entity (id:%s)", e.id);
 		unsigned pos = data_index(c);
 
 		_map.erase(e.id);
@@ -69,7 +71,7 @@ namespace loco
 
 	void MeshRenderSystem::set_mesh(Component c, const Mesh& mesh)
 	{
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_MESHRENDER_SYSTEM, "MeshRender component not valid");
+		LOCO_ASSERTF(is_valid(c), LOCO_MESHRENDER_SYSTEM, "MeshRender component not valid");
 		unsigned i = data_index(c);
 		_data.mesh[i] = mesh;
 	}

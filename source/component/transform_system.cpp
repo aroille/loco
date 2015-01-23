@@ -2,6 +2,8 @@
 #include "debug.h"
 #include "math_utils.h"
 
+#define LOCO_TRANSFORM_SYSTEM "TransformSystem" // log module string
+
 namespace loco
 {
 	const TransformSystem::DataIndex TransformSystem::DataIndex::invalid = { 0xffffffff };
@@ -20,7 +22,7 @@ namespace loco
 
 	TransformSystem::Component TransformSystem::create(Entity e)
 	{
-		LOCO_ASSERTF(!is_valid(lookup(e)), LOCO_LOG_TRANSFORM_SYSTEM, "An entity can't have several transform components in the same world");
+		LOCO_ASSERTF(!is_valid(lookup(e)), LOCO_TRANSFORM_SYSTEM, "An entity can't have several transform components in the same world");
 
 		Component c = _handle_mgr.create();
 
@@ -49,7 +51,7 @@ namespace loco
 	void TransformSystem::destroy(Entity e)
 	{
 		Component c = lookup(e);
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_TRANSFORM_SYSTEM, "TransformComponent not found for entity (id:%s)", e.id);
+		LOCO_ASSERTF(is_valid(c), LOCO_TRANSFORM_SYSTEM, "TransformComponent not found for entity (id:%s)", e.id);
 		_map.erase(e.id);
 
 		DataIndex i = data_index(c);
@@ -82,8 +84,8 @@ namespace loco
 
 	void TransformSystem::link(Component child, Component parent)
 	{
-		LOCO_ASSERTF(is_valid(child), LOCO_LOG_TRANSFORM_SYSTEM, "Children Transform component not valid");
-		LOCO_ASSERTF(is_valid(parent), LOCO_LOG_TRANSFORM_SYSTEM, "Parent Transform component not valid");
+		LOCO_ASSERTF(is_valid(child), LOCO_TRANSFORM_SYSTEM, "Children Transform component not valid");
+		LOCO_ASSERTF(is_valid(parent), LOCO_TRANSFORM_SYSTEM, "Parent Transform component not valid");
 
 		DataIndex child_i = data_index(child);
 		DataIndex parent_i = data_index(parent);
@@ -109,7 +111,7 @@ namespace loco
 
 	void TransformSystem::unlink(Component child)
 	{
-		LOCO_ASSERTF(is_valid(child), LOCO_LOG_TRANSFORM_SYSTEM, "Transform component not valid");
+		LOCO_ASSERTF(is_valid(child), LOCO_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(child);
 		unlink(i);
 	}
@@ -157,14 +159,14 @@ namespace loco
 
 	Matrix4x4 TransformSystem::local_matrix(Component c) const
 	{
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_TRANSFORM_SYSTEM, "Transform component not valid");
+		LOCO_ASSERTF(is_valid(c), LOCO_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(c);
 		return _data.local[i.i];
 	}
 
 	void TransformSystem::set_local_matrix(Component c, const Matrix4x4& m)
 	{
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_TRANSFORM_SYSTEM, "Transform component not valid");
+		LOCO_ASSERTF(is_valid(c), LOCO_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(c);
 		_data.local[i.i] = m;
 		DataIndex parent = _data.parent[i.i];
@@ -174,35 +176,35 @@ namespace loco
 
 	Matrix4x4 TransformSystem::world_matrix(Component c) const
 	{
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_TRANSFORM_SYSTEM, "Transform component not valid");
+		LOCO_ASSERTF(is_valid(c), LOCO_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(c);
 		return _data.world[i.i];
 	}
 
 	TransformSystem::Component TransformSystem::parent(Component c) const
 	{
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_TRANSFORM_SYSTEM, "Transform component not valid");
+		LOCO_ASSERTF(is_valid(c), LOCO_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(c);
 		return _data.component[_data.parent[i.i].i];
 	}
 
 	TransformSystem::Component TransformSystem::first_child(Component c) const
 	{
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_TRANSFORM_SYSTEM, "Transform component not valid");
+		LOCO_ASSERTF(is_valid(c), LOCO_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(c);
 		return _data.component[_data.first_child[i.i].i];
 	}
 
 	TransformSystem::Component TransformSystem::next_sibling(Component c) const
 	{
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_TRANSFORM_SYSTEM, "Transform component not valid");
+		LOCO_ASSERTF(is_valid(c), LOCO_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(c);
 		return _data.component[_data.next_sibling[i.i].i];
 	}
 
 	TransformSystem::Component TransformSystem::prev_sibling(Component c) const
 	{
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_TRANSFORM_SYSTEM, "Transform component not valid");
+		LOCO_ASSERTF(is_valid(c), LOCO_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(c);
 		return _data.component[_data.prev_sibling[i.i].i];
 	}

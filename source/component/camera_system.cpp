@@ -5,6 +5,8 @@
 
 #include <bx/fpumath.h>
 
+#define LOCO_CAMERA_SYSTEM	"CameraSystem" // log module string
+
 namespace loco
 {
 
@@ -23,7 +25,7 @@ namespace loco
 
 	CameraSystem::Component CameraSystem::create(Entity e)
 	{
-		LOCO_ASSERTF(!is_valid(lookup(e)), LOCO_LOG_CAMERA_SYSTEM, "An entity can't have several Camera components in the same world");
+		LOCO_ASSERTF(!is_valid(lookup(e)), LOCO_CAMERA_SYSTEM, "An entity can't have several Camera components in the same world");
 
 		Component c = _handle_mgr.create();
 
@@ -65,7 +67,7 @@ namespace loco
 	void CameraSystem::destroy(Entity e)
 	{
 		Component c = lookup(e);
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_CAMERA_SYSTEM, "Camera component not found for entity (id:%s)", e.id);
+		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not found for entity (id:%s)", e.id);
 		unsigned pos = data_index(c);
 
 		_map.erase(e.id);
@@ -133,77 +135,77 @@ namespace loco
 
 	CameraSystem::ProjectionType::Enum CameraSystem::projection_type(Component c) const
 	{
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_CAMERA_SYSTEM, "Camera component not valid");
+		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		return _data.param[i].proj;
 	}
 
 	void CameraSystem::set_projection_type(Component c, ProjectionType::Enum p)
 	{
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_CAMERA_SYSTEM, "Camera component not valid");
+		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		_data.param[i].proj = p;
 	}
 
 	float CameraSystem::near_distance(Component c) const
 	{
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_CAMERA_SYSTEM, "Camera component not valid");
+		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		return _data.param[i].near_distance;
 	}
 
 	void CameraSystem::set_near_distance(Component c, float d)
 	{
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_CAMERA_SYSTEM, "Camera component not valid");
+		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		_data.param[i].near_distance = d;
 	}
 
 	float CameraSystem::far_distance(Component c) const
 	{
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_CAMERA_SYSTEM, "Camera component not valid");
+		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		return _data.param[i].far_distance;
 	}
 
 	void CameraSystem::set_far_distance(Component c, float d)
 	{
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_CAMERA_SYSTEM, "Camera component not valid");
+		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		_data.param[i].far_distance = d;
 	}
 
 	float CameraSystem::fov(Component c) const
 	{
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_CAMERA_SYSTEM, "Camera component not valid");
+		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		return _data.param[i].vertical_fov;
 	}
 
 	void CameraSystem::set_fov(Component c, float fov)
 	{
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_CAMERA_SYSTEM, "Camera component not valid");
+		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		_data.param[i].vertical_fov = fov;
 	}
 
 	float CameraSystem::ortho_size(Component c) const
 	{
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_CAMERA_SYSTEM, "Camera component not valid");
+		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		return _data.param[i].size;
 	}
 
 	void CameraSystem::set_ortho_size(Component c, float size)
 	{
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_CAMERA_SYSTEM, "Camera component not valid");
+		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		_data.param[i].size = size;
 	}
 
 	Matrix4x4 CameraSystem::projection_matrix(Component c, float aspect_ratio) const
 	{
-		LOCO_ASSERTF(is_valid(c), LOCO_LOG_CAMERA_SYSTEM, "Camera component not valid");
+		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		CameraParameters& p = _data.param[i];
 
