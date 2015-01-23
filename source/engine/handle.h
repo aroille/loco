@@ -2,7 +2,8 @@
 #define HANDLE_H_HEADER_GUARD
 
 #include "debug.h"
-#include <stdint.h>
+#include "type.h"
+
 #include <deque>
 #include <vector>
 
@@ -90,12 +91,12 @@ namespace loco
 	};
 
 	//==========================================================================
-	typedef GenericHandle<uint32_t, 24, 8> HandleI24G8;
-	typedef GenericHandleManager<HandleI24G8, uint32_t, uint8_t> HandleManagerI24G8;
+	typedef GenericHandle<uint32, 24, 8> HandleI24G8;
+	typedef GenericHandleManager<HandleI24G8, uint32, uint8> HandleManagerI24G8;
 
 	//==========================================================================
-	typedef GenericHandle<uint16_t, 8, 8> HandleI8G8;
-	typedef GenericHandleManager<HandleI8G8, uint8_t, uint8_t> HandleManagerI8G8;
+	typedef GenericHandle<uint16, 8, 8> HandleI8G8;
+	typedef GenericHandleManager<HandleI8G8, uint8, uint8> HandleManagerI8G8;
 }
 
 #endif // HANDLE_H_HEADER_GUARD

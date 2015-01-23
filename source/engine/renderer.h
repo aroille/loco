@@ -2,15 +2,27 @@
 #define RENDERER_H_HEADER_GUARD
 
 #include "math_types.h"
+#include "type.h"
 
-#include <stdint.h> // uint16_t
 #include <vector>
 #include <map>
+
+#define LOCO_TEXTURE_U_MIRROR			UINT32_C(0x00000001)
+#define LOCO_TEXTURE_U_CLAMP            UINT32_C(0x00000002)
+#define LOCO_TEXTURE_V_MIRROR           UINT32_C(0x00000004)
+#define LOCO_TEXTURE_V_CLAMP            UINT32_C(0x00000008)
+#define LOCO_TEXTURE_W_MIRROR           UINT32_C(0x00000010)
+#define LOCO_TEXTURE_W_CLAMP            UINT32_C(0x00000020)
+#define LOCO_TEXTURE_MIN_POINT          UINT32_C(0x00000040)
+#define LOCO_TEXTURE_MIN_ANISOTROPIC    UINT32_C(0x00000080)
+#define LOCO_TEXTURE_MAG_POINT          UINT32_C(0x00000100)
+#define LOCO_TEXTURE_MAG_ANISOTROPIC    UINT32_C(0x00000200)
+#define LOCO_TEXTURE_MIP_POINT          UINT32_C(0x00000400)
 
 ///
 #define LOCO_RENDERER_HANDLE(_name) \
 struct _name { \
-	uint16_t idx; \
+	uint16 idx; \
 	static _name invalid; \
 	bool operator==(_name const& in) const; \
 };
@@ -19,10 +31,10 @@ namespace loco
 {
 	struct Viewport
 	{
-		uint16_t x;
-		uint16_t y;
-		uint16_t width;
-		uint16_t height;
+		uint16 x;
+		uint16 y;
+		uint16 width;
+		uint16 height;
 	};
 
 
@@ -154,7 +166,7 @@ namespace loco
 		LOCO_RENDERER_HANDLE(UniformHandle);
 
 		/// Initialize renderer
-		void init();
+		void init(Renderer::Type::Enum renderer_type);
 
 		/// Shutdown renderer
 		void shutdown();
@@ -167,6 +179,9 @@ namespace loco
 
 		/// Set Main window size
 		void reset(unsigned width, unsigned height);
+
+		/// Switch render buffer
+		void frame();
 
 		/// Return shader_extention name (according to the current backend)
 		inline const char* shader_extention() { return _shader_extention; }
@@ -208,10 +223,10 @@ namespace loco
 		void destroy_index_buffer(IndexBufferHandle handle);
 
 		/// Set viewport 
-		void set_view_rect(uint8_t view_id, Viewport viewport);
+		void set_view_rect(uint8 view_id, Viewport viewport);
 
 		/// Set view and projection matrix
-		void set_view_transform(uint8_t view_id, const Matrix4x4& view_mtx, const Matrix4x4& proj_mtx);
+		void set_view_transform(uint8 view_id, const Matrix4x4& view_mtx, const Matrix4x4& proj_mtx);
 
 		/// Submit draw calls
 		///
@@ -221,7 +236,7 @@ namespace loco
 		/// @param transforms Array of mesh world transform matrix
 		/// @param default_resources Default resources use in case of invalid resources
 		///
-		void batch_render(uint8_t view_id, uint32_t count, const Mesh* meshes, const Matrix4x4* transforms, const DefaultResources& default_resources);
+		void batch_render(uint8 view_id, uint32_t count, const Mesh* meshes, const Matrix4x4* transforms, const DefaultResources& default_resources);
 
 	private:
 		/// Bind a material
@@ -229,7 +244,7 @@ namespace loco
 
 	private:
 		char _shader_extention[16];						///< shader extention name (according to the current backend)
-		std::map<uint32_t, ProgramHandle> _programs;	///< key create from vertex and pixel shader handles
+		std::map<uint32, ProgramHandle> _programs;	///< key create from vertex and pixel shader handles
 	};
 }
 

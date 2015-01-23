@@ -11,10 +11,12 @@
 #include "file_utils.h"
 #include "loco.h"
 #include "memory_utils.h"
+#include "type.h"
 
 #include <string>
 #include <list>
 #include <map>
+
 
 namespace loco{
 namespace resource{
@@ -52,31 +54,31 @@ namespace resource{
 		strcpy(resource_path, loco::default_resource_relativ_path);
 		strcat(resource_path, "shader/vs_default");
 		_default_resources.vertex_shader = loco::resource_manager.get<Shader>(resource_path);
-		LOCO_ASSERTF(!(_default_resources.vertex_shader == Shader::invalid), LOCO_LOG_RENDERER, "Can't load default vertex shader %s", resource_path);
+		LOCO_ASSERTF(!(_default_resources.vertex_shader == Shader::invalid), LOCO_RESOURCE_MANAGER, "Can't load default vertex shader %s", resource_path);
 
 		// init default pixel shader
 		strcpy(resource_path, loco::default_resource_relativ_path);
 		strcat(resource_path, "shader/ps_default");
 		_default_resources.pixel_shader = loco::resource_manager.get<Shader>(resource_path);
-		LOCO_ASSERTF(!(_default_resources.pixel_shader == Shader::invalid), LOCO_LOG_RENDERER, "Can't load default pixel shader %s", resource_path);
+		LOCO_ASSERTF(!(_default_resources.pixel_shader == Shader::invalid), LOCO_RESOURCE_MANAGER, "Can't load default pixel shader %s", resource_path);
 
 		// init default texture
 		strcpy(resource_path, loco::default_resource_relativ_path);
 		strcat(resource_path, "texture/default");
 		_default_resources.texture = loco::resource_manager.get<Texture>(resource_path);
-		LOCO_ASSERTF(!(_default_resources.texture == Texture::invalid), LOCO_LOG_RENDERER, "Can't load default texture %s", resource_path);
+		LOCO_ASSERTF(!(_default_resources.texture == Texture::invalid), LOCO_RESOURCE_MANAGER, "Can't load default texture %s", resource_path);
 
 		// init default material
 		strcpy(resource_path, loco::default_resource_relativ_path);
 		strcat(resource_path, "material/default");
 		_default_resources.material = loco::resource_manager.get<Material>(resource_path);
-		LOCO_ASSERTF(!(_default_resources.material == Material::invalid), LOCO_LOG_RENDERER, "Can't load default material %s", resource_path);
+		LOCO_ASSERTF(!(_default_resources.material == Material::invalid), LOCO_RESOURCE_MANAGER, "Can't load default material %s", resource_path);
 
 		// init default mesh
 		strcpy(resource_path, loco::default_resource_relativ_path);
 		strcat(resource_path, "mesh/bunny");
 		_default_resources.mesh = loco::resource_manager.get<Mesh>(resource_path);
-		LOCO_ASSERTF(!(_default_resources.mesh == Mesh::invalid), LOCO_LOG_RENDERER, "Can't load default mesh %s", resource_path);
+		LOCO_ASSERTF(!(_default_resources.mesh == Mesh::invalid), LOCO_RESOURCE_MANAGER, "Can't load default mesh %s", resource_path);
 
 		_default_resources_init = true;
 	}
@@ -89,7 +91,7 @@ namespace resource{
 		auto fi = _files.find(root_folder);
 		if ((fi != _files.cend()))
 		{
-			LOCO_ASSERTF(false, LOCO_LOG_RESOURCE_MANAGER, "Loading of a folder already loaded : %s", folder_path);
+			LOCO_ASSERTF(false, LOCO_RESOURCE_MANAGER, "Loading of a folder already loaded : %s", folder_path);
 			return 0;
 		}
 
@@ -156,7 +158,7 @@ namespace resource{
 		auto folder_files_it = _files.find(folder_path);
 		if ((folder_files_it == _files.cend()))
 		{
-			LOCO_ASSERTF(false, LOCO_LOG_RESOURCE_MANAGER, "Unloading of a folder not loaded : %s", folder_path);
+			LOCO_ASSERTF(false, LOCO_RESOURCE_MANAGER, "Unloading of a folder not loaded : %s", folder_path);
 			return false;
 		}
 
@@ -176,13 +178,13 @@ namespace resource{
 	//==========================================================================
 	bool ResourceManager::load_resource(ResourceInfo& ri, const HashedString& root_folder)
 	{
-		log.info(LOCO_LOG_RESOURCE_MANAGER, "Loading %s", ri.file_info.path);
+		log.info(LOCO_RESOURCE_MANAGER, "Loading %s", ri.file_info.path);
 
 		// if resource already loaded, unload previous resource version
 		auto fi = _files[root_folder].find(ri.id);
 		if ((fi != _files[root_folder].end()))
 		{
-			LOCO_ASSERTF(false, LOCO_LOG_RESOURCE_MANAGER, "The following resource is already loaded : %s", ri.file_info.path);
+			LOCO_ASSERTF(false, LOCO_RESOURCE_MANAGER, "The following resource is already loaded : %s", ri.file_info.path);
 			return false;
 		}
 
@@ -194,7 +196,7 @@ namespace resource{
 		}
 		else
 		{
-			log.error(LOCO_LOG_RESOURCE_MANAGER, "File reading fail : %s", ri.file_info.path);
+			log.error(LOCO_RESOURCE_MANAGER, "File reading fail : %s", ri.file_info.path);
 		}
 
 		return read_success;
@@ -207,7 +209,7 @@ namespace resource{
 		auto fi = _files[root_folder].find(id);
 		if ((fi == _files[root_folder].end()))
 		{
-			LOCO_ASSERTF(false, LOCO_LOG_RESOURCE_MANAGER, "Unloading a resource not loaded : (%d,&d,%d)", id.name, id.type, root_folder);
+			LOCO_ASSERTF(false, LOCO_RESOURCE_MANAGER, "Unloading a resource not loaded : (%d,&d,%d)", id.name, id.type, root_folder);
 			return false;
 		}
 
@@ -231,7 +233,7 @@ namespace resource{
 
 		size_t path_length = strlen(fi.path);
 		size_t ext_length = strlen(fi.extention);
-		uint32_t size_to_hash = (uint32_t)(path_length - resource_root_path_length - ext_length - 1);
+		uint32 size_to_hash = (uint32)(path_length - resource_root_path_length - ext_length - 1);
 
 		id.name = murmur_hash_64(fi.path + resource_root_path_length, size_to_hash);
 
@@ -280,7 +282,7 @@ namespace resource{
 			break;
 
 		default:
-			LOCO_ASSERTF(false, LOCO_LOG_RESOURCE_MANAGER, "Resources of type %d are not handled by the resource manager", id.type);
+			LOCO_ASSERTF(false, LOCO_RESOURCE_MANAGER, "Resources of type %d are not handled by the resource manager", id.type);
 		}
 	}
 
@@ -306,7 +308,7 @@ namespace resource{
 			break;
 
 		default:
-			LOCO_ASSERTF(false, LOCO_LOG_RESOURCE_MANAGER, "Resources of type %d are not handled by the resource manager", id.type);
+			LOCO_ASSERTF(false, LOCO_RESOURCE_MANAGER, "Resources of type %d are not handled by the resource manager", id.type);
 		}
 	}
 
@@ -332,7 +334,7 @@ namespace resource{
 			break;
 
 		default:
-			LOCO_ASSERTF(false, LOCO_LOG_RESOURCE_MANAGER, "Resources of type %d are not handled by the resource manager", id.type);
+			LOCO_ASSERTF(false, LOCO_RESOURCE_MANAGER, "Resources of type %d are not handled by the resource manager", id.type);
 		}
 	}
 

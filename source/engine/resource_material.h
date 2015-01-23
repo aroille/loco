@@ -31,8 +31,8 @@ namespace resource
 
 		if (!load_success)
 		{
-			LOCO_ASSERTF(_default_resources_init, LOCO_LOG_RESOURCE_MANAGER, "The default material is not available.");
-			log.error(LOCO_LOG_RESOURCE_MANAGER, "Use of default material");
+			LOCO_ASSERTF(_default_resources_init, LOCO_RESOURCE_MANAGER, "The default material is not available.");
+			log.error(LOCO_RESOURCE_MANAGER, "Use of default material");
 			delete mat;
 			return _default_resources.material.duplicate();
 		}
@@ -51,8 +51,8 @@ namespace resource
 
 		if (!load_success)
 		{
-			LOCO_ASSERTF(_default_resources_init, LOCO_LOG_RESOURCE_MANAGER, "The default material is not available.");
-			log.error(LOCO_LOG_RESOURCE_MANAGER, "Use of default material");
+			LOCO_ASSERTF(_default_resources_init, LOCO_RESOURCE_MANAGER, "The default material is not available.");
+			log.error(LOCO_RESOURCE_MANAGER, "Use of default material");
 			*(current.get()) = *(_default_resources.material.get());
 		}
 

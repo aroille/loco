@@ -1,6 +1,7 @@
 #include "world.h"
 #include "debug.h"
 #include "loco.h"
+#include "resource_manager.h"
 
 namespace loco
 {
@@ -48,14 +49,14 @@ namespace loco
 	// Render a world
 	void render(const World& world, Entity camera, Viewport viewport)
 	{
-		int view_id = 0;
+		uint8 view_id = 0;
 
 		// Get camera component
 		CameraSystem::Component camera_cp = world.camera.lookup(camera);
 		TransformSystem::Component camera_tf = world.transform.lookup(camera);
 
-		LOCO_ASSERTF(world.camera.is_valid(camera_cp), LOCO_LOG, "Rendering issue, camera component is missing");
-		LOCO_ASSERTF(world.transform.is_valid(camera_tf), LOCO_LOG, "Rendering issue, camera transform is missing");
+		LOCO_ASSERTF(world.camera.is_valid(camera_cp), "", "Rendering issue, camera component is missing");
+		LOCO_ASSERTF(world.transform.is_valid(camera_tf), "", "Rendering issue, camera transform is missing");
 
 		// Get view & proj matrix
 		float aspect_ratio = (float)viewport.width / (float)viewport.height;

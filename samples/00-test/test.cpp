@@ -1,21 +1,18 @@
 
 #include "loco.h"
+#include "resource_manager.h"
+#include "timer.h"
+#include "world.h"
+#include "type.h"
 #include "entry.h"
 
-#include <bgfxplatform.h>
-#include "bgfx_temp.h"
-#include <bx/timer.h>
+#include <bx/fpumath.h>
+#include "bgfx.h" //#include "bgfx_temp.h"
 
-#include <stdint.h>
+using namespace loco::math;
 
-loco::World world;
-
-using loco::Matrix4x4;
-using loco::Vector4;
-using loco::Vector3;
-
-bgfx::VertexDecl PosColorVertex::ms_decl;
-
+static loco::World world;
+static loco::Entity camera;
 
 loco::Entity create_axis(loco::World& world, float length, float thickness)
 {
@@ -87,17 +84,8 @@ loco::Entity create_sponza(loco::World& world)
 	return sponza_entity;
 }
 
-
-int _main_(int argc, char** argv)
+void init_scene()
 {
-	// init loco
-	char* resource_root_path = argc > 1 ? argv[1] : "resources/";
-	uint32_t width = 1280;
-	uint32_t height = 720;
-
-	loco::init(resource_root_path, "loco/");
-	loco::entry::set_window_size(loco::entry::WindowHandle{ 0 }, width, height);
-
 	// Create axis display
 	loco::Entity axis = create_axis(world, 2.0f, 0.2f);
 	loco::TransformSystem::Component axis_tf = world.transform.lookup(axis);
@@ -109,12 +97,9 @@ int _main_(int argc, char** argv)
 	loco::TransformSystem::Component sponza_tf = world.transform.lookup(sponza_entity);
 
 	// Create camera
-	loco::Entity camera = loco::entity_manager.create();
+	camera = loco::entity_manager.create();
 	loco::CameraSystem::Component camera_cp = world.camera.create(camera);
 	loco::TransformSystem::Component camera_tf = world.transform.create(camera);
-
-	// Viewport
-	loco::Viewport viewport = { 0, 0, width, height };
 
 	// Set view 0 clear state.
 	bgfx::setViewClear(0
@@ -123,73 +108,130 @@ int _main_(int argc, char** argv)
 		, 1.0f
 		, 0
 		);
+}
 
+void camera_update(float delta_time, loco::World& world, loco::Entity camera, loco::GameControllerInput* controller)
+{
+	// init static variables
+	static float cam_move_speed = 5.0f;
+	static float cam_rotation_speed = 0.5f * 3.14f;
 
-	loco::cmdAdd("move", cmdMove);
-	loco::inputAddBindings("camBindings", s_camBindings);
-	cameraReset();
+	static float fov = 60.0f;
+	static float fov_speed = 20.0f;
+	static Vector3 position = Vector3{ 0.0f, 0.0f, 0.0f };
+	static Vector3 target = Vector3{ 0.0f, 0.0f, -35.0f };
+	static Vector3 up = Vector3{ 0.0f, 1.0f, 0.0f };
+	static float horizontal_angle = 0.0f;
+	static float vertical_angle = 0.0f;
 
-	uint32_t debug = BGFX_DEBUG_TEXT;
-	uint32_t reset = BGFX_RESET_VSYNC;
+	static loco::Entity cam = camera;
+	static loco::CameraSystem::Component cam_cp = world.camera.lookup(cam);
+	static loco::TransformSystem::Component cam_tf = world.transform.lookup(cam);
 
-	int64_t timeOffset = bx::getHPCounter();
-
-	//loco::entry::WindowState state;
-	//while (!loco::entry::process_window_events(state, debug, reset))
-
-	loco::entry::MouseState mouseState;
-	while (!loco::entry::process_events(width, height, debug, reset, &mouseState))
+	if (cam.id != camera.id)
 	{
-		int64_t now = bx::getHPCounter();
-		static int64_t last = now;
-		const int64_t frameTime = now - last;
-		last = now;
-		const double freq = double(bx::getHPFrequency());
-		const double toMs = 1000.0 / freq;
-		const float deltaTime = float(frameTime / freq);
-
-		float time = (float)((now - timeOffset) / freq);
-
-		loco::resource_manager.hot_reload<loco::Shader>();
-		loco::resource_manager.hot_reload<loco::Material>();
-		loco::resource_manager.hot_reload<loco::Mesh>();
-
-		/// Update camera transform
-		Matrix4x4 view;
-		cameraUpdate(deltaTime, mouseState.m_mx, mouseState.m_my, !!mouseState.m_buttons[loco::entry::MouseButton::Right]);
-		bx::mtxLookAt((float*)&view, m_eye, m_at, m_up);
-		world.transform.set_local_matrix(camera_tf, view);
-
-
-		// This dummy draw call is here to make sure that view 0 is cleared
-		// if no other draw calls are submitted to view 0.
-		bgfx::submit(0);
-
-				
-		//mat->set_shader(loco::resource_manager.get<loco::Shader>("loco/shader/vs_default"), loco::resource_manager.get<loco::Shader>("loco/shader/ps_default"));
-
-		/*
-		float mtx_sponza_scale[16];
-		float sponza_scale = 1.0f + (float)fmod(time,1);
-		bx::mtxScale(mtx_sponza_scale, sponza_scale, sponza_scale, sponza_scale);
-		Matrix4x4 sponza_world_matrix;
-		memcpy(sponza_world_matrix.val, mtx_sponza_scale, sizeof(Matrix4x4));
-		world.transform.set_local_matrix(sponza_tf, sponza_world_matrix);
-		*/
-
-		float fov = 60.0f + ((float)fmod(time, 1))*40;
-		world.camera.set_fov(camera_cp, fov);
-
-		world.update();
-		loco::render(world, camera, viewport);
-		
-		bgfx::frame();
-
-		/// garbage collector
-		world.gc(loco::entity_manager);
+		cam = camera;
+		cam_cp = world.camera.lookup(cam);
+		cam_tf = world.transform.lookup(cam);
 	}
 
-	loco::shutdown();
+	// update
 
-	return 0;
+	{
+		horizontal_angle += controller->right_thumb_x * cam_rotation_speed * delta_time;
+		vertical_angle += controller->right_thumb_y * cam_rotation_speed * delta_time;
+
+	}
+
+	Vector3 direction = { cosf(vertical_angle) * sinf(horizontal_angle),
+		sinf(vertical_angle),
+		cosf(vertical_angle) * cosf(horizontal_angle) };
+
+	Vector3 right = { sinf(horizontal_angle - bx::piHalf),
+		0,
+		cosf(horizontal_angle - bx::piHalf) };
+
+	// move front/back
+	{
+		Vector3 tmp_position = position;
+		Vector3 delta_position;
+		bx::vec3Mul((float*)&delta_position, (float*)&direction, controller->left_thumb_y * cam_move_speed * delta_time);
+		bx::vec3Add((float*)&position, (float*)&tmp_position, (float*)&delta_position);
+	}
+
+	// move left/right
+	{
+		Vector3 tmp_position = position;
+		Vector3 delta_position;
+		bx::vec3Mul((float*)&delta_position, (float*)&right, -controller->left_thumb_x * cam_move_speed * delta_time);
+		bx::vec3Add((float*)&position, (float*)&tmp_position, (float*)&delta_position);
+	}
+
+	// move up/down
+	{
+		Vector3 tmp_position = position;
+		Vector3 delta_position;
+		Vector3 up_ref = { 0.0f, 1.0f, 0.0f };
+		bx::vec3Mul((float*)&delta_position, (float*)&up_ref,
+			(controller->right_trigger - controller->left_trigger) * cam_move_speed * delta_time);
+		bx::vec3Add((float*)&position, (float*)&tmp_position, (float*)&delta_position);
+	}
+
+	bx::vec3Add((float*)&target, (float*)&position, (float*)&direction);
+	bx::vec3Cross((float*)&up, (float*)&right, (float*)&direction);
+
+	Matrix4x4 view;
+	bx::mtxLookAt((float*)&view, (float*)&position, (float*)&target, (float*)&up);
+	world.transform.set_local_matrix(cam_tf, view);
+
+	// fov
+	if (controller->left_shoulder.is_down)
+	{
+		fov += fov_speed * delta_time;
+	}
+	
+	if (controller->right_shoulder.is_down)
+	{
+		fov -= fov_speed * delta_time;
+	}
+
+	world.camera.set_fov(cam_cp, fov);
+}
+
+void game_init(int argc, char** argv, loco::GameInit* game_init)
+{
+	game_init->renderer_type = loco::Renderer::Type::Count;
+	strcpy_s(game_init->resource_root_path, sizeof(game_init->resource_root_path), argc > 1 ? argv[1] : "resources/");
+	strcpy_s(game_init->default_resource_relative_path, sizeof(game_init->default_resource_relative_path), "loco/");
+}
+
+void game_update_and_render(float delta_time, int32 window_width, int32 window_height, loco::GameInput* input)
+{
+	static bool is_scene_init = false;
+	if (!is_scene_init)
+	{
+		init_scene();
+		is_scene_init = true;
+	}
+
+	loco::resource_manager.hot_reload<loco::Shader>();
+	loco::resource_manager.hot_reload<loco::Material>();
+	loco::resource_manager.hot_reload<loco::Mesh>();
+
+	camera_update(delta_time, world, camera, &input->controllers[0]);
+
+	// This dummy draw call is here to make sure that view 0 is cleared
+	// if no other draw calls are submitted to view 0.
+	bgfx::submit(0);
+
+	world.update();
+
+	loco::Viewport viewport = { 0, 0, window_width, window_height };
+	loco::render(world, camera, viewport);
+		
+	loco::renderer.frame();
+
+	world.gc(loco::entity_manager);
+
+	//loco::log.info("FPS", "%f", 1.0f / delta_time);
 }

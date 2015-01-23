@@ -56,7 +56,7 @@ namespace resource{
 		memcpy((void*)(_uniform_buffer.data() + info.buffer_offset), data, sizeof(float)* size * UniformType_size[info.type]);
 	}
 
-	void MaterialData::set(const char* name, Renderer::TextureHandle texture, uint32_t flags)
+	void MaterialData::set(const char* name, Renderer::TextureHandle texture, uint32 flags)
 	{
 		TextureInfo& info = create_texture_param(name);
 		info.texture = texture;
@@ -73,7 +73,7 @@ namespace resource{
 			UniformInfo info;
 			info.type = type;
 			info.array_size = array_size;
-			info.buffer_offset = (uint16_t)_uniform_buffer.size();
+			info.buffer_offset = (uint16)_uniform_buffer.size();
 			info.uniform = renderer.create_uniform(name, type, array_size);
 
 			uniform_index = (unsigned)_uniform_infos.size();

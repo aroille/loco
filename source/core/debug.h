@@ -1,9 +1,7 @@
 #ifndef DEBUG_H_HEADER_GUARD
 #define DEBUG_H_HEADER_GUARD
 
-#include "defines.h"
-
-#define LOCO_ASSERT(expr)				{ if(!(expr)) loco::assert_failed(#expr, LOCO_LOG, __FILE__, __LINE__); }
+#define LOCO_ASSERT(expr)				{ if(!(expr)) loco::assert_failed(#expr, "", __FILE__, __LINE__); }
 #define LOCO_ASSERTF(expr, module, ...)		{ if(!(expr)) loco::assert_failed(#expr, module, __FILE__, __LINE__, ##__VA_ARGS__); }
 
 namespace loco

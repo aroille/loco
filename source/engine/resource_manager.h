@@ -9,6 +9,8 @@
 #include <vector>
 #include <map>
 
+#define LOCO_RESOURCE_MANAGER "ResourceManager" // log module string
+
 namespace loco{
 
 	struct Memory;
@@ -152,7 +154,7 @@ namespace loco{
 		}
 		else
 		{
-			log.error(LOCO_LOG_RESOURCE_MANAGER, "%s not found : %s", resource_type_name<T>(), debug_name ? debug_name : "");
+			log.error(LOCO_RESOURCE_MANAGER, "%s not found : %s", resource_type_name<T>(), debug_name ? debug_name : "");
 			return T::invalid;
 		}
 	};
@@ -176,12 +178,12 @@ namespace loco{
 				unsigned long long modif_date = file_modification_date(file_info.path);
 				if (modif_date == 0 && modif_date < file_info.last_modif_date)
 				{
-					log.warning(LOCO_LOG_RESOURCE_MANAGER, "Hot reloading, the file no longer exists %s", file_info.path);
+					log.warning(LOCO_RESOURCE_MANAGER, "Hot reloading, the file no longer exists %s", file_info.path);
 					file_info.last_modif_date = modif_date;
 				}
 				else if (modif_date > file_info.last_modif_date)
 				{
-					log.info(LOCO_LOG_RESOURCE_MANAGER, "Hot reloading %s", file_info.path);
+					log.info(LOCO_RESOURCE_MANAGER, "Hot reloading %s", file_info.path);
 					const Memory* old_mem = file_info.mem;
 
 					bool read_success = file_read(file_info);

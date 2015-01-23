@@ -1,7 +1,9 @@
 #include "resource_material_json.h"
 #include "loco.h"
+#include "resource_manager.h"
 #include "jsonxx/jsonxx.h"
 #include "debug.h"
+#include "type.h"
 
 namespace loco
 {
@@ -27,14 +29,14 @@ namespace resource
 		// check vertex shader parameter existance
 		if (!o.has<jsonxx::String>(vs_param_name))
 		{
-			log.error(LOCO_LOG_RESOURCE_MANAGER, "Material parsing error, \"%s\" parameter is missing", vs_param_name);
+			log.error(LOCO_RESOURCE_MANAGER, "Material parsing error, \"%s\" parameter is missing", vs_param_name);
 			return false;
 		}
 
 		// check pixel shader parameter existance
 		if (!o.has<jsonxx::String>(ps_param_name))
 		{
-			log.error(LOCO_LOG_RESOURCE_MANAGER, "Material parsing error, \"%s\" parameter is missing", ps_param_name);
+			log.error(LOCO_RESOURCE_MANAGER, "Material parsing error, \"%s\" parameter is missing", ps_param_name);
 			return false;
 		}
 
@@ -45,7 +47,7 @@ namespace resource
 		{
 			vs_shader = default_resources.vertex_shader;
 			ps_shader = default_resources.pixel_shader;
-			log.error(LOCO_LOG_RESOURCE_MANAGER, "Use of default vertex and pixel shaders", ps_param_name);
+			log.error(LOCO_RESOURCE_MANAGER, "Use of default vertex and pixel shaders", ps_param_name);
 		}
 
 		mat->set_shader(vs_shader, ps_shader);
@@ -54,7 +56,7 @@ namespace resource
 		std::vector<float> data;
 		Texture texture;
 		Renderer::UniformType::Enum uniform_type;
-		uint8_t uniform_array_size;
+		uint8 uniform_array_size;
 
 		auto i = o.kv_map().begin();
 		for (i; i != o.kv_map().end(); i++)
@@ -111,15 +113,15 @@ namespace resource
 
 				default:
 					uniform_type = Renderer::UniformType::Float;
-					uniform_array_size = (uint8_t)i->second->array_value_->size();
+					uniform_array_size = (uint8)i->second->array_value_->size();
 					break;
 				}
 
-				for (uint32_t j = 0; j < i->second->array_value_->size(); j++)
+				for (uint32 j = 0; j < i->second->array_value_->size(); j++)
 				{
 					if (!i->second->array_value_->has<jsonxx::Number>(j))
 					{
-						log.error(LOCO_LOG_RESOURCE_MANAGER, "Material parsing error, parameter \"%s\" is an array of unsupported types", i->first.c_str());
+						log.error(LOCO_RESOURCE_MANAGER, "Material parsing error, parameter \"%s\" is an array of unsupported types", i->first.c_str());
 						break;
 					}
 					data.push_back((float)i->second->array_value_->get<jsonxx::Number>(j));
@@ -129,7 +131,7 @@ namespace resource
 				break;
 
 			default:
-				log.error(LOCO_LOG_RESOURCE_MANAGER, "Material parsing error, parameter \"%s\" type is not supported ", i->first.c_str());
+				log.error(LOCO_RESOURCE_MANAGER, "Material parsing error, parameter \"%s\" type is not supported ", i->first.c_str());
 				break;
 			}
 		}

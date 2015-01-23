@@ -1,8 +1,10 @@
 #include "renderer.h"
 #include "bgfx.h"
 #include "memory_utils.h"
-#include "resource_manager.h"
 #include "loco.h"
+#include "resource_type.h"
+
+#define LOCO_RENDERER "Renderer" // log module string
 
 #define LOCO_TO_BGFX(handle) { handle.idx }
 #define BGFX_TO_LOCO(handle) { handle.idx }
@@ -46,18 +48,18 @@ namespace loco
 	};
 
 	//==========================================================================
-	void Renderer::init()
+	void Renderer::init(Renderer::Type::Enum renderer_type)
 	{
-		log.info(LOCO_LOG_RENDERER, "Initializing");
-		bgfx::init();
-		log.info(LOCO_LOG_RENDERER, "%s", bgfx::getRendererName(bgfx::getRendererType()));
+		log.info(LOCO_RENDERER, "Initializing");
+		bgfx::init((bgfx::RendererType::Enum)renderer_type);
+		log.info(LOCO_RENDERER, "%s", bgfx::getRendererName(bgfx::getRendererType()));
 		strcpy(_shader_extention, shader_extentions[type()]);
 	}
 
 	//==========================================================================
 	void Renderer::reset(unsigned width, unsigned height)
 	{
-		uint32_t reset = BGFX_RESET_VSYNC;
+		uint32 reset = BGFX_RESET_VSYNC;
 
 		bgfx::reset(width, height, reset);
 	}
@@ -81,9 +83,15 @@ namespace loco
 	}
 
 	//==========================================================================
+	void Renderer::frame()
+	{
+		bgfx::frame();
+	}
+
+	//==========================================================================
 	Renderer::TextureHandle Renderer::create_texture(const Memory* memory)
 	{
-		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, (uint32_t)memory->size);
+		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, (uint32)memory->size);
 		return BGFX_TO_LOCO(bgfx::createTexture(bgfx_mem));
 	}
 
@@ -98,7 +106,7 @@ namespace loco
 	{
 		ProgramHandle handle;
 
-		uint32_t key = vsh.idx + (psh.idx << 16);
+		uint32 key = vsh.idx + (psh.idx << 16);
 		auto it = _programs.find(key);
 		if (it != _programs.end())
 		{
@@ -122,7 +130,7 @@ namespace loco
 	//==========================================================================
 	Renderer::ShaderHandle Renderer::create_shader(const Memory* memory)
 	{
-		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, (uint32_t)memory->size);
+		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, (uint32)memory->size);
 		return BGFX_TO_LOCO(bgfx::createShader(bgfx_mem));
 	}
 
@@ -157,7 +165,7 @@ namespace loco
 		}
 		bgfx_decl.end();
 
-		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, (uint32_t)memory->size);
+		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, (uint32)memory->size);
 		return BGFX_TO_LOCO(bgfx::createVertexBuffer(bgfx_mem, bgfx_decl));
 	}
 
@@ -170,7 +178,7 @@ namespace loco
 	//==========================================================================
 	Renderer::IndexBufferHandle Renderer::create_index_buffer(const Memory* memory)
 	{
-		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, (uint32_t)memory->size);
+		const bgfx::Memory* bgfx_mem = bgfx::makeRef(memory->data, (uint32)memory->size);
 		return BGFX_TO_LOCO(bgfx::createIndexBuffer(bgfx_mem));
 	}
 
@@ -181,13 +189,13 @@ namespace loco
 	}
 
 	//==========================================================================
-	void Renderer::set_view_rect(uint8_t view_id, Viewport viewport)
+	void Renderer::set_view_rect(uint8 view_id, Viewport viewport)
 	{
 		bgfx::setViewRect(view_id, viewport.x, viewport.y, viewport.width, viewport.height);
 	}
 
 	//==========================================================================
-	void Renderer::set_view_transform(uint8_t view_id, const Matrix4x4& view, const Matrix4x4& proj)
+	void Renderer::set_view_transform(uint8 view_id, const Matrix4x4& view, const Matrix4x4& proj)
 	{
 		bgfx::setViewTransform(view_id, (const void*)view.val, (const void*)proj.val);
 	}
@@ -212,7 +220,7 @@ namespace loco
 
 		// samplers
 		{
-			uint8_t tex_unit = 0;
+			uint8 tex_unit = 0;
 			std::vector<MaterialData::TextureInfo>::const_iterator it = m->_texture_infos.cbegin();
 			while (it != m->_texture_infos.cend())
 			{
@@ -235,7 +243,7 @@ namespace loco
 	}
 
 	//==========================================================================
-	void Renderer::batch_render(uint8_t view_id, uint32_t count, const Mesh* meshes, const Matrix4x4* transforms, const DefaultResources& default_resources)
+	void Renderer::batch_render(uint8 view_id, uint32 count, const Mesh* meshes, const Matrix4x4* transforms, const DefaultResources& default_resources)
 	{
 		for (unsigned i = 0; i < count; i++)
 		{

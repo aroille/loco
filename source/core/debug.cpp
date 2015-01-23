@@ -1,15 +1,12 @@
 
 #include "debug.h"
 #include "loco.h"
+#include "platform.h"
 
 #include <cstdlib>
 #include <cstdio>
 #include <cstdarg>
 #include <cstring>
-
-#ifdef WIN32
-#include <Windows.h>
-#endif
 
 namespace loco
 {
@@ -25,7 +22,7 @@ namespace loco
 		log.log(Log::Fatal, module, msg_buffer, args);
 		
 		// popup message on windows
-		#ifdef WIN32
+		#ifdef LOCO_PLATFORM_WINDOWS
 			sprintf_s(msg_buffer, sizeof(msg_buffer), "%s(%d) \n", file, line);
 			vsprintf_s(msg_buffer + strlen(msg_buffer), sizeof(msg_buffer) - strlen(msg_buffer), format, args);
 

@@ -1,14 +1,14 @@
 #ifndef MEMORY_H_HEADER_GUARD
 #define MEMORY_H_HEADER_GUARD
 
-#include <cstdint> // uint32_t
+#include "type.h"
 #include <cstdlib> // malloc & free
 
 namespace loco
 {
 	struct Memory
 	{
-		uint8_t* data;
+		uint8* data;
 		size_t size;
 	};
 
@@ -16,7 +16,7 @@ namespace loco
 	{
 		Memory* mem = (Memory*)malloc(sizeof(Memory)+size);
 		mem->size = size;
-		mem->data = (uint8_t*)mem + sizeof(Memory);
+		mem->data = (uint8*)mem + sizeof(Memory);
 		return mem;
 	}
 

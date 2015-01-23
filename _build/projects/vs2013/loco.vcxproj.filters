@@ -33,21 +33,6 @@
     <ClInclude Include="..\..\..\source\engine\renderer.h">
       <Filter>engine</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\source\entry\cmd.h">
-      <Filter>entry</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\source\entry\dbg.h">
-      <Filter>entry</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\source\entry\entry.h">
-      <Filter>entry</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\source\entry\entry_p.h">
-      <Filter>entry</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\source\entry\input.h">
-      <Filter>entry</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\source\core\defines.h">
       <Filter>core</Filter>
     </ClInclude>
@@ -99,12 +84,6 @@
     <ClInclude Include="..\..\..\source\core\log.h">
       <Filter>core</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\source\core\handle.h">
-      <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\source\core\core.h">
-      <Filter>core</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\source\component\transform_system.h">
       <Filter>component</Filter>
     </ClInclude>
@@ -123,6 +102,21 @@
     <ClInclude Include="..\..\..\source\component\camera_system.h">
       <Filter>component</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\source\engine\handle.h">
+      <Filter>engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\platform.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\type.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\timer.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\entry\entry.h">
+      <Filter>entry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\core\debug.cpp">
@@ -133,39 +127,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\engine\renderer.cpp">
       <Filter>engine</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\entry\cmd.cpp">
-      <Filter>entry</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\entry\dbg.cpp">
-      <Filter>entry</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\entry\entry.cpp">
-      <Filter>entry</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\entry\entry_android.cpp">
-      <Filter>entry</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\entry\entry_asmjs.cpp">
-      <Filter>entry</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\entry\entry_nacl.cpp">
-      <Filter>entry</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\entry\entry_qnx.cpp">
-      <Filter>entry</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\entry\entry_sdl.cpp">
-      <Filter>entry</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\entry\entry_windows.cpp">
-      <Filter>entry</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\entry\entry_x11.cpp">
-      <Filter>entry</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\entry\input.cpp">
-      <Filter>entry</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\core\murmur_hash.cpp">
       <Filter>core</Filter>
@@ -209,13 +170,8 @@
     <ClCompile Include="..\..\..\source\component\camera_system.cpp">
       <Filter>component</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\..\..\source\entry\entry_ios.mm">
+    <ClCompile Include="..\..\..\source\entry\entry_windows.cpp">
       <Filter>entry</Filter>
-    </None>
-    <None Include="..\..\..\source\entry\entry_osx.mm">
-      <Filter>entry</Filter>
-    </None>
+    </ClCompile>
   </ItemGroup>
 </Project>

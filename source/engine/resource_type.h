@@ -3,6 +3,7 @@
 
 #include "murmur_hash.h"
 #include "renderer.h"
+#include "type.h"
 
 #include <map>
 #include <memory>
@@ -104,8 +105,8 @@ namespace resource{
 		struct UniformInfo
 		{
 			Renderer::UniformHandle			uniform;
-			uint16_t						buffer_offset;
-			uint16_t						array_size;
+			uint16							buffer_offset;
+			uint16							array_size;
 			Renderer::UniformType::Enum		type;
 		};
 
@@ -113,13 +114,13 @@ namespace resource{
 		{
 			Renderer::UniformHandle			uniform;
 			Renderer::TextureHandle			texture;
-			uint32_t						flags;
+			uint32							flags;
 		};
 
 		void set_shader(Renderer::ShaderHandle vertex_shader, Renderer::ShaderHandle pixel_shader);
 
 		void set(const char* name, Renderer::UniformType::Enum type, const float* data, unsigned size = 1);
-		void set(const char* name, Renderer::TextureHandle texture, uint32_t flags = 0);
+		void set(const char* name, Renderer::TextureHandle texture, uint32 flags = 0);
 
 		std::map<HashedString, unsigned> _uniform_map;
 		std::map<HashedString, unsigned> _texture_map;

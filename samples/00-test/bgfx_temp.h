@@ -2,7 +2,7 @@
 #ifndef BGFX_TEMP_H_HEADER_GUARD
 #define BGFX_TEMP_H_HEADER_GUARD
 
-#include "entry.h"
+//#include "entry.h"
 #include "input.h"
 #include <bx/readerwriter.h>
 #include <bx/fpumath.h>

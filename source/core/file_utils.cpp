@@ -1,12 +1,9 @@
 #include "file_utils.h"
-#include "bx/platform.h"
-
-#ifdef BX_PLATFORM_WINDOWS
+#include "platform.h"
 
 #include "debug.h"
 #include "file_system.h"
 #include "loco.h"
-#include <Windows.h>
 
 namespace loco
 {
@@ -57,6 +54,8 @@ namespace loco
 		else
 			strcpy(result, "");
 	}
+
+#ifdef LOCO_PLATFORM_WINDOWS
 
 	//==========================================================================
 	unsigned long long file_modification_date(char* file_path)
@@ -118,6 +117,6 @@ namespace loco
 			::FindClose(hFind);
 		}
 	}
-} // namespace loco
+#endif // LOCO_PLATFORM_WINDOWS
 
-#endif // BX_PLATFORM_WINDOWS
+} // namespace loco

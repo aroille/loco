@@ -13,6 +13,8 @@ namespace stl = tinystl;
 #include "memory_utils.h"
 #include "resource_type.h"
 #include "loco.h"
+#include "resource_manager.h"
+#include "type.h"
 
 struct Aabb
 {
@@ -33,10 +35,10 @@ struct Sphere
 
 struct Primitive
 {
-	uint32_t m_startIndex;
-	uint32_t m_numIndices;
-	uint32_t m_startVertex;
-	uint32_t m_numVertices;
+	uint32 m_startIndex;
+	uint32 m_numIndices;
+	uint32 m_startVertex;
+	uint32 m_numVertices;
 
 	Sphere m_sphere;
 	Aabb m_aabb;
@@ -69,7 +71,7 @@ struct Group
 
 namespace bgfx
 {
-	int32_t read(bx::ReaderI* _reader, bgfx::VertexDecl& _decl);
+	int32 read(bx::ReaderI* _reader, bgfx::VertexDecl& _decl);
 }
 
 namespace bgfx_helper
@@ -89,7 +91,7 @@ namespace bgfx_helper
 
 			Group group;
 
-			uint32_t chunk;
+			uint32 chunk;
 			while (4 == bx::read(_reader, chunk))
 			{
 				switch (chunk)
@@ -104,7 +106,7 @@ namespace bgfx_helper
 
 						// convert vertex attribute declaration from bgfx to loco
 						loco::Renderer::VertexDecl loco_decl;
-						for (unsigned i = 0; i < (int)loco::Renderer::Attrib::Count; i++)
+						for (unsigned i = 0; i < (int32)loco::Renderer::Attrib::Count; i++)
 						{
 							loco::Renderer::Attrib::Enum type = (loco::Renderer::Attrib::Enum)i;
 							if (m_decl.has((bgfx::Attrib::Enum)type))
@@ -117,16 +119,16 @@ namespace bgfx_helper
 							}
 						}
 
-						uint16_t stride = m_decl.getStride();
+						uint16 stride = m_decl.getStride();
 						
-						uint16_t numVertices;
+						uint16 numVertices;
 						read(_reader, numVertices);
 
 						//const bgfx::Memory* mem = bgfx::alloc(numVertices*stride);
 						//read(_reader, mem->data, mem->size);
 						//group.m_vbh = bgfx::createVertexBuffer(mem, m_decl);
 						loco::Memory mem;
-						mem.data = const_cast<uint8_t*>(_reader->getDataPtr());
+						mem.data = const_cast<uint8*>(_reader->getDataPtr());
 						mem.size = numVertices*stride;
 						_reader->seek(mem.size, bx::Whence::Current);
 						group.m_vbh.idx = loco::renderer.create_vertex_buffer(&mem, loco_decl).idx;
@@ -135,7 +137,7 @@ namespace bgfx_helper
 
 					case BGFX_CHUNK_MAGIC_IB:
 					{
-						uint32_t numIndices;
+						uint32 numIndices;
 						read(_reader, numIndices);
 						const bgfx::Memory* mem = bgfx::alloc(numIndices * 2);
 						read(_reader, mem->data, mem->size);
@@ -145,17 +147,17 @@ namespace bgfx_helper
 
 					case BGFX_CHUNK_MAGIC_PRI:
 					{
-						uint16_t len;
+						uint16 len;
 						read(_reader, len);
 
 						stl::string material;
 						material.resize(len);
 						read(_reader, const_cast<char*>(material.c_str()), len);
 
-						uint16_t num;
+						uint16 num;
 						read(_reader, num);
 
-						for (uint32_t ii = 0; ii < num; ++ii)
+						for (uint32 ii = 0; ii < num; ++ii)
 						{
 							read(_reader, len);
 
@@ -194,7 +196,7 @@ namespace bgfx_helper
 
 	bool load_mesh(const loco::Memory* mem, loco::resource::MeshData* mesh)
 	{
-		bx::MemoryReader reader(mem->data, (uint32_t)mem->size);
+		bx::MemoryReader reader(mem->data, (uint32)mem->size);
 		bgfx_helper::Mesh bgfx_mesh;
 		bgfx_mesh.load(&reader);
 

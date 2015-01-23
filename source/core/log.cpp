@@ -1,14 +1,11 @@
 
 #include "log.h"
+#include "platform.h"
 
 #include <ctime>
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
-
-#ifdef WIN32
-#include <Windows.h>
-#endif
 
 namespace loco
 {
@@ -62,7 +59,7 @@ namespace loco
 		// output format
 		char msg_buffer[512];
 
-		sprintf_s(msg_buffer, sizeof(msg_buffer), "  %-8s  %2d-%2d-%4d %2d:%2d:%2d  %-15s  ", 
+		sprintf_s(msg_buffer, sizeof(msg_buffer), "  %-8s  %02d-%02d-%04d %02d:%02d:%02d  %-15s  ", 
 			LogLevelString[(unsigned)level],
 			now->tm_mday, now->tm_mon+1, now->tm_year+1900,
 			now->tm_hour, now->tm_min, now->tm_sec,
@@ -72,5 +69,10 @@ namespace loco
 		// output log message
 		printf(msg_buffer);
 		printf("\n");
+
+#ifdef LOCO_PLATFORM_WINDOWS
+		OutputDebugStringA(msg_buffer);
+		OutputDebugStringA("\n");
+#endif
 	}
 }
