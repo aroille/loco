@@ -42,6 +42,12 @@ namespace resource
 		}
 	}
 
+	template<> void ResourceManager::destroy(const Material& material) const
+	{
+
+	}
+
+#ifdef LOCO_USE_HOT_RELOAD
 	template<> Material ResourceManager::replace(Material& current, const Memory* mem) const
 	{
 		if (current.get() == nullptr)
@@ -58,11 +64,9 @@ namespace resource
 
 		return current;
 	}
+#endif // LOCO_USE_HOT_RELOAD
 
-	template<> void ResourceManager::destroy(const Material& material) const
-	{
 
-	}
 } // resource
 } // loco
 

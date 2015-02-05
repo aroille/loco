@@ -1,8 +1,9 @@
 #include "renderer.h"
-#include "bgfx.h"
 #include "memory_utils.h"
 #include "loco.h"
 #include "resource_type.h"
+
+#include "bgfx.h" // backend
 
 #define LOCO_RENDERER "Renderer" // log module string
 

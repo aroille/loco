@@ -102,16 +102,25 @@ namespace loco{
 
 	private:
 
-		bool				_default_resources_init;
+		bool _default_resources_init;
 		DefaultResources	_default_resources;
 
 		typedef std::map<ResourceId, FileInfo> FileMap;
 		std::map<HashedString, FileMap>			_files;
 
 		std::map<ResourceName, Material>		_materials;
-		std::map<ResourceName, Mesh>			_meshes;
+		std::map<ResourceName, Mesh>				_meshes;
 		std::map<ResourceName, Shader>			_shaders;
 		std::map<ResourceName, Texture>			_textures;
+
+		/*
+		struct MemoryToFree
+		{
+			uint32 frame;
+			const Memory* mem;
+		};
+		std::list<MemoryToFree> _memory_to_free;
+		*/
 
 		// ------
 
@@ -120,14 +129,12 @@ namespace loco{
 		bool unload_folder(const HashedString& folder_path);
 
 		void create_resource(const ResourceId& id, const Memory* mem);
-		void replace_resource(const ResourceId& id, const Memory* mem);
 		void destroy_resource(const ResourceId& id);
 
 		static ResourceName resource_name(const char* resource_path);
 		static ResourceId resource_id(const FileInfo& fi);
 
 		template<typename T> void create_resource(const ResourceId& id, const Memory* mem);
-		template<typename T> void replace_resource(const ResourceId& id, const Memory* mem);
 		template<typename T> void destroy_resource(const ResourceId& id);
 		template<typename T> void unload_all();
 
@@ -162,6 +169,7 @@ namespace loco{
 	//==========================================================================
 	template<typename T> void ResourceManager::hot_reload()
 	{
+#ifdef LOCO_USE_HOT_RELOAD
 		for (auto folder_it = _files.begin(); folder_it != _files.end(); folder_it++)
 		{
 			const HashedString& folder_path = folder_it->first;
@@ -196,6 +204,7 @@ namespace loco{
 				}
 			}
 		}
+#endif // LOCO_USE_HOT_RELOAD
 	}
 
 	//==========================================================================
@@ -208,12 +217,6 @@ namespace loco{
 	template<typename T> void ResourceManager::create_resource(const ResourceId& id, const Memory* mem)
 	{
 		resource_map<T>()[id.name] = create<T>(mem);
-	};
-
-	//==========================================================================
-	template<typename T> void ResourceManager::replace_resource(const ResourceId& id, const Memory* mem)
-	{
-		resource_map<T>()[id.name] = replace<T>(resource_map<T>()[id.name], mem);
 	};
 
 	//==========================================================================

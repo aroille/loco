@@ -24,6 +24,7 @@ namespace resource {
 		return renderer.create_shader(mem);
 	}
 
+#ifdef LOCO_USE_HOT_RELOAD
 	template<> Shader ResourceManager::replace(Shader& current, const Memory* mem) const
 	{
 		if (mem->size == 0)
@@ -33,6 +34,7 @@ namespace resource {
 		renderer.destroy_shader(current);
 		return new_shader;
 	}
+#endif // LOCO_USE_HOT_RELOAD
 
 	template<> void ResourceManager::destroy(const Shader& shader) const
 	{

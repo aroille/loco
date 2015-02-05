@@ -1,10 +1,11 @@
 #ifndef RESOURCE_TYPE_H_HEADER_GUARD
 #define RESOURCE_TYPE_H_HEADER_GUARD
 
-#include "murmur_hash.h"
+#include "murmur_hash.h" // HashedString
 #include "renderer.h"
 #include "type.h"
 
+#include <list>
 #include <map>
 #include <memory>
 #include <vector>
@@ -104,9 +105,9 @@ namespace resource{
 
 		struct UniformInfo
 		{
-			Renderer::UniformHandle			uniform;
-			uint16							buffer_offset;
-			uint16							array_size;
+			Renderer::UniformHandle				uniform;
+			uint16												buffer_offset;
+			uint16												array_size;
 			Renderer::UniformType::Enum		type;
 		};
 
@@ -114,8 +115,11 @@ namespace resource{
 		{
 			Renderer::UniformHandle			uniform;
 			Renderer::TextureHandle			texture;
-			uint32							flags;
+			uint32											flags;
 		};
+
+		MaterialData();
+		~MaterialData();
 
 		void set_shader(Renderer::ShaderHandle vertex_shader, Renderer::ShaderHandle pixel_shader);
 
@@ -130,10 +134,15 @@ namespace resource{
 		std::vector<TextureInfo> _texture_infos;
 		std::vector<float> _uniform_buffer;
 
+#ifdef LOCO_USE_HOT_RELOAD
+		static std::list<MaterialData*> _all_materials;
+#endif // LOCO_USE_HOT_RELOAD
+
 	private:
 
 		UniformInfo&  create_uniform_param(const char* name, Renderer::UniformType::Enum type, unsigned array_size);
-		TextureInfo&  create_texture_param(const char* name);
+		TextureInfo&  create_texture_param(const char* name);	
+
 	};
 
 	/// Default Resources

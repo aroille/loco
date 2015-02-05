@@ -312,31 +312,5 @@ namespace resource{
 		}
 	}
 
-	//==========================================================================
-	void ResourceManager::replace_resource(const ResourceId& id, const Memory* mem)
-	{
-		switch (id.type)
-		{
-		case ResourceType::Mesh:
-			replace_resource<Mesh>(id, mem);
-			break;
-
-		case ResourceType::Texture:
-			replace_resource<Texture>(id, mem);
-			break;
-
-		case ResourceType::Material:
-			replace_resource<Material>(id, mem);
-			break;
-
-		case ResourceType::Shader:
-			replace_resource<Shader>(id, mem);
-			break;
-
-		default:
-			LOCO_ASSERTF(false, LOCO_RESOURCE_MANAGER, "Resources of type %d are not handled by the resource manager", id.type);
-		}
-	}
-
 } // resource
 } // loco

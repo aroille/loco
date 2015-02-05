@@ -2,10 +2,16 @@
 #include "resource_type.h"
 #include "loco.h"
 
+
+
 namespace loco{
 namespace resource{
 
 	Mesh Mesh::invalid = Mesh(nullptr);
+
+#ifdef LOCO_USE_HOT_RELOAD
+	std::list<MaterialData*> MaterialData::_all_materials = std::list<MaterialData*>();
+#endif // LOCO_USE_HOT_RELOAD
 
 	Mesh::Mesh(MeshData* mat)
 		: std::shared_ptr<MeshData>(mat)
@@ -42,6 +48,21 @@ namespace resource{
 		16,//Matrix4x4,
 		0, //Texture,
 	};
+
+
+	MaterialData::MaterialData()
+	{
+#ifdef LOCO_USE_HOT_RELOAD
+		_all_materials.push_back(this);
+#endif // LOCO_USE_HOT_RELOAD
+	}
+
+	MaterialData::~MaterialData()
+	{
+#ifdef LOCO_USE_HOT_RELOAD
+		_all_materials.remove(this);
+#endif // LOCO_USE_HOT_RELOAD
+	}
 
 	void MaterialData::set_shader(Renderer::ShaderHandle vertex_shader, Renderer::ShaderHandle pixel_shader)
 	{

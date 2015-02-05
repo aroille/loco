@@ -42,6 +42,12 @@ namespace loco
 
 		}
 
+		template<> void ResourceManager::destroy(const Mesh& mesh) const
+		{
+
+		}
+
+#ifdef LOCO_USE_HOT_RELOAD
 		template<> Mesh ResourceManager::replace(Mesh& current, const Memory* mem) const
 		{
 			if (current.get() == nullptr)
@@ -59,11 +65,8 @@ namespace loco
 
 			return current;
 		}
+#endif // LOCO_USE_HOT_RELOAD
 
-		template<> void ResourceManager::destroy(const Mesh& mesh) const
-		{
-
-		}
 	} // resource
 } // loco
 

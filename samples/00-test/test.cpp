@@ -20,9 +20,9 @@ loco::Entity create_axis(loco::World& world, float length, float thickness)
 	float t = 0.5f * thickness;
 	float p = l + t;
 
-	Vector3 position[4] = { { 0, 0, 0 }, { p, 0, 0 }, { 0, p, 0 }, { 0, 0, p } };
-	Vector3 scale[4] = { { t, t, t }, { l, t, t }, { t, l, t }, { t, t, l } };
-	Vector4 color[4] = { { 1, 1, 1, 1 }, { 1, 0, 0, 1 }, { 0, 1, 0, 1 }, { 0, 0, 1, 0 } };
+	Vector3 position[4] = { { 0, 0, 0 }		, { p, 0, 0 }		, { 0, p, 0 }		, { 0, 0, p } };
+	Vector3 scale[4]		= { { t, t, t }		, { l, t, t }		, { t, l, t }		, { t, t, l } };
+	Vector4 color[4]		= { { 1, 1, 1, 1 }, { 1, 0, 0, 1 }, { 0, 1, 0, 1 }, { 0, 0, 1, 0 } };
 
 	loco::Entity origin = loco::entity_manager.create();
 	loco::TransformSystem::Component origin_tf = world.transform.create(origin);
@@ -217,6 +217,7 @@ void game_update_and_render(float delta_time, int32 window_width, int32 window_h
 	loco::resource_manager.hot_reload<loco::Shader>();
 	loco::resource_manager.hot_reload<loco::Material>();
 	loco::resource_manager.hot_reload<loco::Mesh>();
+	loco::resource_manager.hot_reload<loco::Texture>();
 
 	camera_update(delta_time, world, camera, &input->controllers[0]);
 
@@ -228,7 +229,7 @@ void game_update_and_render(float delta_time, int32 window_width, int32 window_h
 
 	loco::Viewport viewport = { 0, 0, window_width, window_height };
 	loco::render(world, camera, viewport);
-		
+
 	loco::renderer.frame();
 
 	world.gc(loco::entity_manager);

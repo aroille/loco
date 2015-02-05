@@ -7,7 +7,7 @@
 #include <vector>
 #include <map>
 
-#define LOCO_TEXTURE_U_MIRROR			UINT32_C(0x00000001)
+#define LOCO_TEXTURE_U_MIRROR						UINT32_C(0x00000001)
 #define LOCO_TEXTURE_U_CLAMP            UINT32_C(0x00000002)
 #define LOCO_TEXTURE_V_MIRROR           UINT32_C(0x00000004)
 #define LOCO_TEXTURE_V_CLAMP            UINT32_C(0x00000008)
