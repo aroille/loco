@@ -2,6 +2,7 @@
 #include "resource_type.h"
 #include "loco.h"
 
+#include <algorithm>
 
 
 namespace loco{
@@ -60,7 +61,8 @@ namespace resource{
 	MaterialData::~MaterialData()
 	{
 #ifdef LOCO_USE_HOT_RELOAD
-		_all_materials.remove(this);
+		if (!_all_materials.empty())
+			_all_materials.remove(this);
 #endif // LOCO_USE_HOT_RELOAD
 	}
 

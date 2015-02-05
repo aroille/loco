@@ -193,6 +193,8 @@ namespace resource{
 		{
 			create_resource(ri.id, ri.file_info.mem);
 			_files[root_folder][ri.id] = ri.file_info;
+
+			_memory_to_free.push(MemoryToFree{ ri.file_info.mem, loco::current_frame });
 		}
 		else
 		{
@@ -214,7 +216,6 @@ namespace resource{
 		}
 
 		destroy_resource(id);
-		release(fi->second.mem);
 		_files[root_folder].erase(id);
 
 		return true;
@@ -309,6 +310,23 @@ namespace resource{
 
 		default:
 			LOCO_ASSERTF(false, LOCO_RESOURCE_MANAGER, "Resources of type %d are not handled by the resource manager", id.type);
+		}
+	}
+
+	//==========================================================================
+	void ResourceManager::free_memory()
+	{
+		while (!_memory_to_free.empty())
+		{
+			if ((loco::current_frame - _memory_to_free.front().frame) > 2)
+			{
+				release(_memory_to_free.front().mem);
+				_memory_to_free.pop();
+			}
+			else
+			{
+				break;
+			}
 		}
 	}
 

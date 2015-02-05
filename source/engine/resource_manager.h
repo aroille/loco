@@ -6,7 +6,7 @@
 #include "murmur_hash.h"
 #include "file_utils.h"
 
-#include <vector>
+#include <queue>
 #include <map>
 
 #define LOCO_RESOURCE_MANAGER "ResourceManager" // log module string
@@ -100,6 +100,11 @@ namespace loco{
 			return _default_resources;
 		}
 
+		/// Free useless buffer 
+		/// To create a resource, the render backend need the buffer data for at least 2 frames.
+		/// The buffer can be deleted after this delay
+		void free_memory();
+
 	private:
 
 		bool _default_resources_init;
@@ -113,14 +118,12 @@ namespace loco{
 		std::map<ResourceName, Shader>			_shaders;
 		std::map<ResourceName, Texture>			_textures;
 
-		/*
 		struct MemoryToFree
 		{
-			uint32 frame;
 			const Memory* mem;
+			uint32 frame;
 		};
-		std::list<MemoryToFree> _memory_to_free;
-		*/
+		std::queue<MemoryToFree> _memory_to_free;
 
 		// ------
 
@@ -192,13 +195,12 @@ namespace loco{
 				else if (modif_date > file_info.last_modif_date)
 				{
 					log.info(LOCO_RESOURCE_MANAGER, "Hot reloading %s", file_info.path);
-					const Memory* old_mem = file_info.mem;
 
 					bool read_success = file_read(file_info);
 					if (read_success)
 					{
-						release(old_mem);
 						resource_map<T>()[id.name] = replace<T>(resource_map<T>()[id.name], file_info.mem);
+						_memory_to_free.push(MemoryToFree{ file_info.mem, loco::current_frame });
 					}
 					file_info.last_modif_date = modif_date;
 				}

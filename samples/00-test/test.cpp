@@ -230,7 +230,7 @@ void game_update_and_render(float delta_time, int32 window_width, int32 window_h
 	loco::Viewport viewport = { 0, 0, window_width, window_height };
 	loco::render(world, camera, viewport);
 
-	loco::renderer.frame();
+	loco::frame();
 
 	world.gc(loco::entity_manager);
 

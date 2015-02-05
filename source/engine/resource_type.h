@@ -129,10 +129,10 @@ namespace resource{
 		std::map<HashedString, unsigned> _uniform_map;
 		std::map<HashedString, unsigned> _texture_map;
 
-		Renderer::ProgramHandle _program;
-		std::vector<UniformInfo> _uniform_infos;
-		std::vector<TextureInfo> _texture_infos;
-		std::vector<float> _uniform_buffer;
+		Renderer::ProgramHandle		_program;
+		std::vector<UniformInfo>	_uniform_infos;
+		std::vector<TextureInfo>	_texture_infos;
+		std::vector<float>				_uniform_buffer;
 
 #ifdef LOCO_USE_HOT_RELOAD
 		static std::list<MaterialData*> _all_materials;
@@ -151,7 +151,7 @@ namespace resource{
 		Shader		vertex_shader;
 		Shader		pixel_shader;
 		Texture		texture;
-		Mesh		mesh;
+		Mesh			mesh;
 		Material	material;
 	};
 } // resource

@@ -14,7 +14,8 @@ namespace loco
 	ResourceManager resource_manager;
 	Renderer renderer;
 	Log log;
-	
+	uint32 current_frame = 0;
+
 	void init(Renderer::Type::Enum renderer_type, int32 window_width, int32 window_height, const char* resources_path, const char* default_resources_path)
 	{
 		log.info("Loco", "Initializing");
@@ -31,8 +32,15 @@ namespace loco
 		renderer.reset(window_width, window_height);
 
 		// load default resources
-		loco::resource_manager.load_folder(default_resource_relativ_path);
-		loco::resource_manager.init_default_resources();
+		resource_manager.load_folder(default_resource_relativ_path);
+		resource_manager.init_default_resources();
+	}
+
+	void frame()
+	{
+		renderer.frame();
+		resource_manager.free_memory();
+		current_frame++;
 	}
 
 	void shutdown()

@@ -18,6 +18,7 @@ namespace loco
 	extern ResourceManager resource_manager;
 	extern Renderer	renderer;
 	extern Log log;
+	extern uint32 current_frame;
 
 	extern size_t resource_root_path_length;
 	extern char resource_root_path[LOCO_PATH_LENGTH];
@@ -25,7 +26,7 @@ namespace loco
 
 	void init(Renderer::Type::Enum renderer_type, int32 window_width, int32 window_height, const char* resources_path, const char* default_resources_relativ_path);
 	void shutdown();
-
+	void frame();
 }
 
 #endif // LOCO_H_HEADER_GUARD
