@@ -110,8 +110,19 @@ void init_scene()
 		);
 }
 
-void camera_update(float delta_time, loco::World& world, loco::Entity camera, loco::GameControllerInput* controller)
+void camera_update(float delta_time, loco::World& world, loco::Entity camera, loco::GameInput* input)
 {
+	float controller_move_x = input->controllers[0].left.is_down * (-1.0f) +
+																input->controllers[0].right.is_down * 1.0f +
+																input->controllers[1].left_thumb_x;
+
+	float controller_move_y = input->controllers[0].up.is_down * 1.0f +
+															input->controllers[0].down.is_down * (-1.0f) +
+															input->controllers[1].left_thumb_y;
+
+	float controller_rotate_x = input->controllers[1].right_thumb_x;
+	float controller_rotate_y = input->controllers[1].right_thumb_y;
+
 	// init static variables
 	static float cam_move_speed = 5.0f;
 	static float cam_rotation_speed = 0.5f * 3.14f;
@@ -136,11 +147,9 @@ void camera_update(float delta_time, loco::World& world, loco::Entity camera, lo
 	}
 
 	// update
-
 	{
-		horizontal_angle += controller->right_thumb_x * cam_rotation_speed * delta_time;
-		vertical_angle += controller->right_thumb_y * cam_rotation_speed * delta_time;
-
+		horizontal_angle += controller_rotate_x * cam_rotation_speed * delta_time;
+		vertical_angle += controller_rotate_y * cam_rotation_speed * delta_time;
 	}
 
 	Vector3 direction = { cosf(vertical_angle) * sinf(horizontal_angle),
@@ -155,7 +164,7 @@ void camera_update(float delta_time, loco::World& world, loco::Entity camera, lo
 	{
 		Vector3 tmp_position = position;
 		Vector3 delta_position;
-		bx::vec3Mul((float*)&delta_position, (float*)&direction, controller->left_thumb_y * cam_move_speed * delta_time);
+		bx::vec3Mul((float*)&delta_position, (float*)&direction, controller_move_y * cam_move_speed * delta_time);
 		bx::vec3Add((float*)&position, (float*)&tmp_position, (float*)&delta_position);
 	}
 
@@ -163,7 +172,7 @@ void camera_update(float delta_time, loco::World& world, loco::Entity camera, lo
 	{
 		Vector3 tmp_position = position;
 		Vector3 delta_position;
-		bx::vec3Mul((float*)&delta_position, (float*)&right, -controller->left_thumb_x * cam_move_speed * delta_time);
+		bx::vec3Mul((float*)&delta_position, (float*)&right, -controller_move_x * cam_move_speed * delta_time);
 		bx::vec3Add((float*)&position, (float*)&tmp_position, (float*)&delta_position);
 	}
 
@@ -173,7 +182,7 @@ void camera_update(float delta_time, loco::World& world, loco::Entity camera, lo
 		Vector3 delta_position;
 		Vector3 up_ref = { 0.0f, 1.0f, 0.0f };
 		bx::vec3Mul((float*)&delta_position, (float*)&up_ref,
-			(controller->right_trigger - controller->left_trigger) * cam_move_speed * delta_time);
+			(input->controllers[1].right_trigger - input->controllers[1].left_trigger) * cam_move_speed * delta_time);
 		bx::vec3Add((float*)&position, (float*)&tmp_position, (float*)&delta_position);
 	}
 
@@ -185,12 +194,12 @@ void camera_update(float delta_time, loco::World& world, loco::Entity camera, lo
 	world.transform.set_local_matrix(cam_tf, view);
 
 	// fov
-	if (controller->left_shoulder.is_down)
+	if (input->controllers[1].left_shoulder.is_down)
 	{
 		fov += fov_speed * delta_time;
 	}
-	
-	if (controller->right_shoulder.is_down)
+
+	if (input->controllers[1].right_shoulder.is_down)
 	{
 		fov -= fov_speed * delta_time;
 	}
@@ -219,7 +228,7 @@ void game_update_and_render(float delta_time, int32 window_width, int32 window_h
 	loco::resource_manager.hot_reload<loco::Mesh>();
 	loco::resource_manager.hot_reload<loco::Texture>();
 
-	camera_update(delta_time, world, camera, &input->controllers[0]);
+	camera_update(delta_time, world, camera, input);
 
 	// This dummy draw call is here to make sure that view 0 is cleared
 	// if no other draw calls are submitted to view 0.

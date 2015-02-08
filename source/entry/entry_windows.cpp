@@ -51,6 +51,14 @@ win32_load_xinput()
 }
 
 internal void
+win32_process_keyboard_message(GameButtonState* new_state, bool is_down)
+{
+	LOCO_ASSERT(is_down != new_state->is_down);
+	new_state->is_down = is_down;
+	++new_state->transition_count;
+}
+
+internal void
 win32_process_xinput_digital_buttons(DWORD button_state, DWORD button_bit, GameButtonState* old_state, GameButtonState* new_state)
 {
 	new_state->is_down = (button_state & button_bit) == button_bit;
@@ -74,90 +82,123 @@ LRESULT CALLBACK
 MainWindowCallback(HWND window, UINT message, WPARAM w_param,	LPARAM l_param)
 {
 	LRESULT result = 0;
-
 	switch (message)
 	{
-		case WM_SIZE:
-		{
-			OutputDebugStringA("WM_SIZE\n");
-			global_window_width = LOWORD(l_param);
-			global_window_height = HIWORD(l_param);
-			loco::renderer.reset(global_window_width, global_window_height);
-		} break;
+	case WM_DESTROY:
+	{
+		global_running = false;
+	} break;
 
-		case WM_DESTROY:
+	case WM_CLOSE:
+	{
+		global_running = false;
+	} break;
+
+	case WM_SIZE:
+	{
+		OutputDebugStringA("WM_SIZE\n");
+		global_window_width = LOWORD(l_param);
+		global_window_height = HIWORD(l_param);
+		loco::renderer.reset(global_window_width, global_window_height);
+	} break;
+
+	case WM_ACTIVATEAPP:
+	{
+		OutputDebugStringA("WM_ACTIVEAPP\n");
+	} break;
+
+	default:
+	{
+		result = DefWindowProc(window, message, w_param, l_param);
+	} break;
+	}
+
+	return result;
+}
+
+internal void 
+win32_process_pending_messages(GameControllerInput* keyboard_controller)
+{
+	MSG message;
+	while (PeekMessage(&message, 0, 0, 0, PM_REMOVE))
+	{
+
+		switch (message.message)
+		{
+
+		case WM_QUIT:
 		{
 			global_running = false;
-		} break;
+		}
+		break;
 
-		case WM_CLOSE:
-		{
-			global_running = false;
-		} break;
 
-		case WM_ACTIVATEAPP:
-		{
-			OutputDebugStringA("WM_ACTIVEAPP\n");
-		} break;
 
 		case WM_SYSKEYDOWN:
 		case WM_SYSKEYUP:
 		case WM_KEYDOWN:
 		case WM_KEYUP:
 		{
-			uint32 vk_code = w_param;
-			bool was_down = ((l_param & (1 << 30)) != 0);
-			bool is_down = ((l_param & (1 << 31)) == 0);
+			uint32 vk_code = message.wParam;
+			bool was_down = ((message.lParam & (1 << 30)) != 0);
+			bool is_down = ((message.lParam & (1 << 31)) == 0);
 
 			if (is_down != was_down)
 			{
 				if (vk_code == 'W')
 				{
+					win32_process_keyboard_message(&keyboard_controller->up, is_down);
 				}
 				else if (vk_code == 'S')
 				{
+					win32_process_keyboard_message(&keyboard_controller->down, is_down);
 				}
 				else if (vk_code == 'A')
 				{
+					win32_process_keyboard_message(&keyboard_controller->left, is_down);
 				}
 				else if (vk_code == 'D')
 				{
+					win32_process_keyboard_message(&keyboard_controller->right, is_down);
 				}
 				else if (vk_code == 'Q')
 				{
+					win32_process_keyboard_message(&keyboard_controller->left_shoulder, is_down);
 				}
 				else if (vk_code == 'E')
 				{
+					win32_process_keyboard_message(&keyboard_controller->right_shoulder, is_down);
 				}
 				else if (vk_code == VK_UP)
 				{
+					win32_process_keyboard_message(&keyboard_controller->up, is_down);
 				}
 				else if (vk_code == VK_DOWN)
 				{
+					win32_process_keyboard_message(&keyboard_controller->down, is_down);
 				}
 				else if (vk_code == VK_LEFT)
 				{
+					win32_process_keyboard_message(&keyboard_controller->left, is_down);
 				}
 				else if (vk_code == VK_RIGHT)
 				{
+					win32_process_keyboard_message(&keyboard_controller->right, is_down);
 				}
 				else if (vk_code == VK_ESCAPE)
 				{
+					global_running = false;
 				}
 				else if (vk_code == VK_SPACE)
 				{
 				}
 			}
 		} break;
+		}
 
-		default:
-		{
-			//OutputDebugStringA("default\n");
-			result = DefWindowProc(window, message, w_param, l_param);
-		} break;
+		TranslateMessage(&message);
+		DispatchMessage(&message);
 	}
-
-	return result;
 }
 
 int CALLBACK 
@@ -187,7 +228,6 @@ WinMain(HINSTANCE instance, HINSTANCE prev_instance, LPSTR command_line, int sho
 		instance,
 		0);
 
-
 	GameInit init_struct;
 	game_init(__argc, __argv, &init_struct);
 
@@ -202,6 +242,9 @@ WinMain(HINSTANCE instance, HINSTANCE prev_instance, LPSTR command_line, int sho
 	GameInput* new_input = &input[0];
 	GameInput* old_input = &input[1];
 
+	GameControllerInput zero_controller = {};
+	old_input->controllers[0] = zero_controller;
+
 	int64 last_time = loco::hp_counter();
 	double clock_freq = double(loco::hp_frequency());
 
@@ -212,17 +255,16 @@ WinMain(HINSTANCE instance, HINSTANCE prev_instance, LPSTR command_line, int sho
 		float frame_time = (float)(now_time - last_time) / (float)clock_freq;
 		last_time = now_time;
 
-		MSG message;
-		while (PeekMessage(&message, 0, 0, 0, PM_REMOVE))
+		GameControllerInput* old_keyboard_controller = &old_input->controllers[0];
+		GameControllerInput* new_keyboard_controller = &new_input->controllers[0];
+		*new_keyboard_controller = zero_controller;
+		for (int button_index = 0; button_index < ArrayCount(new_keyboard_controller->buttons); ++button_index)
 		{
-			if (message.message == WM_QUIT)
-			{
-				global_running = false;
-			}
-
-			TranslateMessage(&message);
-			DispatchMessage(&message);
+			new_keyboard_controller->buttons[button_index].is_down = old_keyboard_controller->buttons[button_index].is_down;
 		}
+
+		// process windows messages
+		win32_process_pending_messages(new_keyboard_controller);
 
 		// get gamepad state
 		uint32 max_controller_count = XUSER_MAX_COUNT;
@@ -233,8 +275,8 @@ WinMain(HINSTANCE instance, HINSTANCE prev_instance, LPSTR command_line, int sho
 
 		for (DWORD controller_index = 0; controller_index < max_controller_count; ++controller_index)
 		{
-			GameControllerInput* old_controller = &old_input->controllers[controller_index];
-			GameControllerInput* new_controller = &new_input->controllers[controller_index];
+			GameControllerInput* old_controller = &old_input->controllers[controller_index+1];
+			GameControllerInput* new_controller = &new_input->controllers[controller_index+1];
 
 			XINPUT_STATE controller_state;
 			if (XInputGetState(controller_index, &controller_state) == ERROR_SUCCESS)
@@ -262,10 +304,11 @@ WinMain(HINSTANCE instance, HINSTANCE prev_instance, LPSTR command_line, int sho
 			}
 		}
 
+		// game update
 		game_update_and_render(frame_time, global_window_width, global_window_height, new_input);
 
 		// swap old/new inputs
-		GameInput* temp_input = new_input;
+		GameInput* temp_input = old_input;
 		old_input = new_input;
 		new_input = temp_input;
 	}

@@ -26,13 +26,6 @@ namespace loco
 		float x;
 		float y;
 
-		GameButtonState up;
-		GameButtonState down;
-		GameButtonState left;
-		GameButtonState right;
-		GameButtonState left_shoulder;
-		GameButtonState right_shoulder;
-
 		float left_thumb_x;
 		float left_thumb_y;
 		float right_thumb_x;
@@ -40,11 +33,25 @@ namespace loco
 
 		float left_trigger;
 		float right_trigger;
+
+		union
+		{
+			GameButtonState buttons[6];
+			struct
+			{
+				GameButtonState up;
+				GameButtonState down;
+				GameButtonState left;
+				GameButtonState right;
+				GameButtonState left_shoulder;
+				GameButtonState right_shoulder;
+			};
+		};
 	};
 
 	struct GameInput
 	{
-		GameControllerInput controllers[4];
+		GameControllerInput controllers[5];
 	};
 
 }
