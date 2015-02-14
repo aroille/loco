@@ -207,14 +207,14 @@ void camera_update(float delta_time, loco::World& world, loco::Entity camera, lo
 	world.camera.set_fov(cam_cp, fov);
 }
 
-void game_init(int argc, char** argv, loco::GameInit* game_init)
+void loco_init(int argc, char** argv, loco::GameInit* game_init)
 {
 	game_init->renderer_type = loco::Renderer::Type::Count;
 	strcpy_s(game_init->resource_root_path, sizeof(game_init->resource_root_path), argc > 1 ? argv[1] : "resources/");
 	strcpy_s(game_init->default_resource_relative_path, sizeof(game_init->default_resource_relative_path), "loco/");
 }
 
-void game_update_and_render(float delta_time, int32 window_width, int32 window_height, loco::GameInput* input)
+void loco_update_and_render(float delta_time, int32 window_width, int32 window_height, loco::GameInput* input)
 {
 	static bool is_scene_init = false;
 	if (!is_scene_init)

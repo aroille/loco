@@ -56,8 +56,8 @@ namespace loco
 
 }
 
-extern void	game_init(int argc, char** argv, loco::GameInit* game_init);
-extern void game_update_and_render(float delta_time, int32 window_width, int32 window_height, loco::GameInput* input);
+extern void	loco_init(int argc, char** argv, loco::GameInit* game_init);
+extern void loco_update_and_render(float delta_time, int32 window_width, int32 window_height, loco::GameInput* input);
 
 
 #endif // ENTRY_H_HEADER_GUARD

@@ -15,6 +15,12 @@ namespace loco
 	Renderer renderer;
 	Log log;
 	uint32 current_frame = 0;
+	bool initialized = false;
+
+	bool is_initialized() 
+	{ 
+		return initialized; 
+	}
 
 	void init(Renderer::Type::Enum renderer_type, int32 window_width, int32 window_height, const char* resources_path, const char* default_resources_path)
 	{

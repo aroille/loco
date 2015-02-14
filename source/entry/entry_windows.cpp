@@ -99,7 +99,8 @@ MainWindowCallback(HWND window, UINT message, WPARAM w_param,	LPARAM l_param)
 		OutputDebugStringA("WM_SIZE\n");
 		global_window_width = LOWORD(l_param);
 		global_window_height = HIWORD(l_param);
-		loco::renderer.reset(global_window_width, global_window_height);
+		if (loco::is_initialized())
+			loco::renderer.reset(global_window_width, global_window_height);
 	} break;
 
 	case WM_ACTIVATEAPP:
@@ -139,7 +140,7 @@ win32_process_pending_messages(GameControllerInput* keyboard_controller)
 		case WM_KEYDOWN:
 		case WM_KEYUP:
 		{
-			uint32 vk_code = message.wParam;
+			uint32 vk_code = static_cast<uint32>(message.wParam);
 			bool was_down = ((message.lParam & (1 << 30)) != 0);
 			bool is_down = ((message.lParam & (1 << 31)) == 0);
 
@@ -229,7 +230,7 @@ WinMain(HINSTANCE instance, HINSTANCE prev_instance, LPSTR command_line, int sho
 		0);
 
 	GameInit init_struct;
-	game_init(__argc, __argv, &init_struct);
+	loco_init(__argc, __argv, &init_struct);
 
 	bgfx::winSetHwnd(window);
 	loco::init(	init_struct.renderer_type, 
@@ -305,7 +306,7 @@ WinMain(HINSTANCE instance, HINSTANCE prev_instance, LPSTR command_line, int sho
 		}
 
 		// game update
-		game_update_and_render(frame_time, global_window_width, global_window_height, new_input);
+		loco_update_and_render(frame_time, global_window_width, global_window_height, new_input);
 
 		// swap old/new inputs
 		GameInput* temp_input = old_input;
