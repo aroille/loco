@@ -5,6 +5,7 @@
 *.suo
 *.user
 *.sln.docstates
+*.JPG
 
 # Build results
 
@@ -155,4 +156,3 @@ $RECYCLE.BIN/
 
 # Mac desktop service store files
 .DS_Store
-source/engine/loco.cpp
