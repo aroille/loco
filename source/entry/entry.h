@@ -26,10 +26,13 @@ namespace loco
 		float x;
 		float y;
 
-		float left_thumb_x;
-		float left_thumb_y;
-		float right_thumb_x;
-		float right_thumb_y;
+		Vector2 left_thumb;
+		Vector2 right_thumb;
+
+		//float left_thumb_x;
+		//float left_thumb_y;
+		//float right_thumb_x;
+		//float right_thumb_y;
 
 		float left_trigger;
 		float right_trigger;
@@ -49,9 +52,35 @@ namespace loco
 		};
 	};
 
+	struct MouseInput
+	{
+		Vector2 pos;
+		float wheel;
+
+		union
+		{
+			GameButtonState buttons[3];
+			struct
+			{
+				GameButtonState left;
+				GameButtonState middle;
+				GameButtonState right;
+			};
+		};
+	};
+
 	struct GameInput
 	{
-		GameControllerInput controllers[5];
+		MouseInput							mouse;
+		union
+		{
+			GameControllerInput		controllers[5];
+			struct
+			{
+				GameControllerInput keyboard;
+				GameControllerInput gamepad[4];
+			};
+		};
 	};
 
 }

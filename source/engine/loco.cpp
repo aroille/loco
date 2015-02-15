@@ -40,6 +40,8 @@ namespace loco
 		// load default resources
 		resource_manager.load_folder(default_resource_relativ_path);
 		resource_manager.init_default_resources();
+
+		initialized = true;
 	}
 
 	void frame()

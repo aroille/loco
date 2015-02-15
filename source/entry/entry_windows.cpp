@@ -53,7 +53,7 @@ win32_load_xinput()
 internal void
 win32_process_keyboard_message(GameButtonState* new_state, bool is_down)
 {
-	LOCO_ASSERT(is_down != new_state->is_down);
+	//LOCO_ASSERT(is_down != new_state->is_down);
 	new_state->is_down = is_down;
 	++new_state->transition_count;
 }
@@ -148,19 +148,23 @@ win32_process_pending_messages(GameControllerInput* keyboard_controller)
 			{
 				if (vk_code == 'W')
 				{
-					win32_process_keyboard_message(&keyboard_controller->up, is_down);
+					keyboard_controller->left_thumb.y += is_down ? 1.0f : -1.0f;
+					//win32_process_keyboard_message(&keyboard_controller->up, is_down);
 				}
 				else if (vk_code == 'S')
 				{
-					win32_process_keyboard_message(&keyboard_controller->down, is_down);
+					keyboard_controller->left_thumb.y += is_down ? -1.0f : 1.0f;
+					//win32_process_keyboard_message(&keyboard_controller->down, is_down);
 				}
 				else if (vk_code == 'A')
 				{
-					win32_process_keyboard_message(&keyboard_controller->left, is_down);
+					keyboard_controller->left_thumb.x += is_down ? -1.0f : 1.0f;
+					//win32_process_keyboard_message(&keyboard_controller->left, is_down);
 				}
 				else if (vk_code == 'D')
 				{
-					win32_process_keyboard_message(&keyboard_controller->right, is_down);
+					keyboard_controller->left_thumb.x += is_down ? 1.0f : -1.0f;
+					//win32_process_keyboard_message(&keyboard_controller->right, is_down);
 				}
 				else if (vk_code == 'Q')
 				{
@@ -258,10 +262,11 @@ WinMain(HINSTANCE instance, HINSTANCE prev_instance, LPSTR command_line, int sho
 
 		GameControllerInput* old_keyboard_controller = &old_input->controllers[0];
 		GameControllerInput* new_keyboard_controller = &new_input->controllers[0];
-		*new_keyboard_controller = zero_controller;
+		*new_keyboard_controller = *old_keyboard_controller;
+
 		for (int button_index = 0; button_index < ArrayCount(new_keyboard_controller->buttons); ++button_index)
 		{
-			new_keyboard_controller->buttons[button_index].is_down = old_keyboard_controller->buttons[button_index].is_down;
+			new_keyboard_controller->buttons[button_index].transition_count = 0;
 		}
 
 		// process windows messages
@@ -291,10 +296,10 @@ WinMain(HINSTANCE instance, HINSTANCE prev_instance, LPSTR command_line, int sho
 				win32_process_xinput_digital_buttons(pad->wButtons, XINPUT_GAMEPAD_LEFT_SHOULDER, &old_controller->left_shoulder, &new_controller->left_shoulder);
 				win32_process_xinput_digital_buttons(pad->wButtons, XINPUT_GAMEPAD_RIGHT_SHOULDER, &old_controller->right_shoulder, &new_controller->right_shoulder);
 
-				win32_process_xinput_analogic_stick(pad->sThumbLX, &new_controller->left_thumb_x);
-				win32_process_xinput_analogic_stick(pad->sThumbLY, &new_controller->left_thumb_y);
-				win32_process_xinput_analogic_stick(pad->sThumbRX, &new_controller->right_thumb_x);
-				win32_process_xinput_analogic_stick(pad->sThumbRY, &new_controller->right_thumb_y);
+				win32_process_xinput_analogic_stick(pad->sThumbLX, &new_controller->left_thumb.x);
+				win32_process_xinput_analogic_stick(pad->sThumbLY, &new_controller->left_thumb.y);
+				win32_process_xinput_analogic_stick(pad->sThumbRX, &new_controller->right_thumb.x);
+				win32_process_xinput_analogic_stick(pad->sThumbRY, &new_controller->right_thumb.y);
 
 				new_controller->left_trigger = pad->bLeftTrigger / 255.0f;
 				new_controller->right_trigger = pad->bRightTrigger / 255.0f;

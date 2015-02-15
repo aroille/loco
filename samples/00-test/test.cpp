@@ -112,16 +112,14 @@ void init_scene()
 
 void camera_update(float delta_time, loco::World& world, loco::Entity camera, loco::GameInput* input)
 {
-	float controller_move_x = input->controllers[0].left.is_down * (-1.0f) +
-																input->controllers[0].right.is_down * 1.0f +
-																input->controllers[1].left_thumb_x;
+	float controller_move_x = input->keyboard.left_thumb.x +
+														input->gamepad[0].left_thumb.x;
 
-	float controller_move_y = input->controllers[0].up.is_down * 1.0f +
-															input->controllers[0].down.is_down * (-1.0f) +
-															input->controllers[1].left_thumb_y;
+	float controller_move_y = input->keyboard.left_thumb.y +
+														input->gamepad[0].left_thumb.y;
 
-	float controller_rotate_x = input->controllers[1].right_thumb_x;
-	float controller_rotate_y = input->controllers[1].right_thumb_y;
+	float controller_rotate_x = input->gamepad[0].right_thumb.x;
+	float controller_rotate_y = input->gamepad[0].right_thumb.y;
 
 	// init static variables
 	static float cam_move_speed = 5.0f;
@@ -182,7 +180,7 @@ void camera_update(float delta_time, loco::World& world, loco::Entity camera, lo
 		Vector3 delta_position;
 		Vector3 up_ref = { 0.0f, 1.0f, 0.0f };
 		bx::vec3Mul((float*)&delta_position, (float*)&up_ref,
-			(input->controllers[1].right_trigger - input->controllers[1].left_trigger) * cam_move_speed * delta_time);
+			(input->gamepad[0].right_trigger - input->gamepad[0].left_trigger) * cam_move_speed * delta_time);
 		bx::vec3Add((float*)&position, (float*)&tmp_position, (float*)&delta_position);
 	}
 
@@ -194,12 +192,12 @@ void camera_update(float delta_time, loco::World& world, loco::Entity camera, lo
 	world.transform.set_local_matrix(cam_tf, view);
 
 	// fov
-	if (input->controllers[1].left_shoulder.is_down)
+	if (input->gamepad[0].left_shoulder.is_down)
 	{
 		fov += fov_speed * delta_time;
 	}
 
-	if (input->controllers[1].right_shoulder.is_down)
+	if (input->gamepad[0].right_shoulder.is_down)
 	{
 		fov -= fov_speed * delta_time;
 	}
