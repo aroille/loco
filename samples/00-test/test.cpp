@@ -5,6 +5,7 @@
 #include "world.h"
 #include "type.h"
 #include "entry.h"
+#include "log.h"
 
 #include <bx/fpumath.h>
 #include "bgfx.h" //#include "bgfx_temp.h"
@@ -13,6 +14,15 @@ using namespace loco::math;
 
 static loco::World world;
 static loco::Entity camera;
+
+void loco_init(int argc, char** argv, loco::GameInit* game_init)
+{
+	game_init->locked_mouse = true;
+	game_init->renderer_type = loco::Renderer::Type::Count;
+
+	strcpy_s(game_init->resource_root_path, sizeof(game_init->resource_root_path), argc > 1 ? argv[1] : "resources/");
+	strcpy_s(game_init->default_resource_relative_path, sizeof(game_init->default_resource_relative_path), "loco/");
+}
 
 loco::Entity create_axis(loco::World& world, float length, float thickness)
 {
@@ -112,15 +122,22 @@ void init_scene()
 
 void camera_update(float delta_time, loco::World& world, loco::Entity camera, loco::GameInput* input)
 {
+	float mouse_sensibility = 0.1f;
+	
 	float controller_move_x = input->keyboard.left_thumb.x +
 														input->gamepad[0].left_thumb.x;
 
 	float controller_move_y = input->keyboard.left_thumb.y +
 														input->gamepad[0].left_thumb.y;
 
-	float controller_rotate_x = input->gamepad[0].right_thumb.x;
-	float controller_rotate_y = input->gamepad[0].right_thumb.y;
+	float controller_rotate_x = input->mouse.abs_move.x * mouse_sensibility +
+															input->keyboard.right_thumb.x +
+															input->gamepad[0].right_thumb.x;
 
+	float controller_rotate_y =-input->mouse.abs_move.y * mouse_sensibility +
+															input->keyboard.right_thumb.y +
+															input->gamepad[0].right_thumb.y;
+															
 	// init static variables
 	static float cam_move_speed = 5.0f;
 	static float cam_rotation_speed = 0.5f * 3.14f;
@@ -203,13 +220,6 @@ void camera_update(float delta_time, loco::World& world, loco::Entity camera, lo
 	}
 
 	world.camera.set_fov(cam_cp, fov);
-}
-
-void loco_init(int argc, char** argv, loco::GameInit* game_init)
-{
-	game_init->renderer_type = loco::Renderer::Type::Count;
-	strcpy_s(game_init->resource_root_path, sizeof(game_init->resource_root_path), argc > 1 ? argv[1] : "resources/");
-	strcpy_s(game_init->default_resource_relative_path, sizeof(game_init->default_resource_relative_path), "loco/");
 }
 
 void loco_update_and_render(float delta_time, int32 window_width, int32 window_height, loco::GameInput* input)

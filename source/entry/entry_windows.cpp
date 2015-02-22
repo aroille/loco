@@ -7,10 +7,21 @@
 #include "bgfxplatform.h"
 
 #include <windows.h>
+#include <windowsx.h>
+
 #include <xinput.h>
 #define global_variable static
 #define internal static
 
+using namespace loco;
+
+
+global_variable bool		 global_running;
+global_variable bool		 global_has_focus;
+global_variable int32		 global_window_width;
+global_variable int32		 global_window_height;
+global_variable bool		 global_locked_mouse;
+global_variable Vector2i global_locked_mouse_position;
 
 // XInputGetState
 #define X_INPUT_GET_STATE(name) DWORD WINAPI name(DWORD dwUserIndex, XINPUT_STATE* pState)
@@ -32,13 +43,6 @@ X_INPUT_SET_STATE(XInputSetStateStub)
 global_variable x_input_set_state* XInputSetState_ = XInputSetStateStub;
 #define XInputSetState XInputSetState_
 
-
-global_variable bool global_running;
-global_variable int32 global_window_width;
-global_variable int32 global_window_height;
-
-using namespace loco;
-
 internal void 
 win32_load_xinput()
 {
@@ -53,8 +57,14 @@ win32_load_xinput()
 internal void
 win32_process_keyboard_message(GameButtonState* new_state, bool is_down)
 {
-	//LOCO_ASSERT(is_down != new_state->is_down);
 	new_state->is_down = is_down;
+	++new_state->transition_count;
+}
+
+internal void
+win32_process_mouse_message(uint32 button_state, uint32 button_bit, GameButtonState* new_state)
+{
+	new_state->is_down = (button_state & button_bit) == button_bit;
 	++new_state->transition_count;
 }
 
@@ -105,6 +115,7 @@ MainWindowCallback(HWND window, UINT message, WPARAM w_param,	LPARAM l_param)
 
 	case WM_ACTIVATEAPP:
 	{
+		global_has_focus = w_param;
 		OutputDebugStringA("WM_ACTIVEAPP\n");
 	} break;
 
@@ -118,7 +129,7 @@ MainWindowCallback(HWND window, UINT message, WPARAM w_param,	LPARAM l_param)
 }
 
 internal void 
-win32_process_pending_messages(GameControllerInput* keyboard_controller)
+win32_process_pending_messages(GameControllerInput* keyboard_controller, MouseInput* mouse_controller)
 {
 	MSG message;
 	while (PeekMessage(&message, 0, 0, 0, PM_REMOVE))
@@ -133,7 +144,20 @@ win32_process_pending_messages(GameControllerInput* keyboard_controller)
 		}
 		break;
 
+		case WM_LBUTTONUP:
+		case WM_LBUTTONDOWN:
+			win32_process_mouse_message(static_cast<uint32>(message.wParam), MK_LBUTTON, &mouse_controller->left);
+			break;
 
+		case WM_MBUTTONUP:
+		case WM_RBUTTONUP:
+			win32_process_mouse_message(static_cast<uint32>(message.wParam), MK_MBUTTON, &mouse_controller->middle);
+			break;
+
+		case WM_MBUTTONDOWN:
+		case WM_RBUTTONDOWN:
+			win32_process_mouse_message(static_cast<uint32>(message.wParam), MK_RBUTTON, &mouse_controller->right);
+			break;
 
 		case WM_SYSKEYDOWN:
 		case WM_SYSKEYUP:
@@ -176,19 +200,23 @@ win32_process_pending_messages(GameControllerInput* keyboard_controller)
 				}
 				else if (vk_code == VK_UP)
 				{
-					win32_process_keyboard_message(&keyboard_controller->up, is_down);
+					keyboard_controller->right_thumb.y += is_down ? 1.0f : -1.0f;
+					//win32_process_keyboard_message(&keyboard_controller->up, is_down);
 				}
 				else if (vk_code == VK_DOWN)
 				{
-					win32_process_keyboard_message(&keyboard_controller->down, is_down);
+					keyboard_controller->right_thumb.y += is_down ? -1.0f : 1.0f;
+					//win32_process_keyboard_message(&keyboard_controller->down, is_down);
 				}
 				else if (vk_code == VK_LEFT)
 				{
-					win32_process_keyboard_message(&keyboard_controller->left, is_down);
+					keyboard_controller->right_thumb.x += is_down ? -1.0f : 1.0f;
+					//win32_process_keyboard_message(&keyboard_controller->left, is_down);
 				}
 				else if (vk_code == VK_RIGHT)
 				{
-					win32_process_keyboard_message(&keyboard_controller->right, is_down);
+					keyboard_controller->right_thumb.x += is_down ? 1.0f : -1.0f;
+					//win32_process_keyboard_message(&keyboard_controller->right, is_down);
 				}
 				else if (vk_code == VK_ESCAPE)
 				{
@@ -233,8 +261,18 @@ WinMain(HINSTANCE instance, HINSTANCE prev_instance, LPSTR command_line, int sho
 		instance,
 		0);
 
-	GameInit init_struct;
+	GameInit init_struct = {};
 	loco_init(__argc, __argv, &init_struct);
+
+	global_locked_mouse = init_struct.locked_mouse;
+	if (global_locked_mouse)
+	{
+		RECT window_rect;
+		GetWindowRect(window, &window_rect);
+		global_locked_mouse_position.x = window_rect.left + (window_rect.right - window_rect.left) / 2;
+		global_locked_mouse_position.y = window_rect.top + (window_rect.bottom - window_rect.top) / 2;
+		ShowCursor(false);
+	}
 
 	bgfx::winSetHwnd(window);
 	loco::init(	init_struct.renderer_type, 
@@ -247,7 +285,9 @@ WinMain(HINSTANCE instance, HINSTANCE prev_instance, LPSTR command_line, int sho
 	GameInput* new_input = &input[0];
 	GameInput* old_input = &input[1];
 
+	MouseInput zero_mouse = {};
 	GameControllerInput zero_controller = {};
+	old_input->mouse = zero_mouse;
 	old_input->controllers[0] = zero_controller;
 
 	int64 last_time = loco::hp_counter();
@@ -260,53 +300,75 @@ WinMain(HINSTANCE instance, HINSTANCE prev_instance, LPSTR command_line, int sho
 		float frame_time = (float)(now_time - last_time) / (float)clock_freq;
 		last_time = now_time;
 
-		GameControllerInput* old_keyboard_controller = &old_input->controllers[0];
-		GameControllerInput* new_keyboard_controller = &new_input->controllers[0];
-		*new_keyboard_controller = *old_keyboard_controller;
 
-		for (int button_index = 0; button_index < ArrayCount(new_keyboard_controller->buttons); ++button_index)
-		{
-			new_keyboard_controller->buttons[button_index].transition_count = 0;
-		}
+
+		// reset keyboard input
+		new_input->keyboard = old_input->keyboard;
+		for (int button_index = 0; button_index < ArrayCount(new_input->keyboard.buttons); ++button_index)
+			new_input->keyboard.buttons[button_index].transition_count = 0;
+
+		// reset mouse input
+		new_input->mouse = old_input->mouse;
+		new_input->mouse.abs_move = {};
+		for (int button_index = 0; button_index < ArrayCount(new_input->mouse.buttons); ++button_index)
+			new_input->mouse.buttons[button_index].transition_count = 0;
 
 		// process windows messages
-		win32_process_pending_messages(new_keyboard_controller);
+		win32_process_pending_messages(&new_input->keyboard, &new_input->mouse);
 
-		// get gamepad state
-		uint32 max_controller_count = XUSER_MAX_COUNT;
-		if (max_controller_count > ArrayCount(new_input->controllers))
+		// get mouse position
 		{
-			max_controller_count = ArrayCount(new_input->controllers);
+			POINT p;
+			GetCursorPos(&p);
+
+			new_input->mouse.abs_move.x += p.x - new_input->mouse.abs_pos.x;
+			new_input->mouse.abs_move.y += p.y - new_input->mouse.abs_pos.y;
+			new_input->mouse.abs_pos.x = p.x;
+			new_input->mouse.abs_pos.y = p.y;
+
+			if (global_locked_mouse && global_has_focus)
+			{
+				new_input->mouse.abs_pos.x = global_locked_mouse_position.x;
+				new_input->mouse.abs_pos.y = global_locked_mouse_position.y;
+				SetCursorPos(global_locked_mouse_position.x, global_locked_mouse_position.y);
+			}
 		}
 
-		for (DWORD controller_index = 0; controller_index < max_controller_count; ++controller_index)
+		// get gamepad state
 		{
-			GameControllerInput* old_controller = &old_input->controllers[controller_index+1];
-			GameControllerInput* new_controller = &new_input->controllers[controller_index+1];
+			uint32 max_controller_count = XUSER_MAX_COUNT;
+			if (max_controller_count > ArrayCount(new_input->controllers))
+				max_controller_count = ArrayCount(new_input->controllers);
 
-			XINPUT_STATE controller_state;
-			if (XInputGetState(controller_index, &controller_state) == ERROR_SUCCESS)
+			for (DWORD controller_index = 0; controller_index < max_controller_count; ++controller_index)
 			{
-				/// This controller is plugged in
-				XINPUT_GAMEPAD* pad = &controller_state.Gamepad;
-				win32_process_xinput_digital_buttons(pad->wButtons, XINPUT_GAMEPAD_A, &old_controller->down, &new_controller->down);
-				win32_process_xinput_digital_buttons(pad->wButtons, XINPUT_GAMEPAD_B, &old_controller->right, &new_controller->right);
-				win32_process_xinput_digital_buttons(pad->wButtons, XINPUT_GAMEPAD_X, &old_controller->left, &new_controller->left);
-				win32_process_xinput_digital_buttons(pad->wButtons, XINPUT_GAMEPAD_Y, &old_controller->up, &new_controller->up);
-				win32_process_xinput_digital_buttons(pad->wButtons, XINPUT_GAMEPAD_LEFT_SHOULDER, &old_controller->left_shoulder, &new_controller->left_shoulder);
-				win32_process_xinput_digital_buttons(pad->wButtons, XINPUT_GAMEPAD_RIGHT_SHOULDER, &old_controller->right_shoulder, &new_controller->right_shoulder);
+				GameControllerInput* old_controller = &old_input->gamepad[controller_index];
+				GameControllerInput* new_controller = &new_input->gamepad[controller_index];
 
-				win32_process_xinput_analogic_stick(pad->sThumbLX, &new_controller->left_thumb.x);
-				win32_process_xinput_analogic_stick(pad->sThumbLY, &new_controller->left_thumb.y);
-				win32_process_xinput_analogic_stick(pad->sThumbRX, &new_controller->right_thumb.x);
-				win32_process_xinput_analogic_stick(pad->sThumbRY, &new_controller->right_thumb.y);
+				XINPUT_STATE controller_state;
+				if (XInputGetState(controller_index, &controller_state) == ERROR_SUCCESS)
+				{
+					// This controller is plugged in
+					XINPUT_GAMEPAD* pad = &controller_state.Gamepad;
+					win32_process_xinput_digital_buttons(pad->wButtons, XINPUT_GAMEPAD_A, &old_controller->down, &new_controller->down);
+					win32_process_xinput_digital_buttons(pad->wButtons, XINPUT_GAMEPAD_B, &old_controller->right, &new_controller->right);
+					win32_process_xinput_digital_buttons(pad->wButtons, XINPUT_GAMEPAD_X, &old_controller->left, &new_controller->left);
+					win32_process_xinput_digital_buttons(pad->wButtons, XINPUT_GAMEPAD_Y, &old_controller->up, &new_controller->up);
+					win32_process_xinput_digital_buttons(pad->wButtons, XINPUT_GAMEPAD_LEFT_SHOULDER, &old_controller->left_shoulder, &new_controller->left_shoulder);
+					win32_process_xinput_digital_buttons(pad->wButtons, XINPUT_GAMEPAD_RIGHT_SHOULDER, &old_controller->right_shoulder, &new_controller->right_shoulder);
 
-				new_controller->left_trigger = pad->bLeftTrigger / 255.0f;
-				new_controller->right_trigger = pad->bRightTrigger / 255.0f;
-			}
-			else
-			{
-				// controller plugged out
+					win32_process_xinput_analogic_stick(pad->sThumbLX, &new_controller->left_thumb.x);
+					win32_process_xinput_analogic_stick(pad->sThumbLY, &new_controller->left_thumb.y);
+					win32_process_xinput_analogic_stick(pad->sThumbRX, &new_controller->right_thumb.x);
+					win32_process_xinput_analogic_stick(pad->sThumbRY, &new_controller->right_thumb.y);
+
+					new_controller->left_trigger = pad->bLeftTrigger / 255.0f;
+					new_controller->right_trigger = pad->bRightTrigger / 255.0f;
+				}
+				else
+				{
+					// controller plugged out
+				}
 			}
 		}
 

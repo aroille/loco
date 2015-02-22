@@ -10,6 +10,7 @@ namespace loco
 {
 	struct GameInit
 	{
+		bool locked_mouse;
 		Renderer::Type::Enum renderer_type;
 		char resource_root_path[LOCO_PATH_LENGTH];
 		char default_resource_relative_path[LOCO_PATH_LENGTH];
@@ -23,17 +24,8 @@ namespace loco
 
 	struct GameControllerInput
 	{
-		float x;
-		float y;
-
 		Vector2 left_thumb;
 		Vector2 right_thumb;
-
-		//float left_thumb_x;
-		//float left_thumb_y;
-		//float right_thumb_x;
-		//float right_thumb_y;
-
 		float left_trigger;
 		float right_trigger;
 
@@ -54,7 +46,8 @@ namespace loco
 
 	struct MouseInput
 	{
-		Vector2 pos;
+		Vector2i abs_pos;
+		Vector2i abs_move;
 		float wheel;
 
 		union
