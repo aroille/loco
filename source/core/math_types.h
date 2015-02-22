@@ -2,11 +2,17 @@
 #define MATH_TYPE_H_HEADER_GUARD
 
 #include "matrix4x4.h"
+#include "type.h"
 
 namespace loco
 {
 namespace math
 {
+
+	struct Vector2i
+	{
+		int32 x, y;
+	};
 
 	struct Vector2
 	{
