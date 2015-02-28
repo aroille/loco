@@ -30,6 +30,7 @@ namespace loco
 		unsigned pos = _data.size;
 
 		_data.transform[pos] = _callback_transform_sync(_world, e);
+		_data.transform[pos] = Matrix4x4::identity;
 		_data.mesh[pos] = Mesh::invalid;
 		_data.component[pos] = c;
 

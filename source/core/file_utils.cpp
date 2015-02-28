@@ -3,7 +3,7 @@
 
 #include "debug.h"
 #include "file_system.h"
-#include "loco.h"
+#include "log.h"
 
 namespace loco
 {
@@ -13,7 +13,7 @@ namespace loco
 		File* file = FileSystem::open(fi.path, FileSystem::Mode::READ | FileSystem::Mode::BINARY);
 		if (file == nullptr)
 		{
-			log.warning("FileSystem", "Can't open file : %s", fi.path);
+			LOCO_LOG_WARNING("FileSystem", "Can't open file : %s", fi.path);
 			return false;
 		}
 		
@@ -28,7 +28,7 @@ namespace loco
 			size_t readed_size = FileSystem::read(file, fi.mem->data, fi.mem->size);
 			if (readed_size != fi.mem->size)
 			{
-				log.warning("FileSystem", "Error while reading file : %s", fi.path);
+				LOCO_LOG_WARNING("FileSystem", "Error while reading file : %s", fi.path);
 				release(fi.mem);
 				fi.mem = nullptr;
 				FileSystem::close(file);

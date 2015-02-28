@@ -4,7 +4,6 @@
 
 #include "defines.h"
 #include "entity.h"
-#include "log.h"
 #include "renderer.h"
 
 namespace loco
@@ -17,7 +16,6 @@ namespace loco
 	extern EntityManager entity_manager;
 	extern ResourceManager resource_manager;
 	extern Renderer	renderer;
-	extern Log log;
 	extern uint32 current_frame;
 
 	extern size_t resource_root_path_length;

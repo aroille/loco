@@ -1,7 +1,7 @@
 #include "resource_material_json.h"
-#include "loco.h"
-#include "resource_manager.h"
 #include "jsonxx/jsonxx.h"
+#include "log.h"
+#include "resource_manager.h"
 #include "debug.h"
 #include "type.h"
 
@@ -10,7 +10,7 @@ namespace loco
 namespace resource
 {
 
-	bool load_material(const Memory* mem, MaterialData* mat, const DefaultResources& default_resources)
+	bool load_material(const ResourceManager& resource_manager, const Memory* mem, MaterialData* mat, const DefaultResources& default_resources)
 	{
 		const char* vs_param_name("vs_shader");
 		const char* ps_param_name("ps_shader");
@@ -29,25 +29,25 @@ namespace resource
 		// check vertex shader parameter existance
 		if (!o.has<jsonxx::String>(vs_param_name))
 		{
-			log.error(LOCO_RESOURCE_MANAGER, "Material parsing error, \"%s\" parameter is missing", vs_param_name);
+			LOCO_LOG_ERROR(LOCO_RESOURCE_MANAGER, "Material parsing error, \"%s\" parameter is missing", vs_param_name);
 			return false;
 		}
 
 		// check pixel shader parameter existance
 		if (!o.has<jsonxx::String>(ps_param_name))
 		{
-			log.error(LOCO_RESOURCE_MANAGER, "Material parsing error, \"%s\" parameter is missing", ps_param_name);
+			LOCO_LOG_ERROR(LOCO_RESOURCE_MANAGER, "Material parsing error, \"%s\" parameter is missing", ps_param_name);
 			return false;
 		}
 
 		// Assign shaders
-		Shader vs_shader = loco::resource_manager.get<Shader>(o.get<jsonxx::String>(vs_param_name).c_str());
-		Shader ps_shader = loco::resource_manager.get<Shader>(o.get<jsonxx::String>(ps_param_name).c_str());
+		Shader vs_shader = resource_manager.get<Shader>(o.get<jsonxx::String>(vs_param_name).c_str());
+		Shader ps_shader = resource_manager.get<Shader>(o.get<jsonxx::String>(ps_param_name).c_str());
 		if (vs_shader == Shader::invalid || ps_shader == Shader::invalid)
 		{
 			vs_shader = default_resources.vertex_shader;
 			ps_shader = default_resources.pixel_shader;
-			log.error(LOCO_RESOURCE_MANAGER, "Use of default vertex and pixel shaders", ps_param_name);
+			LOCO_LOG_ERROR(LOCO_RESOURCE_MANAGER, "Use of default vertex and pixel shaders", ps_param_name);
 		}
 
 		mat->set_shader(vs_shader, ps_shader);
@@ -79,7 +79,7 @@ namespace resource
 				break;
 
 			case jsonxx::Value::STRING_:
-				texture = loco::resource_manager.get<Texture>(i->second->string_value_->c_str());
+				texture = resource_manager.get<Texture>(i->second->string_value_->c_str());
 				mat->set(i->first.c_str(), texture);
 				break;
 
@@ -121,7 +121,7 @@ namespace resource
 				{
 					if (!i->second->array_value_->has<jsonxx::Number>(j))
 					{
-						log.error(LOCO_RESOURCE_MANAGER, "Material parsing error, parameter \"%s\" is an array of unsupported types", i->first.c_str());
+						LOCO_LOG_ERROR(LOCO_RESOURCE_MANAGER, "Material parsing error, parameter \"%s\" is an array of unsupported types", i->first.c_str());
 						break;
 					}
 					data.push_back((float)i->second->array_value_->get<jsonxx::Number>(j));
@@ -131,7 +131,7 @@ namespace resource
 				break;
 
 			default:
-				log.error(LOCO_RESOURCE_MANAGER, "Material parsing error, parameter \"%s\" type is not supported ", i->first.c_str());
+				LOCO_LOG_ERROR(LOCO_RESOURCE_MANAGER, "Material parsing error, parameter \"%s\" type is not supported ", i->first.c_str());
 				break;
 			}
 		}

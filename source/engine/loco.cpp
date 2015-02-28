@@ -1,8 +1,9 @@
 
 #include "loco.h"
+#include "log.h"
 #include "platform.h"
-#include "resource_manager.h"
 #include "renderer.h"
+#include "resource_manager.h"
 
 namespace loco
 {
@@ -13,7 +14,6 @@ namespace loco
 	EntityManager entity_manager;
 	ResourceManager resource_manager;
 	Renderer renderer;
-	Log log;
 	uint32 current_frame = 0;
 	bool initialized = false;
 
@@ -24,8 +24,8 @@ namespace loco
 
 	void init(Renderer::Type::Enum renderer_type, int32 window_width, int32 window_height, const char* resources_path, const char* default_resources_path)
 	{
-		log.info("Loco", "Initializing");
-		log.info("Loco", "Version %s %s %s %s", LOCO_CPU_NAME, LOCO_ARCH_NAME, LOCO_PLATFORM_NAME, LOCO_COMPILER_NAME);
+		LOCO_LOG_INFO("Loco", "Initializing");
+		LOCO_LOG_INFO("Loco", "Version %s %s %s %s", LOCO_CPU_NAME, LOCO_ARCH_NAME, LOCO_PLATFORM_NAME, LOCO_COMPILER_NAME);
 
 		// init resources root path
 		strcpy(resource_root_path, resources_path);

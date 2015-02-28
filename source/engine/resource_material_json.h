@@ -3,11 +3,14 @@
 
 #include "resource_type.h"
 #include "memory_utils.h"
+
 namespace loco
 {
 	namespace resource
 	{
-		bool load_material(const Memory* mem, MaterialData* mat, const DefaultResources& default_resources);
+		class ResourceManager;
+
+		bool load_material(const ResourceManager& resource_manager, const Memory* mem, MaterialData* mat, const DefaultResources& default_resources);
 	} // resource
 } // loco
 

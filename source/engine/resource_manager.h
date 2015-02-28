@@ -1,13 +1,17 @@
 #ifndef RESOURCE_MANAGER_H_HEADER_GUARD
 #define RESOURCE_MANAGER_H_HEADER_GUARD
 
-#include "resource_type.h"
+#include "loco.h" // renderer
+
 #include "debug.h"
 #include "murmur_hash.h"
 #include "file_utils.h"
+#include "log.h"
 
 #include <queue>
 #include <map>
+
+#include "resource_type.h"
 
 #define LOCO_RESOURCE_MANAGER "ResourceManager" // log module string
 
@@ -74,10 +78,10 @@ namespace loco{
 		void unload_all();
 
 		/// Return the resource associated with a specific resource path and resource type
-		template<typename T> T get(const char* resource_path);
+		template<typename T> T get(const char* resource_path) const; 
 
 		/// Return the resource associated with a specific resource handle and resource type
-		template<typename T> T get(ResourceName name, const char* debug_name = nullptr);
+		template<typename T> T get(ResourceName name, const char* debug_name = nullptr) const;
 
 		/// Return the handle corresponding to a specific resource_path
 		/// Note : The handle is unique for a specific Resource Type.
@@ -141,10 +145,11 @@ namespace loco{
 		template<typename T> void destroy_resource(const ResourceId& id);
 		template<typename T> void unload_all();
 
-		/// function to specialize per resource type
+		/// methods to specialize per resource type
+		template<typename T> std::map<ResourceName, T>& resource_map();
+		template<typename T> const std::map<ResourceName, T>& resource_map() const;
 		template<typename T> ResourceType::Enum resource_type() const;
 		template<typename T> const char* resource_type_name() const;
-		template<typename T> std::map<ResourceName, T>& resource_map();
 		template<typename T> T create(const Memory* mem) const;
 		template<typename T> T replace(T& current, const Memory* replace) const;
 		template<typename T> void destroy(const T& resource) const;
@@ -153,9 +158,10 @@ namespace loco{
 
 
 	//==========================================================================
-	template<typename T> T ResourceManager::get(ResourceName name, const char* debug_name)
+	template<typename T> 
+	T ResourceManager::get(ResourceName name, const char* debug_name) const
 	{
-		std::map<HashedString, T>& map = resource_map<T>();
+		const std::map<HashedString, T>& map = resource_map<T>();
 
 		auto it = map.find(name);
 		if (it != map.end())
@@ -164,13 +170,14 @@ namespace loco{
 		}
 		else
 		{
-			log.error(LOCO_RESOURCE_MANAGER, "%s not found : %s", resource_type_name<T>(), debug_name ? debug_name : "");
+			LOCO_LOG_ERROR(LOCO_RESOURCE_MANAGER, "%s not found : %s", resource_type_name<T>(), debug_name ? debug_name : "");
 			return T::invalid;
 		}
 	};
 
 	//==========================================================================
-	template<typename T> void ResourceManager::hot_reload()
+	template<typename T> 
+	void ResourceManager::hot_reload()
 	{
 #ifdef LOCO_USE_HOT_RELOAD
 		for (auto folder_it = _files.begin(); folder_it != _files.end(); folder_it++)
@@ -189,12 +196,12 @@ namespace loco{
 				unsigned long long modif_date = file_modification_date(file_info.path);
 				if (modif_date == 0 && modif_date < file_info.last_modif_date)
 				{
-					log.warning(LOCO_RESOURCE_MANAGER, "Hot reloading, the file no longer exists %s", file_info.path);
+					LOCO_LOG_WARNING(LOCO_RESOURCE_MANAGER, "Hot reloading, the file no longer exists %s", file_info.path);
 					file_info.last_modif_date = modif_date;
 				}
 				else if (modif_date > file_info.last_modif_date)
 				{
-					log.info(LOCO_RESOURCE_MANAGER, "Hot reloading %s", file_info.path);
+					LOCO_LOG_INFO(LOCO_RESOURCE_MANAGER, "Hot reloading %s", file_info.path);
 
 					bool read_success = file_read(file_info);
 					if (read_success)
@@ -210,26 +217,30 @@ namespace loco{
 	}
 
 	//==========================================================================
-	template<typename T> T ResourceManager::get(const char* resource_path)
+	template<typename T> 
+	T ResourceManager::get(const char* resource_path) const
 	{
 		return get<T>(resource_name(resource_path), resource_path);
 	};
 
 	//==========================================================================
-	template<typename T> void ResourceManager::create_resource(const ResourceId& id, const Memory* mem)
+	template<typename T> 
+	void ResourceManager::create_resource(const ResourceId& id, const Memory* mem)
 	{
 		resource_map<T>()[id.name] = create<T>(mem);
 	};
 
 	//==========================================================================
-	template<typename T> void ResourceManager::destroy_resource(const ResourceId& id)
+	template<typename T> 
+	void ResourceManager::destroy_resource(const ResourceId& id)
 	{
 		destroy<T>(resource_map<T>()[id.name]);
 		resource_map<T>().erase(id.name);
 	};
 
 	//==========================================================================
-	template<typename T> void ResourceManager::unload_all()
+	template<typename T> 
+	void ResourceManager::unload_all()
 	{
 		auto it = resource_map<T>().begin();
 		while (it != resource_map<T>().end())

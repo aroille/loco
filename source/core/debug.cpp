@@ -1,6 +1,6 @@
 
 #include "debug.h"
-#include "loco.h"
+#include "log.h"
 #include "platform.h"
 
 #include <cstdlib>
@@ -19,7 +19,7 @@ namespace loco
 
 		// log
 		sprintf_s(msg_buffer, sizeof(msg_buffer), "ASSERT %s(%d) : %s", file, line, format);
-		log.log(Log::Fatal, module, msg_buffer, args);
+		LOCO_LOG_FATAL(module, msg_buffer, args);
 		
 		// popup message on windows
 		#ifdef LOCO_PLATFORM_WINDOWS

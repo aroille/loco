@@ -9,6 +9,8 @@
 
 namespace loco
 {
+	const Log Log::instance;
+
 	char LogLevelString[Log::Level::Count][8] = 
 	{
 		"DEBUG", 
@@ -18,7 +20,7 @@ namespace loco
 		"FATAL"
 	};
 
-	void Log::debug(const char* module, const char* msg, ...)
+	void Log::debug(const char* module, const char* msg, ...) const
 	{
 		va_list args;
 		va_start(args, msg);
@@ -26,7 +28,7 @@ namespace loco
 		va_end(args);
 	}
 
-	void Log::info(const char* module, const char* msg, ...)
+	void Log::info(const char* module, const char* msg, ...) const
 	{
 		va_list args;
 		va_start(args, msg);
@@ -34,7 +36,7 @@ namespace loco
 		va_end(args);
 	}
 
-	void Log::warning(const char* module, const char* msg, ...)
+	void Log::warning(const char* module, const char* msg, ...) const
 	{
 		va_list args;
 		va_start(args, msg);
@@ -42,7 +44,7 @@ namespace loco
 		va_end(args);
 	}
 
-	void Log::error(const char* module, const char* msg, ...)
+	void Log::error(const char* module, const char* msg, ...) const
 	{
 		va_list args;
 		va_start(args, msg);
@@ -50,7 +52,15 @@ namespace loco
 		va_end(args);
 	}
 
-	void Log::log(Level level, const char* module, const char* msg, va_list args)
+	void Log::fatal(const char* module, const char* msg, ...) const
+	{
+		va_list args;
+		va_start(args, msg);
+		log(Level::Fatal, module, msg, args);
+		va_end(args);
+	}
+
+	void Log::log(Level level, const char* module, const char* msg, va_list args) const
 	{
 		// get time
 		time_t t = time(0);

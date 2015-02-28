@@ -19,6 +19,11 @@ namespace resource{
 		return _textures;
 	}
 
+	template<> const std::map<ResourceName, Texture>& ResourceManager::resource_map() const
+	{
+		return _textures;
+	}
+
 	template<> Texture ResourceManager::create(const Memory* mem) const
 	{
 		return renderer.create_texture(mem);

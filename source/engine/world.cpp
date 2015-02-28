@@ -6,7 +6,7 @@
 namespace loco
 {
 	// Synchronize the updated transform data for each systems of the world
-	// (Only meshRender systems are updated by this function for the moment)
+	// (Only meshRender system is updated by this function for the moment)
 	void batch_transform_sync(World& world)
 	{
 		TransformSystem::ComponentData data = world.transform._data;
@@ -70,10 +70,6 @@ namespace loco
 
 		// submit draw call
 		const MeshRenderSystem::ComponentData& data = world.mesh_render._data;
-		for (int i = 0; i < data.size; i++)
-		{
-			loco::log.info("WORLD_RENDER", "%s", data.transform[i].to_string().c_str());
-		}
 		renderer.batch_render(view_id, data.size, data.mesh, data.transform, resource_manager.get_default());
 	}
 

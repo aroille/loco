@@ -2,7 +2,6 @@
 #define RESOURCE_MATERIAL_H_HEADER_GUARD
 
 #include "resource_material_json.h"
-#include "loco.h"
 
 namespace loco
 {
@@ -24,15 +23,20 @@ namespace resource
 		return _materials;
 	}
 
+	template<> const std::map<ResourceName, Material>& ResourceManager::resource_map() const
+	{
+		return _materials;
+	}
+
 	template<> Material ResourceManager::create(const Memory* mem) const
 	{
 		MaterialData* mat = new MaterialData();
-		bool load_success = load_material(mem, mat, _default_resources);
+		bool load_success = load_material(*this, mem, mat, _default_resources);
 
 		if (!load_success)
 		{
 			LOCO_ASSERTF(_default_resources_init, LOCO_RESOURCE_MANAGER, "The default material is not available.");
-			log.error(LOCO_RESOURCE_MANAGER, "Use of default material");
+			LOCO_LOG_ERROR(LOCO_RESOURCE_MANAGER, "Use of default material");
 			delete mat;
 			return _default_resources.material.duplicate();
 		}
@@ -53,12 +57,12 @@ namespace resource
 		if (current.get() == nullptr)
 			current.reset(new MaterialData());
 
-		bool load_success = load_material(mem, current.get(), _default_resources);
+		bool load_success = load_material(*this, mem, current.get(), _default_resources);
 
 		if (!load_success)
 		{
 			LOCO_ASSERTF(_default_resources_init, LOCO_RESOURCE_MANAGER, "The default material is not available.");
-			log.error(LOCO_RESOURCE_MANAGER, "Use of default material");
+			LOCO_LOG_ERROR(LOCO_RESOURCE_MANAGER, "Use of default material");
 			*(current.get()) = *(_default_resources.material.get());
 		}
 

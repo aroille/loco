@@ -178,7 +178,7 @@ namespace resource{
 	//==========================================================================
 	bool ResourceManager::load_resource(ResourceInfo& ri, const HashedString& root_folder)
 	{
-		log.info(LOCO_RESOURCE_MANAGER, "Loading %s", ri.file_info.path);
+		LOCO_LOG_INFO(LOCO_RESOURCE_MANAGER, "Loading %s", ri.file_info.path);
 
 		// if resource already loaded, unload previous resource version
 		auto fi = _files[root_folder].find(ri.id);
@@ -198,7 +198,7 @@ namespace resource{
 		}
 		else
 		{
-			log.error(LOCO_RESOURCE_MANAGER, "File reading fail : %s", ri.file_info.path);
+			LOCO_LOG_ERROR(LOCO_RESOURCE_MANAGER, "File reading fail : %s", ri.file_info.path);
 		}
 
 		return read_success;

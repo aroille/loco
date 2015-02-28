@@ -19,6 +19,11 @@ namespace resource {
 		return _shaders;
 	}
 
+	template<> const std::map<ResourceName, Shader>& ResourceManager::resource_map() const
+	{
+		return _shaders;
+	}
+
 	template<> Shader ResourceManager::create(const Memory* mem) const
 	{
 		return renderer.create_shader(mem);

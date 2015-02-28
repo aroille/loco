@@ -1,6 +1,6 @@
 #include "renderer.h"
 #include "memory_utils.h"
-#include "loco.h"
+#include "log.h"
 #include "resource_type.h"
 
 #include "bgfx.h" // backend
@@ -51,9 +51,9 @@ namespace loco
 	//==========================================================================
 	void Renderer::init(Renderer::Type::Enum renderer_type)
 	{
-		log.info(LOCO_RENDERER, "Initializing");
+		LOCO_LOG_INFO(LOCO_RENDERER, "Initializing");
 		bgfx::init((bgfx::RendererType::Enum)renderer_type);
-		log.info(LOCO_RENDERER, "%s", bgfx::getRendererName(bgfx::getRendererType()));
+		LOCO_LOG_INFO(LOCO_RENDERER, "%s", bgfx::getRendererName(bgfx::getRendererType()));
 		strcpy(_shader_extention, shader_extentions[type()]);
 	}
 
@@ -246,24 +246,15 @@ namespace loco
 	//==========================================================================
 	void Renderer::batch_render(uint8 view_id, uint32 count, const Mesh* meshes, const Matrix4x4* transforms, const DefaultResources& default_resources)
 	{
-		loco::log.info(LOCO_RENDERER, "BATCH_RENDER");
-
 		for (unsigned i = 0; i < count; i++)
 		{
 			const Mesh& m = (*meshes == Mesh::invalid) ? default_resources.mesh : *meshes;
 			const void* world_matrix = (void*)transforms;
 
-			loco::log.info(LOCO_RENDERER, "matrix: %s", transforms->to_string().c_str());
-
-
-			//float test[16] = {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1};
-			//const void* world_matrix = (void*)test;
 			for (unsigned j = 0; j < m->submeshes.size(); j++)
 			{
 				// set material
 				bind_material(m->materials[j].get(), default_resources);
-
-				
 
 				// set model matrix
 				bgfx::setTransform(world_matrix);
