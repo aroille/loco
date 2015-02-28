@@ -246,15 +246,24 @@ namespace loco
 	//==========================================================================
 	void Renderer::batch_render(uint8 view_id, uint32 count, const Mesh* meshes, const Matrix4x4* transforms, const DefaultResources& default_resources)
 	{
+		loco::log.info(LOCO_RENDERER, "BATCH_RENDER");
+
 		for (unsigned i = 0; i < count; i++)
 		{
 			const Mesh& m = (*meshes == Mesh::invalid) ? default_resources.mesh : *meshes;
 			const void* world_matrix = (void*)transforms;
 
+			loco::log.info(LOCO_RENDERER, "matrix: %s", transforms->to_string().c_str());
+
+
+			//float test[16] = {1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1};
+			//const void* world_matrix = (void*)test;
 			for (unsigned j = 0; j < m->submeshes.size(); j++)
 			{
 				// set material
 				bind_material(m->materials[j].get(), default_resources);
+
+				
 
 				// set model matrix
 				bgfx::setTransform(world_matrix);

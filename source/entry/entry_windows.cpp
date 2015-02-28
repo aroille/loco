@@ -172,22 +172,30 @@ win32_process_pending_messages(GameControllerInput* keyboard_controller, MouseIn
 			{
 				if (vk_code == 'W')
 				{
-					keyboard_controller->left_thumb.y += is_down ? 1.0f : -1.0f;
+					//keyboard_controller->left_thumb.y += is_down ? 1.0f : -1.0f;
+					keyboard_controller->left_thumb.y = is_down ? (keyboard_controller->left_thumb.y < 0.0f ? 0.0f : 1.0f) 
+																											: (keyboard_controller->left_thumb.y > 0.0f ? 0.0f :-1.0f);
 					//win32_process_keyboard_message(&keyboard_controller->up, is_down);
 				}
 				else if (vk_code == 'S')
 				{
-					keyboard_controller->left_thumb.y += is_down ? -1.0f : 1.0f;
+					//keyboard_controller->left_thumb.y += is_down ? -1.0f : 1.0f;
+					keyboard_controller->left_thumb.y = is_down ? (keyboard_controller->left_thumb.y > 0.0f ? 0.0f : -1.0f)
+																											: (keyboard_controller->left_thumb.y < 0.0f ? 0.0f :  1.0f);
 					//win32_process_keyboard_message(&keyboard_controller->down, is_down);
 				}
 				else if (vk_code == 'A')
 				{
-					keyboard_controller->left_thumb.x += is_down ? -1.0f : 1.0f;
+					//keyboard_controller->left_thumb.x += is_down ? -1.0f : 1.0f;
+					keyboard_controller->left_thumb.x = is_down ? (keyboard_controller->left_thumb.x > 0.0f ? 0.0f : -1.0f)
+																											: (keyboard_controller->left_thumb.x < 0.0f ? 0.0f : 1.0f);
 					//win32_process_keyboard_message(&keyboard_controller->left, is_down);
 				}
 				else if (vk_code == 'D')
 				{
-					keyboard_controller->left_thumb.x += is_down ? 1.0f : -1.0f;
+					//keyboard_controller->left_thumb.x += is_down ? 1.0f : -1.0f;
+					keyboard_controller->left_thumb.x = is_down ? (keyboard_controller->left_thumb.x < 0.0f ? 0.0f : 1.0f)
+																											: (keyboard_controller->left_thumb.x > 0.0f ? 0.0f : -1.0f);
 					//win32_process_keyboard_message(&keyboard_controller->right, is_down);
 				}
 				else if (vk_code == 'Q')
@@ -288,7 +296,11 @@ WinMain(HINSTANCE instance, HINSTANCE prev_instance, LPSTR command_line, int sho
 	MouseInput zero_mouse = {};
 	GameControllerInput zero_controller = {};
 	old_input->mouse = zero_mouse;
-	old_input->controllers[0] = zero_controller;
+	for (uint32 i = 0; i < ArrayCount(old_input->controllers); i++)
+	{
+		old_input->controllers[i] = zero_controller;
+		new_input->controllers[i] = zero_controller;
+	}
 
 	int64 last_time = loco::hp_counter();
 	double clock_freq = double(loco::hp_frequency());

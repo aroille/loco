@@ -69,7 +69,11 @@ namespace loco
 		renderer.set_view_transform(view_id, view_mtx, proj_mtx);
 
 		// submit draw call
-		MeshRenderSystem::ComponentData data = world.mesh_render._data;
+		const MeshRenderSystem::ComponentData& data = world.mesh_render._data;
+		for (int i = 0; i < data.size; i++)
+		{
+			loco::log.info("WORLD_RENDER", "%s", data.transform[i].to_string().c_str());
+		}
 		renderer.batch_render(view_id, data.size, data.mesh, data.transform, resource_manager.get_default());
 	}
 

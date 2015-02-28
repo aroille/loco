@@ -1,8 +1,11 @@
 #ifndef MATRIX4x4_H_HEADER_GUARD
 #define MATRIX4x4_H_HEADER_GUARD
 
+#include "type.h"
 #include "bx\macros.h"
 #include "bx\float4x4_t.h"
+#include <string>
+
 
 namespace loco
 {
@@ -22,6 +25,9 @@ namespace math
 
 		// operators
 		Matrix4x4 operator*(Matrix4x4 const& in) const;
+
+		// methods
+		std::string to_string() const;
 	};
 
 	//================================================================================
@@ -31,6 +37,25 @@ namespace math
 		bx::float4x4_mul(&result.f4x4, &in.f4x4, &f4x4);
 		return result;
 	}
+
+	inline std::string Matrix4x4::to_string() const
+	{
+		std::string str;
+
+		str += "[";
+		for (uint32 i = 0; i < 4; i++)
+		{
+			for (uint32 j = 0; j < 4; j++)
+			{
+				str += std::to_string(val[j + i*j]);
+				str += ", ";
+			}
+		}
+
+		str += "]";
+		return str;
+	}
+
 } // math
 } // loco
 

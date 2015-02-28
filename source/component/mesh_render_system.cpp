@@ -1,6 +1,5 @@
 #include "mesh_render_system.h"
 #include "debug.h"
-
 #define LOCO_MESHRENDER_SYSTEM "MeshRenderSystem" // log module string
 
 namespace loco
@@ -121,10 +120,10 @@ namespace loco
 		for (unsigned i = 0; i < count; i++)
 		{
 			Entity e = *(entity + i);
-			auto it = _map.find(e.id);
-			if (it != _map.end())
+			Component c = lookup(e);
+			if (is_valid(c))
 			{
-				unsigned pos = _data.lut[it->second.index()];
+				unsigned pos = _data.lut[c.index()];
 				_data.transform[pos] = *(transform + i);
 			}	
 		}
