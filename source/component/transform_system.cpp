@@ -6,6 +6,7 @@
 
 namespace loco
 {
+	const TransformComponent TransformComponent::null = { -1 };
 	const TransformSystem::DataIndex TransformSystem::DataIndex::invalid = { 0xffffffff };
 
 
@@ -20,11 +21,11 @@ namespace loco
 		free(_data.buffer);
 	}
 
-	TransformSystem::Component TransformSystem::create(Entity e)
+	TransformComponent TransformSystem::create(Entity e)
 	{
 		LOCO_ASSERTF(!is_valid(lookup(e)), LOCO_TRANSFORM_SYSTEM, "An entity can't have several transform components in the same world");
 
-		Component c = _handle_mgr.create();
+		TransformComponent c = { _handle_mgr.create() };
 
 		if ((c.index() + 1) >= _data.capacity)
 			allocate(_data.capacity * 2);
@@ -50,7 +51,7 @@ namespace loco
 
 	void TransformSystem::destroy(Entity e)
 	{
-		Component c = lookup(e);
+		TransformComponent c = lookup(e);
 		LOCO_ASSERTF(is_valid(c), LOCO_TRANSFORM_SYSTEM, "TransformComponent not found for entity (id:%s)", e.id);
 		_map.erase(e.id);
 
@@ -73,16 +74,16 @@ namespace loco
 		--_data.size;
 
 		// destroy component handle
-		_handle_mgr.destroy(c);
+		_handle_mgr.destroy(c.handle);
 	}
 
-	TransformSystem::Component TransformSystem::lookup(Entity e) const
+	TransformComponent TransformSystem::lookup(Entity e) const
 	{
 		auto it = _map.find(e.id);
-		return (it == _map.end()) ? TransformSystem::Component{ -1 } : it->second;
+		return (it == _map.end()) ? TransformComponent::null : it->second;
 	}
 
-	void TransformSystem::link(Component child, Component parent)
+	void TransformSystem::link(TransformComponent child, TransformComponent parent)
 	{
 		LOCO_ASSERTF(is_valid(child), LOCO_TRANSFORM_SYSTEM, "Children Transform component not valid");
 		LOCO_ASSERTF(is_valid(parent), LOCO_TRANSFORM_SYSTEM, "Parent Transform component not valid");
@@ -109,7 +110,7 @@ namespace loco
 		transform(_data.world[parent_i.i], child_i);
 	}
 
-	void TransformSystem::unlink(Component child)
+	void TransformSystem::unlink(TransformComponent child)
 	{
 		LOCO_ASSERTF(is_valid(child), LOCO_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(child);
@@ -147,9 +148,9 @@ namespace loco
 		transform(Matrix4x4::identity, child);
 	}
 
-	bool TransformSystem::is_valid(Component c) const
+	bool TransformSystem::is_valid(TransformComponent c) const
 	{
-		return _handle_mgr.is_alive(c);
+		return _handle_mgr.is_alive(c.handle);
 	}
 
 	bool TransformSystem::is_valid(DataIndex i) const
@@ -157,14 +158,14 @@ namespace loco
 		return (i.i != DataIndex::invalid.i);
 	}
 
-	Matrix4x4 TransformSystem::local_matrix(Component c) const
+	Matrix4x4 TransformSystem::local_matrix(TransformComponent c) const
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(c);
 		return _data.local[i.i];
 	}
 
-	void TransformSystem::set_local_matrix(Component c, const Matrix4x4& m)
+	void TransformSystem::set_local_matrix(TransformComponent c, const Matrix4x4& m)
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(c);
@@ -174,35 +175,35 @@ namespace loco
 		transform(parent_tm, i);
 	}
 
-	Matrix4x4 TransformSystem::world_matrix(Component c) const
+	Matrix4x4 TransformSystem::world_matrix(TransformComponent c) const
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(c);
 		return _data.world[i.i];
 	}
 
-	TransformSystem::Component TransformSystem::parent(Component c) const
+	TransformComponent TransformSystem::parent(TransformComponent c) const
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(c);
 		return _data.component[_data.parent[i.i].i];
 	}
 
-	TransformSystem::Component TransformSystem::first_child(Component c) const
+	TransformComponent TransformSystem::first_child(TransformComponent c) const
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(c);
 		return _data.component[_data.first_child[i.i].i];
 	}
 
-	TransformSystem::Component TransformSystem::next_sibling(Component c) const
+	TransformComponent TransformSystem::next_sibling(TransformComponent c) const
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(c);
 		return _data.component[_data.next_sibling[i.i].i];
 	}
 
-	TransformSystem::Component TransformSystem::prev_sibling(Component c) const
+	TransformComponent TransformSystem::prev_sibling(TransformComponent c) const
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_TRANSFORM_SYSTEM, "Transform component not valid");
 		DataIndex i = data_index(c);
@@ -233,7 +234,7 @@ namespace loco
 
 		ComponentData new_data;
 		unsigned alignement = 16; // Matrix4x4 need to be aligned on 16 octets (Matrix4x4* are first members of the struct)
-		const unsigned bytes = sz * (sizeof(Entity)+sizeof(Component)+2 * sizeof(Matrix4x4)+5 * sizeof(DataIndex))+alignement;
+		const unsigned bytes = sz * (sizeof(Entity) + sizeof(TransformComponent) + 2 * sizeof(Matrix4x4) + 5 * sizeof(DataIndex)) + alignement;
 		new_data.buffer = (char*)malloc(bytes);
 		new_data.size= _data.size;
 		new_data.capacity = sz;
@@ -244,7 +245,7 @@ namespace loco
 		new_data.local = (Matrix4x4 *)(new_data.buffer + offset);
 		new_data.world = new_data.local + sz;
 		new_data.entity = (Entity*)(new_data.world + sz);
-		new_data.component = (Component*)(new_data.entity + sz);
+		new_data.component = (TransformComponent*)(new_data.entity + sz);
 		new_data.parent = (DataIndex *)(new_data.component + sz);
 		new_data.first_child = new_data.parent + sz;
 		new_data.next_sibling = new_data.first_child + sz;
@@ -254,7 +255,7 @@ namespace loco
 		memcpy(new_data.local, _data.local, _data.size * sizeof(Matrix4x4));
 		memcpy(new_data.world, _data.world, _data.size * sizeof(Matrix4x4));
 		memcpy(new_data.entity, _data.entity, _data.size * sizeof(Entity));
-		memcpy(new_data.component, _data.component, _data.size * sizeof(Component));
+		memcpy(new_data.component, _data.component, _data.size * sizeof(TransformComponent));
 		memcpy(new_data.parent, _data.parent, _data.size * sizeof(DataIndex));
 		memcpy(new_data.first_child, _data.first_child, _data.size * sizeof(DataIndex));
 		memcpy(new_data.next_sibling, _data.next_sibling, _data.size * sizeof(DataIndex));
@@ -285,7 +286,7 @@ namespace loco
 
 	void TransformSystem::move_instance(unsigned from, unsigned to)
 	{
-		Component c = _data.component[from];
+		TransformComponent c = _data.component[from];
 		DataIndex new_data_index = DataIndex{ to };
 
 		_data.entity[to] = _data.entity[from];

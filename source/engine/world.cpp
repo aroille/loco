@@ -52,8 +52,8 @@ namespace loco
 		uint8 view_id = 0;
 
 		// Get camera component
-		CameraSystem::Component camera_cp = world.camera.lookup(camera);
-		TransformSystem::Component camera_tf = world.transform.lookup(camera);
+		CameraComponent camera_cp = world.camera.lookup(camera);
+		TransformComponent camera_tf = world.transform.lookup(camera);
 
 		LOCO_ASSERTF(world.camera.is_valid(camera_cp), "", "Rendering issue, camera component is missing");
 		LOCO_ASSERTF(world.transform.is_valid(camera_tf), "", "Rendering issue, camera transform is missing");

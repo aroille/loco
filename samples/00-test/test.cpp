@@ -36,7 +36,7 @@ Entity create_axis(World& world, float length, float thickness)
 	Vector4 color[4]		= { { 1, 1, 1, 1 }, { 1, 0, 0, 1 }, { 0, 1, 0, 1 }, { 0, 0, 1, 0 } };
 
 	Entity origin = entity_manager.create();
-	TransformSystem::Component origin_tf = world.transform.create(origin);
+	TransformComponent origin_tf = world.transform.create(origin);
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -44,12 +44,12 @@ Entity create_axis(World& world, float length, float thickness)
 		Entity e = entity_manager.create();
 
 		// create Transform component
-		TransformSystem::Component tf = world.transform.create(e);
+		TransformComponent tf = world.transform.create(e);
 		world.transform.link(tf, origin_tf);
 		world.transform.set_local_matrix(tf, Matrix4x4{ { { scale[i].x, 0, 0, 0, 0, scale[i].y, 0, 0, 0, 0, scale[i].z, 0, position[i].x, position[i].y, position[i].z, 1 } } });
 
 		// create MeshRender component
-		MeshRenderSystem::Component mesh_render = world.mesh_render.create(e);
+		MeshRenderComponent mesh_render = world.mesh_render.create(e);
 		Mesh cube = resource_manager.get<Mesh>("loco/mesh/cube").duplicate();
 		world.mesh_render.set_mesh(mesh_render, cube);
 
@@ -67,8 +67,8 @@ Entity create_sponza(World& world)
 	Mesh sponza_mesh = resource_manager.get<Mesh>("sponza/sponza");
 
 	Entity sponza_entity = entity_manager.create();
-	TransformSystem::Component sponza_tf = world.transform.create(sponza_entity);
-	MeshRenderSystem::Component sponza_mr = world.mesh_render.create(sponza_entity);
+	TransformComponent sponza_tf = world.transform.create(sponza_entity);
+	MeshRenderComponent sponza_mr = world.mesh_render.create(sponza_entity);
 
 	world.mesh_render.set_mesh(sponza_mr, sponza_mesh);
 
@@ -100,18 +100,17 @@ void init_scene()
 {
 	// Create axis display
 	Entity axis = create_axis(world, 2.0f, 0.2f);
-	TransformSystem::Component axis_tf = world.transform.lookup(axis);
+	TransformComponent axis_tf = world.transform.lookup(axis);
 	world.transform.set_local_matrix(axis_tf, Matrix4x4{ { { 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 2.0, 0.0, 1.0 } } });
 
 	// Create sponza
 	resource_manager.load_folder("sponza/");
 	Entity sponza_entity = create_sponza(world);
-	TransformSystem::Component sponza_tf = world.transform.lookup(sponza_entity);
 
 	// Create camera
 	camera = entity_manager.create();
-	CameraSystem::Component camera_cp = world.camera.create(camera);
-	TransformSystem::Component camera_tf = world.transform.create(camera);
+	CameraComponent camera_cp = world.camera.create(camera);
+	TransformComponent camera_tf = world.transform.create(camera);
 
 	// Set view 0 clear state.
 	bgfx::setViewClear(0
@@ -122,7 +121,7 @@ void init_scene()
 		);
 }
 
-void camera_update(float delta_time, World& world, Entity camera, GameInput* input)
+void camera_update(Entity camera, World& world, GameInput* input, float delta_time)
 {
 	float mouse_sensibility = 0.1f;
 	
@@ -153,8 +152,8 @@ void camera_update(float delta_time, World& world, Entity camera, GameInput* inp
 	static float vertical_angle = 0.0f;
 
 	static Entity cam = camera;
-	static CameraSystem::Component cam_cp = world.camera.lookup(cam);
-	static TransformSystem::Component cam_tf = world.transform.lookup(cam);
+	static CameraComponent cam_cp = world.camera.lookup(cam);
+	static TransformComponent cam_tf = world.transform.lookup(cam);
 
 	if (cam.id != camera.id)
 	{
@@ -226,6 +225,7 @@ void camera_update(float delta_time, World& world, Entity camera, GameInput* inp
 
 void loco_update_and_render(float delta_time, int32 window_width, int32 window_height, GameInput* input)
 {
+	// init scene
 	static bool is_scene_init = false;
 	if (!is_scene_init)
 	{
@@ -233,24 +233,25 @@ void loco_update_and_render(float delta_time, int32 window_width, int32 window_h
 		is_scene_init = true;
 	}
 
+	// hot-reload resources
 	resource_manager.hot_reload<Shader>();
 	resource_manager.hot_reload<Material>();
 	resource_manager.hot_reload<Mesh>();
 	resource_manager.hot_reload<Texture>();
 
-	camera_update(delta_time, world, camera, input);
+	// gameplay here
+	camera_update(camera, world, input, delta_time);
+
+	// update and render world
+	world.update();
 
 	// This dummy draw call is here to make sure that view 0 is cleared
 	// if no other draw calls are submitted to view 0.
 	bgfx::submit(0);
-
-	world.update();
-
+	
 	Viewport viewport = { 0, 0, window_width, window_height };
 	render(world, camera, viewport);
-
 	frame();
-
 	world.gc(entity_manager);
 
 	//log.info("FPS", "%f", 1.0f / delta_time);

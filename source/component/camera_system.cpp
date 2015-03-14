@@ -9,6 +9,7 @@
 
 namespace loco
 {
+	const CameraComponent CameraComponent::null = { -1 };
 
 	CameraSystem::CameraSystem()
 	{
@@ -21,13 +22,11 @@ namespace loco
 		free(_data.buffer);
 	}
 
-
-
-	CameraSystem::Component CameraSystem::create(Entity e)
+	CameraComponent CameraSystem::create(Entity e)
 	{
 		LOCO_ASSERTF(!is_valid(lookup(e)), LOCO_CAMERA_SYSTEM, "An entity can't have several Camera components in the same world");
 
-		Component c = _handle_mgr.create();
+		CameraComponent c = { _handle_mgr.create() };
 
 		// expand data buffer if necessary
 		if ((c.index() + 1) >= _data.capacity)
@@ -53,25 +52,25 @@ namespace loco
 		return c;
 	}
 
-	CameraSystem::Component CameraSystem::lookup(Entity e) const
+	CameraComponent CameraSystem::lookup(Entity e) const
 	{
 		auto it = _map.find(e.id);
-		return (it == _map.end()) ? CameraSystem::Component{ -1 } : it->second;
+		return (it == _map.end()) ? CameraComponent::null : it->second;
 	}
 
-	bool CameraSystem::is_valid(Component c) const
+	bool CameraSystem::is_valid(CameraComponent c) const
 	{
-		return _handle_mgr.is_alive(c);
+		return _handle_mgr.is_alive(c.handle);
 	}
 
 	void CameraSystem::destroy(Entity e)
 	{
-		Component c = lookup(e);
+		CameraComponent c = lookup(e);
 		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not found for entity (id:%s)", e.id);
 		unsigned pos = data_index(c);
 
 		_map.erase(e.id);
-		_handle_mgr.destroy(c);
+		_handle_mgr.destroy(c.handle);
 
 		// move the instance at [size-1] to the initial index of the destroyed instance
 		if (_data.size > 1)
@@ -82,7 +81,7 @@ namespace loco
 
 	void CameraSystem::move_instance(unsigned from, unsigned to)
 	{
-		Component from_component = _data.component[from];
+		CameraComponent from_component = _data.component[from];
 
 		_data.param[to] = _data.param[from];
 		_data.entity[to] = _data.entity[from];
@@ -96,19 +95,19 @@ namespace loco
 		LOCO_ASSERT(sz > _data.size);
 
 		ComponentData new_data;
-		const unsigned bytes = sz * (sizeof(CameraParameters)+sizeof(Entity)+sizeof(Component)+sizeof(unsigned));
+		const unsigned bytes = sz * (sizeof(CameraParameters) + sizeof(Entity) + sizeof(CameraComponent) + sizeof(unsigned));
 		new_data.buffer = (char*)malloc(bytes);
 		new_data.size = _data.size;
 		new_data.capacity = sz;
 
 		new_data.param = (CameraParameters *)(new_data.buffer);
 		new_data.entity = (Entity*)(new_data.param + sz);
-		new_data.component = (Component*)(new_data.entity + sz);
+		new_data.component = (CameraComponent*)(new_data.entity + sz);
 		new_data.lut = (unsigned*)(new_data.component + sz);
 
 		memcpy(new_data.param, _data.param, _data.size * sizeof(CameraParameters));
 		memcpy(new_data.entity, _data.entity, _data.size * sizeof(Entity));
-		memcpy(new_data.component, _data.component, _data.size * sizeof(Component));
+		memcpy(new_data.component, _data.component, _data.size * sizeof(CameraComponent));
 		memcpy(new_data.lut, _data.lut, _data.size * sizeof(unsigned));
 
 		free(_data.buffer);
@@ -133,77 +132,77 @@ namespace loco
 		}
 	}
 
-	CameraSystem::ProjectionType::Enum CameraSystem::projection_type(Component c) const
+	CameraSystem::ProjectionType::Enum CameraSystem::projection_type(CameraComponent c) const
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		return _data.param[i].proj;
 	}
 
-	void CameraSystem::set_projection_type(Component c, ProjectionType::Enum p)
+	void CameraSystem::set_projection_type(CameraComponent c, ProjectionType::Enum p)
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		_data.param[i].proj = p;
 	}
 
-	float CameraSystem::near_distance(Component c) const
+	float CameraSystem::near_distance(CameraComponent c) const
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		return _data.param[i].near_distance;
 	}
 
-	void CameraSystem::set_near_distance(Component c, float d)
+	void CameraSystem::set_near_distance(CameraComponent c, float d)
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		_data.param[i].near_distance = d;
 	}
 
-	float CameraSystem::far_distance(Component c) const
+	float CameraSystem::far_distance(CameraComponent c) const
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		return _data.param[i].far_distance;
 	}
 
-	void CameraSystem::set_far_distance(Component c, float d)
+	void CameraSystem::set_far_distance(CameraComponent c, float d)
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		_data.param[i].far_distance = d;
 	}
 
-	float CameraSystem::fov(Component c) const
+	float CameraSystem::fov(CameraComponent c) const
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		return _data.param[i].vertical_fov;
 	}
 
-	void CameraSystem::set_fov(Component c, float fov)
+	void CameraSystem::set_fov(CameraComponent c, float fov)
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		_data.param[i].vertical_fov = fov;
 	}
 
-	float CameraSystem::ortho_size(Component c) const
+	float CameraSystem::ortho_size(CameraComponent c) const
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		return _data.param[i].size;
 	}
 
-	void CameraSystem::set_ortho_size(Component c, float size)
+	void CameraSystem::set_ortho_size(CameraComponent c, float size)
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		_data.param[i].size = size;
 	}
 
-	Matrix4x4 CameraSystem::projection_matrix(Component c, float aspect_ratio) const
+	Matrix4x4 CameraSystem::projection_matrix(CameraComponent c, float aspect_ratio) const
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);

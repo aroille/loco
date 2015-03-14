@@ -15,14 +15,19 @@ namespace loco
 
 	struct World;
 
+	struct MeshRenderComponent
+	{
+		static const MeshRenderComponent null;
+
+		HandleI24G8 handle;
+		inline uint32 index() { return handle.index(); }
+	};
+
 	/// Manager of mesh render components
 	/// (one meshRenderSystem per world)
 	class MeshRenderSystem
 	{
 	public:
-
-		/// MeshRender component (just a handle)
-		typedef HandleI24G8 Component;
 
 		MeshRenderSystem(World* world, CallbackTransformSync callback_transform_sync);
 		~MeshRenderSystem();
@@ -32,19 +37,19 @@ namespace loco
 		/// @remarks 
 		/// Only one mesh render component per entity is allowed 
 		///
-		Component create(Entity e);
+		MeshRenderComponent create(Entity e);
 
 		/// Get the mesh render component attach to an entity
-		Component lookup(Entity e);
+		MeshRenderComponent lookup(Entity e);
 
 		/// Check if component c is valid
-		bool is_valid(Component c);
+		bool is_valid(MeshRenderComponent c);
 
 		/// Free a mesh render component
 		void destroy(Entity e);
 
 		/// Set Mesh
-		void set_mesh(Component c, const Mesh& mesh);
+		void set_mesh(MeshRenderComponent c, const Mesh& mesh);
 
 		/// Synchronize transforms from TransformSystem data
 		void sync_transform(unsigned count, Entity* entity, Matrix4x4* transform);
@@ -58,7 +63,7 @@ namespace loco
 
 			Matrix4x4*	transform;		///< World transform
 			Mesh*		mesh;			///< Mesh
-			Component*	component;		///< Owner component
+			MeshRenderComponent*	component;		///< Owner component
 
 			unsigned* lut;				///< Look up table : Component/Data_index 
 		};
@@ -74,10 +79,10 @@ namespace loco
 		CallbackTransformSync _callback_transform_sync;
 
 		/// Map an Entity (key) with a Component (value)
-		std::unordered_map<unsigned, Component> _map;
+		std::unordered_map<unsigned, MeshRenderComponent> _map;
 
 		/// Return a _data index from a component
-		inline unsigned data_index(Component c)
+		inline unsigned data_index(MeshRenderComponent c)
 		{
 			return _data.lut[c.index()];
 		};

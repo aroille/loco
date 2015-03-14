@@ -10,6 +10,14 @@ namespace loco
 {
 	using namespace math;
 
+	struct TransformComponent
+	{
+		static const TransformComponent null;
+
+		HandleI24G8 handle;
+		inline uint32 index() { return handle.index(); }
+	};
+
 	/// Manager for transform components
 	/// (One transformSystem per world)
 	///
@@ -20,49 +28,47 @@ namespace loco
 	{
 		public:
 
-			typedef HandleI24G8 Component;
-
 			TransformSystem();
 			~TransformSystem();
 
 			/// Attach a new transform component to entity e
-			Component create(Entity e);
+			TransformComponent create(Entity e);
 
 			/// Get transform component attached to entity e
-			Component lookup(Entity e) const;
+			TransformComponent lookup(Entity e) const;
 
 			/// Check if component c is valid
-			bool is_valid(Component c) const;
+			bool is_valid(TransformComponent c) const;
 
 			/// Free the transform component attached to entity e
 			void destroy(Entity e);
 
 			/// Create child/parent relationship between two transform component
-			void link(Component child, Component parent);
+			void link(TransformComponent child, TransformComponent parent);
 
 			/// Detach child from its parent 
-			void unlink(Component child);
+			void unlink(TransformComponent child);
 
 			/// Get local transform matrix
-			Matrix4x4 local_matrix(Component c) const;
+			Matrix4x4 local_matrix(TransformComponent c) const;
 
 			/// Set local transform matrix (it also updates children instances)
-			void set_local_matrix(Component c, const Matrix4x4& m);
+			void set_local_matrix(TransformComponent c, const Matrix4x4& m);
 
 			/// Get world transform matrix 
-			Matrix4x4 world_matrix(Component c) const;
+			Matrix4x4 world_matrix(TransformComponent c) const;
 
 			/// Get parent
-			Component parent(Component c) const;
+			TransformComponent parent(TransformComponent c) const;
 
 			/// Get first child
-			Component first_child(Component c) const;
+			TransformComponent first_child(TransformComponent c) const;
 
 			/// Get next sibling
-			Component next_sibling(Component c) const;
+			TransformComponent next_sibling(TransformComponent c) const;
 
 			/// Get previous sibling
-			Component prev_sibling(Component c) const;
+			TransformComponent prev_sibling(TransformComponent c) const;
 
 			/// Garbage collector
 			void gc(const EntityManager& em);
@@ -85,7 +91,7 @@ namespace loco
 				Matrix4x4* local;				///< Local transform relative to parent
 				Matrix4x4* world;				///< World transform
 				Entity* entity;					///< The entity owning this instance
-				Component* component;			///< The component owning this instance data
+				TransformComponent* component;			///< The component owning this instance data
 				DataIndex* parent;				///< Parent instance of this instance
 				DataIndex* first_child;			///< First child of this instance
 				DataIndex* next_sibling;		///< The next sibling of this instance
@@ -101,7 +107,7 @@ namespace loco
 			HandleManagerI24G8	_handle_mgr;
 
 			/// Map an Entity (key) with a Component (value)
-			std::unordered_map<unsigned, Component> _map;
+			std::unordered_map<unsigned, TransformComponent> _map;
 
 			/// Detach child from its parent 
 			void unlink(DataIndex child);
@@ -113,7 +119,7 @@ namespace loco
 			void allocate(unsigned sz);
 
 			/// Return a _data index from a component
-			inline DataIndex data_index(Component c) const
+			inline DataIndex data_index(TransformComponent c) const
 			{ 
 				return _data.lut[c.index()]; 
 			};
