@@ -17,10 +17,8 @@ namespace loco
 
 	struct MeshRenderComponent
 	{
-		static const MeshRenderComponent null;
-
 		HandleI24G8 handle;
-		inline uint32 index() { return handle.index(); }
+		static const MeshRenderComponent null;
 	};
 
 	/// Manager of mesh render components
@@ -29,7 +27,7 @@ namespace loco
 	{
 	public:
 
-		MeshRenderSystem(World* world, CallbackTransformSync callback_transform_sync);
+		MeshRenderSystem(World* world, TransformSyncCallback transform_sync_callback);
 		~MeshRenderSystem();
 
 		/// Create a mesh render component
@@ -76,7 +74,7 @@ namespace loco
 
 		World* _world;
 
-		CallbackTransformSync _callback_transform_sync;
+		TransformSyncCallback _transform_sync_callback;
 
 		/// Map an Entity (key) with a Component (value)
 		std::unordered_map<unsigned, MeshRenderComponent> _map;
@@ -84,7 +82,7 @@ namespace loco
 		/// Return a _data index from a component
 		inline unsigned data_index(MeshRenderComponent c)
 		{
-			return _data.lut[c.index()];
+			return _data.lut[c.handle.index()];
 		};
 
 		/// Increase the capicity of the data buffer to an component count of sz

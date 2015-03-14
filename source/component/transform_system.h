@@ -12,10 +12,8 @@ namespace loco
 
 	struct TransformComponent
 	{
-		static const TransformComponent null;
-
 		HandleI24G8 handle;
-		inline uint32 index() { return handle.index(); }
+		static const TransformComponent null;
 	};
 
 	/// Manager for transform components
@@ -83,9 +81,9 @@ namespace loco
 
 			struct ComponentData
 			{
-				unsigned size;					///< Number of used instance
-				unsigned capacity;				///< Number of allocated instance in arrays
-				unsigned updated_count;			///< Count of updated transform which need to be synchronized
+				unsigned size;				///< Number of used instance
+				unsigned capacity;		///< Number of allocated instance in arrays
+				unsigned dirty;				///< Count of updated transform which need to be synchronized
 				char* buffer;					///< Buffer with instance data
 					
 				Matrix4x4* local;				///< Local transform relative to parent
@@ -121,7 +119,7 @@ namespace loco
 			/// Return a _data index from a component
 			inline DataIndex data_index(TransformComponent c) const
 			{ 
-				return _data.lut[c.index()]; 
+				return _data.lut[c.handle.index()]; 
 			};
 
 			/// Update the world matrix of component at index i and of its children

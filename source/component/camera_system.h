@@ -12,10 +12,8 @@ namespace loco
 
 	struct CameraComponent
 	{
-		static const CameraComponent null;
-
 		HandleI24G8 handle;
-		inline uint32 index() { return handle.index(); }
+		static const CameraComponent null;
 	};
 
 	/// Manager of camera components
@@ -127,7 +125,7 @@ namespace loco
 		/// Return a _data index from a component
 		inline unsigned data_index(CameraComponent c) const
 		{
-			return _data.lut[c.index()];
+			return _data.lut[c.handle.index()];
 		};
 
 		/// Increase the capicity of the data buffer to an component count of sz

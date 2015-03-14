@@ -10,26 +10,26 @@ namespace loco
 	void batch_transform_sync(World& world)
 	{
 		TransformSystem::ComponentData data = world.transform._data;
-		unsigned updated_count = data.updated_count;
+		unsigned dirty_count = data.dirty;
 
 		// update systems
-		if (updated_count > 0)
+		if (dirty_count > 0)
 		{
-			world.mesh_render.sync_transform(updated_count, data.entity, data.world);
+			world.mesh_render.sync_transform(dirty_count, data.entity, data.world);
 
 			// reset updated count in transform system
-			world.transform._data.updated_count = 0;
+			world.transform._data.dirty = 0;
 		}
 	}
 
 	// callback, return the world matrix of an entity
-	Matrix4x4& callback_transform_sync(World* world, Entity entity)
+	Matrix4x4& transform_sync_callback(World* world, Entity entity)
 	{
 		return world->transform.world_matrix(world->transform.lookup(entity));
 	}
 
 	World::World()
-		: mesh_render(this, callback_transform_sync)
+		: mesh_render(this, transform_sync_callback)
 	{ 
 	
 	}

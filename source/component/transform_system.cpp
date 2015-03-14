@@ -27,7 +27,7 @@ namespace loco
 
 		TransformComponent c = { _handle_mgr.create() };
 
-		if ((c.index() + 1) >= _data.capacity)
+		if ((c.handle.index() + 1) >= _data.capacity)
 			allocate(_data.capacity * 2);
 		
 		DataIndex i = { _data.size };
@@ -41,7 +41,7 @@ namespace loco
 		_data.next_sibling[i.i] = DataIndex::invalid;
 		_data.prev_sibling[i.i] = DataIndex::invalid;
 
-		_data.lut[c.index()] = i;
+		_data.lut[c.handle.index()] = i;
 		_map[e.id] = c;
 
 		++_data.size;
@@ -238,7 +238,7 @@ namespace loco
 		new_data.buffer = (char*)malloc(bytes);
 		new_data.size= _data.size;
 		new_data.capacity = sz;
-		new_data.updated_count = _data.updated_count;
+		new_data.dirty = _data.dirty;
 
 		unsigned offset = alignement - ((unsigned)new_data.buffer & (alignement - 1));
 
@@ -319,7 +319,7 @@ namespace loco
 			_data.next_sibling[_data.prev_sibling[to].i] = new_data_index;
 
 		// update lut "component / component data index"
-		_data.lut[c.index()] = new_data_index;
+		_data.lut[c.handle.index()] = new_data_index;
 	}
 
 	void TransformSystem::swap_instance(unsigned pos_a, unsigned pos_b)
@@ -331,12 +331,12 @@ namespace loco
 
 	TransformSystem::DataIndex TransformSystem::set_updated(DataIndex i)
 	{
-		if (i.i >= _data.updated_count)
+		if (i.i >= _data.dirty)
 		{
-			unsigned new_pos = _data.updated_count;
+			unsigned new_pos = _data.dirty;
 			swap_instance(i.i, new_pos);
 			
-			++_data.updated_count;
+			++_data.dirty;
 
 			return{ new_pos };
 		}

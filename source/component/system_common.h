@@ -7,6 +7,6 @@ namespace loco
 {
 	struct World;
 	
-	typedef math::Matrix4x4&(*CallbackTransformSync)(World*, Entity);
+	typedef math::Matrix4x4&(*TransformSyncCallback)(World*, Entity);
 }
 #endif // SYSTEM_COMMON_H_HEADER_GUARD

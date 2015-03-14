@@ -29,7 +29,7 @@ namespace loco
 		CameraComponent c = { _handle_mgr.create() };
 
 		// expand data buffer if necessary
-		if ((c.index() + 1) >= _data.capacity)
+		if ((c.handle.index() + 1) >= _data.capacity)
 			allocate(_data.capacity * 2);
 
 		unsigned pos = _data.size;
@@ -44,7 +44,7 @@ namespace loco
 		_data.entity[pos] = e;
 		_data.component[pos] = c;
 
-		_data.lut[c.index()] = pos;
+		_data.lut[c.handle.index()] = pos;
 		_map[e.id] = c;
 
 		++_data.size;
@@ -87,7 +87,7 @@ namespace loco
 		_data.entity[to] = _data.entity[from];
 		_data.component[to] = _data.component[from];
 
-		_data.lut[from_component.index()] = to;
+		_data.lut[from_component.handle.index()] = to;
 	}
 
 	void CameraSystem::allocate(unsigned sz)

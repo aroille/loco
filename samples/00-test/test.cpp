@@ -8,7 +8,7 @@
 #include "log.h"
 
 #include <bx/fpumath.h>
-#include "bgfx.h" //#include "bgfx_temp.h"
+#include "bgfx.h"
 
 using namespace loco;
 using namespace loco::math;

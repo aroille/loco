@@ -7,9 +7,9 @@ namespace loco
 {
 	const MeshRenderComponent MeshRenderComponent::null = { -1 };
 
-	MeshRenderSystem::MeshRenderSystem(World* world, CallbackTransformSync callback_transform_sync)
+	MeshRenderSystem::MeshRenderSystem(World* world, TransformSyncCallback transform_sync_callback)
 		: _world(world)
-		, _callback_transform_sync(callback_transform_sync)
+		, _transform_sync_callback(transform_sync_callback)
 	{
 		_data = ComponentData{};
 		allocate(16);
@@ -27,17 +27,17 @@ namespace loco
 		MeshRenderComponent c = { _handle_mgr.create() };
 
 		// expand data buffer if necessary
-		if ((c.index() + 1) >= _data.capacity)
+		if ((c.handle.index() + 1) >= _data.capacity)
 			allocate(_data.capacity * 2);
 
 		unsigned pos = _data.size;
 
-		_data.transform[pos] = _callback_transform_sync(_world, e);
+		_data.transform[pos] = _transform_sync_callback(_world, e);
 		_data.transform[pos] = Matrix4x4::identity;
 		_data.mesh[pos] = Mesh::invalid;
 		_data.component[pos] = c;
 
-		_data.lut[c.index()] = pos;
+		_data.lut[c.handle.index()] = pos;
 		_map[e.id] = c;
 
 		++_data.size;
@@ -87,7 +87,7 @@ namespace loco
 		_data.mesh[to] = _data.mesh[from];
 		_data.component[to] = _data.component[from];
 
-		_data.lut[from_component.index()] = to;
+		_data.lut[from_component.handle.index()] = to;
 	}
 
 	void MeshRenderSystem::allocate(unsigned sz)
@@ -127,7 +127,7 @@ namespace loco
 			MeshRenderComponent c = lookup(e);
 			if (is_valid(c))
 			{
-				unsigned pos = _data.lut[c.index()];
+				unsigned pos = _data.lut[c.handle.index()];
 				_data.transform[pos] = *(transform + i);
 			}	
 		}
