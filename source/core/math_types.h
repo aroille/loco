@@ -1,8 +1,11 @@
 #ifndef MATH_TYPE_H_HEADER_GUARD
 #define MATH_TYPE_H_HEADER_GUARD
 
-#include "matrix4x4.h"
 #include "type.h"
+#include "vector3.h"
+#include "vector4.h"
+#include "matrix4x4.h"
+
 
 namespace loco
 {
@@ -19,6 +22,7 @@ namespace math
 		float x, y;
 	};
 
+	/*
 	struct Vector3
 	{
 		float x, y, z;
@@ -28,12 +32,14 @@ namespace math
 	{
 		float x, y, z, w;
 	};
+	*/
 
 	struct Quaternion
 	{
 		float x, y, z, w;
 	};
 
+	/*
 	struct Matrix3x3
 	{
 		Vector3 x, y, z;
@@ -49,6 +55,8 @@ namespace math
 		Matrix4x4 tm;
 		AABB aabb;
 	};
+	*/
+
 } // math
 } // loco
 

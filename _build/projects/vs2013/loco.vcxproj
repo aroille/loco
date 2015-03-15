@@ -39,6 +39,8 @@
     <ClInclude Include="..\..\..\source\core\reader_writer.h" />
     <ClInclude Include="..\..\..\source\core\timer.h" />
     <ClInclude Include="..\..\..\source\core\type.h" />
+    <ClInclude Include="..\..\..\source\core\vector3.h" />
+    <ClInclude Include="..\..\..\source\core\vector4.h" />
     <ClInclude Include="..\..\..\source\engine\handle.h" />
     <ClInclude Include="..\..\..\source\engine\loco.h" />
     <ClInclude Include="..\..\..\source\engine\renderer.h" />

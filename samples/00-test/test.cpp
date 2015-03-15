@@ -64,12 +64,11 @@ Entity create_axis(World& world, float length, float thickness)
 
 Entity create_sponza(World& world)
 {
-	Mesh sponza_mesh = resource_manager.get<Mesh>("sponza/sponza");
-
 	Entity sponza_entity = entity_manager.create();
 	TransformComponent sponza_tf = world.transform.create(sponza_entity);
 	MeshRenderComponent sponza_mr = world.mesh_render.create(sponza_entity);
 
+	Mesh sponza_mesh = resource_manager.get<Mesh>("sponza/sponza");
 	world.mesh_render.set_mesh(sponza_mr, sponza_mesh);
 
 	sponza_mesh->materials[0] = resource_manager.get<Material>("sponza/material/first_floor_base_arch");
@@ -123,31 +122,15 @@ void init_scene()
 
 void camera_update(Entity camera, World& world, GameInput* input, float delta_time)
 {
-	float mouse_sensibility = 0.1f;
-	
-	float controller_move_x = input->keyboard.left_thumb.x +
-														input->gamepad[0].left_thumb.x;
-
-	float controller_move_y = input->keyboard.left_thumb.y +
-														input->gamepad[0].left_thumb.y;
-
-	float controller_rotate_x = input->mouse.abs_move.x * mouse_sensibility +
-															input->keyboard.right_thumb.x +
-															input->gamepad[0].right_thumb.x;
-
-	float controller_rotate_y =-input->mouse.abs_move.y * mouse_sensibility +
-															input->keyboard.right_thumb.y +
-															input->gamepad[0].right_thumb.y;
-															
 	// init static variables
 	static float cam_move_speed = 5.0f;
 	static float cam_rotation_speed = 0.5f * 3.14f;
 
 	static float fov = 60.0f;
 	static float fov_speed = 20.0f;
-	static Vector3 position = Vector3{ 0.0f, 0.0f, 0.0f };
-	static Vector3 target = Vector3{ 0.0f, 0.0f, -35.0f };
-	static Vector3 up = Vector3{ 0.0f, 1.0f, 0.0f };
+	static Vector3 position = Vector3(0.0f, 0.0f, 0.0f);
+	static Vector3 target = Vector3(0.0f, 0.0f, -35.0f);
+	static Vector3 up = Vector3(0.0f, 1.0f, 0.0f);
 	static float horizontal_angle = 0.0f;
 	static float vertical_angle = 0.0f;
 
@@ -162,48 +145,45 @@ void camera_update(Entity camera, World& world, GameInput* input, float delta_ti
 		cam_tf = world.transform.lookup(cam);
 	}
 
-	// update
-	{
-		horizontal_angle += controller_rotate_x * cam_rotation_speed * delta_time;
-		vertical_angle += controller_rotate_y * cam_rotation_speed * delta_time;
-	}
+	// get controller value
+	float mouse_sensibility = 0.1f;
 
-	Vector3 direction = { cosf(vertical_angle) * sinf(horizontal_angle),
+	float controller_move_x = input->keyboard.left_thumb.x +
+		input->gamepad[0].left_thumb.x;
+
+	float controller_move_y = input->gamepad[0].right_trigger - input->gamepad[0].left_trigger;
+
+	float controller_move_z = input->keyboard.left_thumb.y +
+		input->gamepad[0].left_thumb.y;
+
+	float controller_rotate_x = input->mouse.abs_move.x * mouse_sensibility +
+		input->keyboard.right_thumb.x +
+		input->gamepad[0].right_thumb.x;
+
+	float controller_rotate_y = -input->mouse.abs_move.y * mouse_sensibility +
+		input->keyboard.right_thumb.y +
+		input->gamepad[0].right_thumb.y;
+
+	// rotation
+	horizontal_angle += controller_rotate_x * cam_rotation_speed * delta_time;
+	vertical_angle += controller_rotate_y * cam_rotation_speed * delta_time;
+
+	// translation
+	Vector3 direction(cosf(vertical_angle) * sinf(horizontal_angle),
 		sinf(vertical_angle),
-		cosf(vertical_angle) * cosf(horizontal_angle) };
+		cosf(vertical_angle) * cosf(horizontal_angle));
 
-	Vector3 right = { sinf(horizontal_angle - bx::piHalf),
+	Vector3 right(sinf(horizontal_angle - bx::piHalf),
 		0,
-		cosf(horizontal_angle - bx::piHalf) };
+		cosf(horizontal_angle - bx::piHalf));
 
-	// move front/back
-	{
-		Vector3 tmp_position = position;
-		Vector3 delta_position;
-		bx::vec3Mul((float*)&delta_position, (float*)&direction, controller_move_y * cam_move_speed * delta_time);
-		bx::vec3Add((float*)&position, (float*)&tmp_position, (float*)&delta_position);
-	}
+	position += direction * (controller_move_y * cam_move_speed * delta_time);
+	position += right * (-controller_move_x * cam_move_speed * delta_time);
+	position += Vector3(0.0, 1.0, 0.0) * (controller_move_y * cam_move_speed * delta_time);
 
-	// move left/right
-	{
-		Vector3 tmp_position = position;
-		Vector3 delta_position;
-		bx::vec3Mul((float*)&delta_position, (float*)&right, -controller_move_x * cam_move_speed * delta_time);
-		bx::vec3Add((float*)&position, (float*)&tmp_position, (float*)&delta_position);
-	}
-
-	// move up/down
-	{
-		Vector3 tmp_position = position;
-		Vector3 delta_position;
-		Vector3 up_ref = { 0.0f, 1.0f, 0.0f };
-		bx::vec3Mul((float*)&delta_position, (float*)&up_ref,
-			(input->gamepad[0].right_trigger - input->gamepad[0].left_trigger) * cam_move_speed * delta_time);
-		bx::vec3Add((float*)&position, (float*)&tmp_position, (float*)&delta_position);
-	}
-
-	bx::vec3Add((float*)&target, (float*)&position, (float*)&direction);
-	bx::vec3Cross((float*)&up, (float*)&right, (float*)&direction);
+	// set camera local matrix
+	target = position + direction;
+	up = Vector3::cross(right, direction);
 
 	Matrix4x4 view;
 	bx::mtxLookAt((float*)&view, (float*)&position, (float*)&target, (float*)&up);

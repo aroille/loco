@@ -117,6 +117,12 @@
     <ClInclude Include="..\..\..\source\entry\entry.h">
       <Filter>entry</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\source\core\vector4.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\core\vector3.h">
+      <Filter>core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\core\debug.cpp">
