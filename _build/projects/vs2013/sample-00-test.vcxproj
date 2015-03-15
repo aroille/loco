@@ -164,11 +164,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\samples\00-test\test.cpp" />
+    <ClCompile Include="..\..\..\samples\common\sample_common.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="loco.vcxproj">
       <Project>{5c7e71ad-6557-4c85-93cf-aa45287535cb}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\samples\common\sample_common.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

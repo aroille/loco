@@ -2,5 +2,9 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\..\..\samples\00-test\test.cpp" />
+    <ClCompile Include="..\..\..\samples\common\sample_common.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\samples\common\sample_common.h" />
   </ItemGroup>
 </Project>
