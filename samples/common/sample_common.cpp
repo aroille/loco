@@ -1,7 +1,6 @@
 
 #include "sample_common.h"
 #include "resource_manager.h"
-#include <bx/fpumath.h>
 
 using namespace loco;
 using namespace loco::math;
@@ -27,7 +26,7 @@ Entity create_axis(World& world, float length, float thickness)
 		// create Transform component
 		TransformComponent tf = world.transform.create(e);
 		world.transform.link(tf, origin_tf);
-		world.transform.set_local_matrix(tf, Matrix4x4{ { { scale[i].x, 0, 0, 0, 0, scale[i].y, 0, 0, 0, 0, scale[i].z, 0, position[i].x, position[i].y, position[i].z, 1 } } });
+		world.transform.set_local_matrix(tf, Matrix4x4(scale[i].x, 0, 0, 0, 0, scale[i].y, 0, 0, 0, 0, scale[i].z, 0, position[i].x, position[i].y, position[i].z, 1));
 
 		// create MeshRender component
 		MeshRenderComponent mesh_render = world.mesh_render.create(e);
@@ -72,20 +71,20 @@ void camera_update(Entity camera, World& world, GameInput* input, float delta_ti
 	float mouse_sensibility = 0.1f;
 
 	float controller_move_x = input->keyboard.left_thumb.x +
-		input->gamepad[0].left_thumb.x;
+														input->gamepad[0].left_thumb.x;
 
 	float controller_move_y = input->gamepad[0].right_trigger - input->gamepad[0].left_trigger;
 
 	float controller_move_z = input->keyboard.left_thumb.y +
-		input->gamepad[0].left_thumb.y;
+														input->gamepad[0].left_thumb.y;
 
 	float controller_rotate_x = input->mouse.abs_move.x * mouse_sensibility +
-		input->keyboard.right_thumb.x +
-		input->gamepad[0].right_thumb.x;
+															input->keyboard.right_thumb.x +
+															input->gamepad[0].right_thumb.x;
 
 	float controller_rotate_y = -input->mouse.abs_move.y * mouse_sensibility +
-		input->keyboard.right_thumb.y +
-		input->gamepad[0].right_thumb.y;
+															input->keyboard.right_thumb.y +
+															input->gamepad[0].right_thumb.y;
 
 	// rotation
 	horizontal_angle += controller_rotate_x * cam_rotation_speed * delta_time;
@@ -93,12 +92,11 @@ void camera_update(Entity camera, World& world, GameInput* input, float delta_ti
 
 	// translation
 	Vector3 direction(cosf(vertical_angle) * sinf(horizontal_angle),
-		sinf(vertical_angle),
-		cosf(vertical_angle) * cosf(horizontal_angle));
+										sinf(vertical_angle),
+										cosf(vertical_angle) * cosf(horizontal_angle));
 
-	Vector3 right(sinf(horizontal_angle - HALF_PI),
-		0,
-		cosf(horizontal_angle - HALF_PI));
+	Vector3 right(sinf(horizontal_angle - HALF_PI), 0,
+								cosf(horizontal_angle - HALF_PI));
 
 	position += direction * (controller_move_z * cam_move_speed * delta_time);
 	position += right * (-controller_move_x * cam_move_speed * delta_time);
@@ -109,7 +107,7 @@ void camera_update(Entity camera, World& world, GameInput* input, float delta_ti
 	up = Vector3::cross(right, direction);
 
 	Matrix4x4 view;
-	bx::mtxLookAt((float*)&view, (float*)&position, (float*)&target, (float*)&up);
+	view = Matrix4x4::look_at(position, target, up);
 	world.transform.set_local_matrix(cam_tf, view);
 
 	// fov

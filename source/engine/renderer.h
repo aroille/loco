@@ -126,7 +126,7 @@ namespace loco
 		struct VertexAttribDecl
 		{
 			Attrib::Enum attrib;	///< Attribute semantics
-			uint8_t num;			///< 1, 2, 3 or 4
+			uint8 num;			///< 1, 2, 3 or 4
 			AttribType::Enum type;	///< Attribute type
 			bool normalized;		///< When using fixed point AttribType (f.e. Uint8)
 									///   value will be normalized for vertex shader usage. When normalized
@@ -236,7 +236,7 @@ namespace loco
 		/// @param transforms Array of mesh world transform matrix
 		/// @param default_resources Default resources use in case of invalid resources
 		///
-		void batch_render(uint8 view_id, uint32_t count, const Mesh* meshes, const Matrix4x4* transforms, const DefaultResources& default_resources);
+		void batch_render(uint8 view_id, uint32 count, const Mesh* meshes, const Matrix4x4* transforms, const DefaultResources& default_resources);
 
 	private:
 		/// Bind a material

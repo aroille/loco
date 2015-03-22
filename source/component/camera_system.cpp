@@ -1,9 +1,6 @@
 #include "camera_system.h"
 #include "debug.h"
 #include "math_types.h"
-#include "math_utils.h"
-
-#include <bx/fpumath.h>
 
 #define LOCO_CAMERA_SYSTEM	"CameraSystem" // log module string
 
@@ -211,11 +208,11 @@ namespace loco
 		Matrix4x4 m;
 		if (p.proj == ProjectionType::Perspective)
 		{
-			bx::mtxProj((float*)m.val, p.vertical_fov, aspect_ratio, p.near_distance, p.far_distance);
+			m = Matrix4x4::proj_persp(p.vertical_fov, aspect_ratio, p.near_distance, p.far_distance);
 		}
 		else
 		{
-			bx::mtxOrtho((float*)m.val, -p.size, p.size, -p.size / aspect_ratio, p.size / aspect_ratio, p.near_distance, p.far_distance);
+			m = Matrix4x4::proj_ortho(-p.size, p.size, -p.size / aspect_ratio, p.size / aspect_ratio, p.near_distance, p.far_distance);
 		}
 		return m;
 	}

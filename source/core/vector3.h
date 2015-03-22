@@ -2,7 +2,6 @@
 #define VECTOR3_H_HEADER_GUARD
 
 #include "math_utils.h"
-#include <math.h>
 
 namespace loco
 {

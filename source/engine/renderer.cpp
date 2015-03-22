@@ -198,7 +198,7 @@ namespace loco
 	//==========================================================================
 	void Renderer::set_view_transform(uint8 view_id, const Matrix4x4& view, const Matrix4x4& proj)
 	{
-		bgfx::setViewTransform(view_id, (const void*)view.val, (const void*)proj.val);
+		bgfx::setViewTransform(view_id, (const void*)view.m, (const void*)proj.m);
 	}
 
 	//==========================================================================

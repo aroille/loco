@@ -3,7 +3,6 @@
 
 #include "math_utils.h"
 #include "vector3.h"
-#include <math.h>
 
 namespace loco
 {
@@ -50,6 +49,7 @@ namespace loco
 
 			float						norm() const;
 			float						square_norm() const;
+			Vector4					normalize() const;
 
 			static bool			near_equal(Vector4 const& a, Vector4 const& b, float delta = DELTA);
 			static float		distance(Vector4 const& a, Vector4 const& b);
@@ -59,7 +59,6 @@ namespace loco
 			static Vector4	lerp(Vector4 const& a, Vector4 const& b, Vector4 const& value);
 
 			// The following methods ignore the coordinate W :
-
 			float						norm3() const;
 			float						square_norm3() const;
 
@@ -219,6 +218,12 @@ namespace loco
 		inline float Vector4::square_norm3() const
 		{
 			return x*x + y*y + z*z;
+		}
+
+		//================================================================================
+		inline Vector4 Vector4::normalize() const
+		{
+			return Vector4(x, y, z, w) / norm();
 		}
 
 		//================================================================================
