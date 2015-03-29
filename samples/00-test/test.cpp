@@ -4,7 +4,7 @@
 #include "world.h"
 #include "type.h"
 #include "entry.h"
-
+#include "renderer_helper.h"
 #include "../common/sample_common.h"
 
 #include "bgfx.h"
@@ -14,15 +14,6 @@ using namespace loco::math;
 
 static World world;
 static Entity camera;
-
-void loco_init(int argc, char** argv, GameInit* game_init)
-{
-	game_init->locked_mouse = true;
-	game_init->renderer_type = Renderer::Type::Count;
-
-	strcpy_s(game_init->resource_root_path, sizeof(game_init->resource_root_path), argc > 1 ? argv[1] : "resources/");
-	strcpy_s(game_init->default_resource_relative_path, sizeof(game_init->default_resource_relative_path), "loco/");
-}
 
 Entity create_sponza(World& world)
 {
@@ -80,6 +71,23 @@ void init_scene()
 		, 1.0f
 		, 0
 		);
+}
+
+GameInit loco_init(int argc, char** argv)
+{
+	GameInit game_init = {};
+
+	// lock and hide mouse
+	game_init.locked_mouse = true;
+
+	// let the engine choose the graphic backend
+	game_init.renderer_type = Renderer::Type::Count;
+
+	// set the resource paths
+	strcpy_s(game_init.resource_root_path, sizeof(game_init.resource_root_path), argc > 1 ? argv[1] : "resources/");
+	strcpy_s(game_init.default_resource_relative_path, sizeof(game_init.default_resource_relative_path), "loco/");
+
+	return game_init;
 }
 
 void loco_update_and_render(float delta_time, int32 window_width, int32 window_height, GameInput* input)

@@ -78,7 +78,7 @@ namespace loco
 
 }
 
-extern void	loco_init(int argc, char** argv, loco::GameInit* game_init);
+extern loco::GameInit	loco_init(int argc, char** argv);
 extern void loco_update_and_render(float delta_time, int32 window_width, int32 window_height, loco::GameInput* input);
 
 

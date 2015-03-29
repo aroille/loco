@@ -269,8 +269,7 @@ WinMain(HINSTANCE instance, HINSTANCE prev_instance, LPSTR command_line, int sho
 		instance,
 		0);
 
-	GameInit init_struct = {};
-	loco_init(__argc, __argv, &init_struct);
+	GameInit init_struct = loco_init(__argc, __argv);
 
 	global_locked_mouse = init_struct.locked_mouse;
 	if (global_locked_mouse)
