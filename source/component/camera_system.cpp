@@ -129,14 +129,14 @@ namespace loco
 		}
 	}
 
-	CameraSystem::ProjectionType::Enum CameraSystem::projection_type(CameraComponent c) const
+	CameraSystem::ProjectionType CameraSystem::projection_type(CameraComponent c) const
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);
 		return _data.param[i].proj;
 	}
 
-	void CameraSystem::set_projection_type(CameraComponent c, ProjectionType::Enum p)
+	void CameraSystem::set_projection_type(CameraComponent c, ProjectionType p)
 	{
 		LOCO_ASSERTF(is_valid(c), LOCO_CAMERA_SYSTEM, "Camera component not valid");
 		unsigned i = data_index(c);

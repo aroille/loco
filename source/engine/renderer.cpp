@@ -28,7 +28,7 @@ namespace loco
 	LOCO_RENDERER_HANDLE_DEF(ProgramHandle);
 	LOCO_RENDERER_HANDLE_DEF(UniformHandle);
 
-	char shader_extentions[Renderer::Type::Count][16] =
+	char shader_extentions[(uint32)Renderer::Type::Count][16] =
 	{
 		"shader_none",
 		"shader_dx9",
@@ -37,7 +37,7 @@ namespace loco
 		"shader_glsl"
 	};
 
-	bgfx::UniformType::Enum UniformType_convert[Renderer::UniformType::Count] =
+	bgfx::UniformType::Enum UniformType_convert[(uint32)Renderer::UniformType::Count] =
 	{
 		bgfx::UniformType::Uniform1fv,
 		bgfx::UniformType::Uniform2fv,
@@ -49,12 +49,12 @@ namespace loco
 	};
 
 	//==========================================================================
-	void Renderer::init(Renderer::Type::Enum renderer_type)
+	void Renderer::init(Renderer::Type renderer_type)
 	{
 		LOCO_LOG_INFO(LOCO_RENDERER, "Initializing");
 		bgfx::init((bgfx::RendererType::Enum)renderer_type);
 		LOCO_LOG_INFO(LOCO_RENDERER, "%s", bgfx::getRendererName(bgfx::getRendererType()));
-		strcpy(_shader_extention, shader_extentions[type()]);
+		strcpy(_shader_extention, shader_extentions[(uint32)type()]);
 	}
 
 	//==========================================================================
@@ -72,13 +72,13 @@ namespace loco
 	}
 
 	//==========================================================================
-	Renderer::Type::Enum Renderer::type()
+	Renderer::Type Renderer::type()
 	{
-		return (Type::Enum)bgfx::getRendererType();
+		return (Type)bgfx::getRendererType();
 	}
 
 	//==========================================================================
-	const char* Renderer::type_name(Type::Enum type)
+	const char* Renderer::type_name(Type type)
 	{
 		return bgfx::getRendererName((bgfx::RendererType::Enum) type);
 	}
@@ -142,9 +142,9 @@ namespace loco
 	}
 
 	//==========================================================================
-	Renderer::UniformHandle Renderer::create_uniform(const char* name, UniformType::Enum type, unsigned array_size)
+	Renderer::UniformHandle Renderer::create_uniform(const char* name, UniformType type, unsigned array_size)
 	{
-		bgfx::UniformHandle bgfx_handle = bgfx::createUniform(name, UniformType_convert[type], array_size);
+		bgfx::UniformHandle bgfx_handle = bgfx::createUniform(name, UniformType_convert[(uint32)type], array_size);
 		return BGFX_TO_LOCO(bgfx_handle);
 	}
 

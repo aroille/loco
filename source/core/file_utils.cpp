@@ -10,7 +10,7 @@ namespace loco
 	//==========================================================================
 	bool file_read(FileInfo& fi)
 	{
-		File* file = FileSystem::open(fi.path, FileSystem::Mode::READ | FileSystem::Mode::BINARY);
+		File* file = FileSystem::open(fi.path, FileSystem::ModeFlag::READ | FileSystem::ModeFlag::BINARY);
 		if (file == nullptr)
 		{
 			LOCO_LOG_WARNING("FileSystem", "Can't open file : %s", fi.path);

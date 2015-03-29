@@ -1,7 +1,7 @@
 
 #include "log.h"
 #include "platform.h"
-
+#include "type.h"
 #include <ctime>
 #include <cstdlib>
 #include <cstdio>
@@ -11,7 +11,7 @@ namespace loco
 {
 	const Log Log::instance;
 
-	char LogLevelString[Log::Level::Count][8] = 
+	char LogLevelString[(uint32)Log::Level::Count][8] = 
 	{
 		"DEBUG", 
 		"INFO", 

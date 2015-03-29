@@ -39,7 +39,7 @@ namespace resource{
 	}
 
 
-	unsigned UniformType_size[Renderer::UniformType::Enum::Count] =
+	unsigned UniformType_size[(uint32)Renderer::UniformType::Count] =
 	{
 		1, //Float,
 		2, //Vector2,
@@ -71,12 +71,12 @@ namespace resource{
 		_program = renderer.create_program(vertex_shader, pixel_shader);
 	}
 
-	void MaterialData::set(const char* name, Renderer::UniformType::Enum type, const float* data, unsigned size)
+	void MaterialData::set(const char* name, Renderer::UniformType type, const float* data, unsigned size)
 	{
 		UniformInfo& info = create_uniform_param(name, type, size);
 		LOCO_ASSERTF(size == info.array_size, "Material parameter \"%s\" size doesn't match with the previous definition (previous size:%d, next size:%d)", name, info.array_size, size);
 
-		memcpy((void*)(_uniform_buffer.data() + info.buffer_offset), data, sizeof(float)* size * UniformType_size[info.type]);
+		memcpy((void*)(_uniform_buffer.data() + info.buffer_offset), data, sizeof(float)* size * UniformType_size[(uint32)info.type]);
 	}
 
 	void MaterialData::set(const char* name, Renderer::TextureHandle texture, uint32 flags)
@@ -86,7 +86,7 @@ namespace resource{
 		info.flags = flags;
 	}
 
-	MaterialData::UniformInfo&  MaterialData::create_uniform_param(const char* name, Renderer::UniformType::Enum type, unsigned array_size)
+	MaterialData::UniformInfo&  MaterialData::create_uniform_param(const char* name, Renderer::UniformType type, unsigned array_size)
 	{
 		unsigned uniform_index = 0;
 		HashedString hashed_name = hash_string(name);
@@ -102,11 +102,11 @@ namespace resource{
 			uniform_index = (unsigned)_uniform_infos.size();
 			_uniform_map[hashed_name] = (unsigned)_uniform_infos.size();
 			_uniform_infos.push_back(info);
-			_uniform_buffer.insert(_uniform_buffer.end(), UniformType_size[type] * array_size, 0.0f);
+			_uniform_buffer.insert(_uniform_buffer.end(), UniformType_size[(uint32)type] * array_size, 0.0f);
 		}
 		else
 		{
-			Renderer::UniformType::Enum old_type = _uniform_infos[it->second].type;
+			Renderer::UniformType old_type = _uniform_infos[it->second].type;
 			LOCO_ASSERTF(type == old_type, "Material parameter \"%s\" type doesn't match with the previous definition \n(previous type:%d, new type:%d)", name, old_type, type);
 			uniform_index = it->second;
 		}

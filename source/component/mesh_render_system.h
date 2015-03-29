@@ -72,6 +72,7 @@ namespace loco
 		/// Handle manager (Component = handle)
 		HandleManagerI24G8	_handle_mgr;
 
+		/// World owning this system
 		World* _world;
 
 		TransformSyncCallback _transform_sync_callback;

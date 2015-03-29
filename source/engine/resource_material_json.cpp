@@ -55,7 +55,7 @@ namespace resource
 		// Set material parameters
 		std::vector<float> data;
 		Texture texture;
-		Renderer::UniformType::Enum uniform_type;
+		Renderer::UniformType uniform_type;
 		uint8 uniform_array_size;
 
 		auto i = o.kv_map().begin();

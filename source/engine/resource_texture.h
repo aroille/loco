@@ -4,7 +4,7 @@
 namespace loco{
 namespace resource{
 
-	template<> ResourceManager::ResourceType::Enum ResourceManager::resource_type<Texture>() const
+	template<> ResourceManager::ResourceType ResourceManager::resource_type<Texture>() const
 	{
 		return ResourceType::Texture;
 	}

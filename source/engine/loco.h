@@ -23,7 +23,7 @@ namespace loco
 	extern char default_resource_relativ_path[LOCO_PATH_LENGTH];
 
 	bool is_initialized();
-	void init(Renderer::Type::Enum renderer_type, int32 window_width, int32 window_height, const char* resources_path, const char* default_resources_relativ_path);
+	void init(Renderer::Type renderer_type, int32 window_width, int32 window_height, const char* resources_path, const char* default_resources_relativ_path);
 	void shutdown();
 	void frame();
 }

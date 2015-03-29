@@ -11,7 +11,7 @@ namespace loco
 	struct GameInit
 	{
 		bool locked_mouse;
-		Renderer::Type::Enum renderer_type;
+		Renderer::Type renderer_type;
 		char resource_root_path[LOCO_PATH_LENGTH];
 		char default_resource_relative_path[LOCO_PATH_LENGTH];
 	};

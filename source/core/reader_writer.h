@@ -47,14 +47,11 @@ namespace loco
 	}
 
 
-	struct Whence
+	enum class Whence
 	{
-		enum Enum
-		{
-			Begin,
-			Current,
-			End,
-		};
+		Begin,
+		Current,
+		End,
 	};
 
 	class MemoryReader
@@ -71,7 +68,7 @@ namespace loco
 		{
 		}
 
-		int64 seek(int64 _offset = 0, Whence::Enum _whence = Whence::Current)
+		int64 seek(int64 _offset = 0, Whence _whence = Whence::Current)
 		{
 			switch (_whence)
 			{

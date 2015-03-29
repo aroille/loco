@@ -67,93 +67,82 @@ namespace loco
 	{
 	public:
 
-		struct Type
+		/// Renderer types
+		enum class Type
 		{
-			/// Renderer type enumeration.
-			enum Enum
-			{
-				Null,         //!< No rendering.
-				Direct3D9,    //!< Direct3D 9.0
-				Direct3D11,   //!< Direct3D 11.0
-				OpenGLES = 4, //!< OpenGL ES 2.0+
-				OpenGL,       //!< OpenGL 2.1+
+			Null,         //!< No rendering.
+			Direct3D9,    //!< Direct3D 9.0
+			Direct3D11,   //!< Direct3D 11.0
+			OpenGLES = 4, //!< OpenGL ES 2.0+
+			OpenGL,       //!< OpenGL 2.1+
 
-				Count
-			};
+			Count, 
 		};
 
-		struct Attrib
+		/// Vertex attributes
+		enum class VertexAttrib
 		{
-			/// Corresponds to vertex shader attribute
-			enum Enum
-			{
-				Position,  //!< a_position
-				Normal,    //!< a_normal
-				Tangent,   //!< a_tangent
-				Bitangent, //!< a_bitangent
-				Color0,    //!< a_color0
-				Color1,    //!< a_color1
-				Indices,   //!< a_indices
-				Weight,    //!< a_weight
-				TexCoord0, //!< a_texcoord0
-				TexCoord1, //!< a_texcoord1
-				TexCoord2, //!< a_texcoord2
-				TexCoord3, //!< a_texcoord3
-				TexCoord4, //!< a_texcoord4
-				TexCoord5, //!< a_texcoord5
-				TexCoord6, //!< a_texcoord6
-				TexCoord7, //!< a_texcoord7
+			Position,  //!< a_position
+			Normal,    //!< a_normal
+			Tangent,   //!< a_tangent
+			Bitangent, //!< a_bitangent
+			Color0,    //!< a_color0
+			Color1,    //!< a_color1
+			Indices,   //!< a_indices
+			Weight,    //!< a_weight
+			TexCoord0, //!< a_texcoord0
+			TexCoord1, //!< a_texcoord1
+			TexCoord2, //!< a_texcoord2
+			TexCoord3, //!< a_texcoord3
+			TexCoord4, //!< a_texcoord4
+			TexCoord5, //!< a_texcoord5
+			TexCoord6, //!< a_texcoord6
+			TexCoord7, //!< a_texcoord7
 
-				Count
-			};
+			Count
 		};
 
-		struct AttribType
+		/// Vertex attribute types
+		enum class VertexAttribType
 		{
-			/// Vertex attribute type
-			enum Enum
-			{
-				Uint8,
-				Int16,
-				Half,
-				Float,
+			Uint8,
+			Int16,
+			Half,
+			Float,
 
-				Count
-			};
+			Count
 		};
 
-		/// Attribute declaration
+		/// Vertex Attributes declaration
 		struct VertexAttribDecl
 		{
-			Attrib::Enum attrib;	///< Attribute semantics
-			uint8 num;			///< 1, 2, 3 or 4
-			AttribType::Enum type;	///< Attribute type
-			bool normalized;		///< When using fixed point AttribType (f.e. Uint8)
-									///   value will be normalized for vertex shader usage. When normalized
-									///   is set to true, AttribType::Uint8 value in range 0-255 will be
-									///   in range 0.0-1.0 in vertex shader.
-			bool asInt;				///< Packaging rule for vertexPack, vertexUnpack, and
-									///   vertexConvert for AttribType::Uint8 and AttribType::Int16.
-									///   Unpacking code must be implemented inside vertex shader.
+			VertexAttrib attrib;		///< Attribute semantics
+			uint8 num;							///< 1, 2, 3 or 4
+			VertexAttribType type;	///< Attribute type
+			bool normalized;				///< When using fixed point AttribType (f.e. Uint8)
+															///   value will be normalized for vertex shader usage. When normalized
+															///   is set to true, AttribType::Uint8 value in range 0-255 will be
+															///   in range 0.0-1.0 in vertex shader.
+			bool asInt;							///< Packaging rule for vertexPack, vertexUnpack, and
+															///   vertexConvert for AttribType::Uint8 and AttribType::Int16.
+															///   Unpacking code must be implemented inside vertex shader.
 		};
 
 		/// Vertex declaration
 		typedef std::vector<VertexAttribDecl> VertexDecl;
 
-		struct UniformType
+		/// Shader uniform type enumeration
+		enum class UniformType
 		{
-			/// Shader uniform type enumeration
-			enum Enum
-			{
-				Float,
-				Vector2,
-				Vector3,
-				Vector4,
-				Matrix3x3,
-				Matrix4x4,
-				Texture,
-				Count
-			};
+			Float,
+			Vector2,
+			Vector3,
+			Vector4,
+			Matrix3x3,
+			Matrix4x4,
+			Texture,
+
+			Count,
 		};
 
 		// GPU resource handles :
@@ -166,16 +155,16 @@ namespace loco
 		LOCO_RENDERER_HANDLE(UniformHandle);
 
 		/// Initialize renderer
-		void init(Renderer::Type::Enum renderer_type);
+		void init(Type renderer_type);
 
 		/// Shutdown renderer
 		void shutdown();
 
 		/// Return the type of the current backend
-		Type::Enum type();
+		Type type();
 
 		/// Return the name of the backend
-		const char* type_name(Type::Enum type);
+		const char* type_name(Type type);
 
 		/// Set Main window size
 		void reset(unsigned width, unsigned height);
@@ -205,7 +194,7 @@ namespace loco
 		void destroy_shader(ShaderHandle handle);
 
 		/// Create shader uniform 
-		UniformHandle create_uniform(const char* name, UniformType::Enum type, unsigned array_size);
+		UniformHandle create_uniform(const char* name, UniformType type, unsigned array_size);
 		
 		/// Destroy shader uniform
 		void destroy_uniform(UniformHandle handle);

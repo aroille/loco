@@ -15,13 +15,15 @@ namespace loco
 	class Log
 	{
 	public:
-		enum Level
+
+		enum class Level
 		{
 			Debug,
 			Info,
 			Warning,
 			Error,
 			Fatal,
+
 			Count
 		};
 

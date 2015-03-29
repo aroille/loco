@@ -16,16 +16,16 @@ namespace loco
 		char str_flags[8];
 		strcpy(str_flags, "");
 
-		if ((flags & FileSystem::Mode::READ) == FileSystem::Mode::READ)
+		if ((flags & FileSystem::ModeFlag::READ) == FileSystem::ModeFlag::READ)
 			strcat(str_flags, "r");
 
-		if ((flags & FileSystem::Mode::WRITE) == FileSystem::Mode::WRITE)
+		if ((flags & FileSystem::ModeFlag::WRITE) == FileSystem::ModeFlag::WRITE)
 			strcat(str_flags, "w");
 
-		if ((flags & FileSystem::Mode::APPEND) == FileSystem::Mode::APPEND)
+		if ((flags & FileSystem::ModeFlag::APPEND) == FileSystem::ModeFlag::APPEND)
 			strcat(str_flags, "a");
 
-		if ((flags & FileSystem::Mode::BINARY) == FileSystem::Mode::BINARY)
+		if ((flags & FileSystem::ModeFlag::BINARY) == FileSystem::ModeFlag::BINARY)
 			strcat(str_flags, "b");
 
 		FILE* ff = fopen(path, str_flags);

@@ -106,9 +106,9 @@ namespace bgfx_helper
 
 						// convert vertex attribute declaration from bgfx to loco
 						loco::Renderer::VertexDecl loco_decl;
-						for (unsigned i = 0; i < (int32)loco::Renderer::Attrib::Count; i++)
+						for (unsigned i = 0; i < (int32)loco::Renderer::VertexAttrib::Count; i++)
 						{
-							loco::Renderer::Attrib::Enum type = (loco::Renderer::Attrib::Enum)i;
+							loco::Renderer::VertexAttrib type = (loco::Renderer::VertexAttrib)i;
 							if (m_decl.has((bgfx::Attrib::Enum)type))
 							{
 								loco::Renderer::VertexAttribDecl d;

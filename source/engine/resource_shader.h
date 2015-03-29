@@ -4,7 +4,7 @@
 namespace loco {
 namespace resource {
 
-	template<> ResourceManager::ResourceType::Enum ResourceManager::resource_type<Shader>() const
+	template<> ResourceManager::ResourceType ResourceManager::resource_type<Shader>() const
 	{
 		return ResourceType::Shader;
 	}

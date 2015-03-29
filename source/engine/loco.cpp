@@ -22,7 +22,7 @@ namespace loco
 		return initialized; 
 	}
 
-	void init(Renderer::Type::Enum renderer_type, int32 window_width, int32 window_height, const char* resources_path, const char* default_resources_path)
+	void init(Renderer::Type renderer_type, int32 window_width, int32 window_height, const char* resources_path, const char* default_resources_path)
 	{
 		LOCO_LOG_INFO("Loco", "Initializing");
 		LOCO_LOG_INFO("Loco", "Version %s %s %s %s", LOCO_CPU_NAME, LOCO_ARCH_NAME, LOCO_PLATFORM_NAME, LOCO_COMPILER_NAME);

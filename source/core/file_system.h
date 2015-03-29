@@ -12,7 +12,7 @@ namespace loco
 	{
 	public:
 
-		struct Mode
+		struct ModeFlag
 		{
 			enum Enum
 			{

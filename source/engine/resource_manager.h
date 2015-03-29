@@ -31,24 +31,21 @@ namespace loco{
 	public:
 
 		/// Resource type enumeration
-		struct ResourceType
+		enum class ResourceType
 		{
-			enum Enum
-			{
-				Texture,
-				Shader,
-				Material,
-				Mesh,
-				Count,
+			Texture,
+			Shader,
+			Material,
+			Mesh,
+			Count,
 
-				Unknown,
-			};
+			Unknown,
 		};
 
 		/// Unique identifier of a resource
 		struct ResourceId
 		{
-			ResourceType::Enum	type;
+			ResourceType		type;
 			ResourceName		name;
 
 			/// Use to sort resources by type during loading
@@ -148,7 +145,7 @@ namespace loco{
 		/// methods to specialize per resource type
 		template<typename T> std::map<ResourceName, T>& resource_map();
 		template<typename T> const std::map<ResourceName, T>& resource_map() const;
-		template<typename T> ResourceType::Enum resource_type() const;
+		template<typename T> ResourceType resource_type() const;
 		template<typename T> const char* resource_type_name() const;
 		template<typename T> T create(const Memory* mem) const;
 		template<typename T> T replace(T& current, const Memory* replace) const;
@@ -184,7 +181,7 @@ namespace loco{
 		{
 			const HashedString& folder_path = folder_it->first;
 
-			ResourceType::Enum type = resource_type<T>();
+			ResourceType type = resource_type<T>();
 			for (auto it = _files[folder_path].begin(); it != _files[folder_path].end(); it++)
 			{
 				const ResourceId& id = it->first;

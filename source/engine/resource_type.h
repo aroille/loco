@@ -90,8 +90,8 @@ namespace resource{
 		/// Create a new mesh from an existing one.
 		/// In this case each meshes has its own data
 		/// \code
-		/// Mesh a = b.duplicate();
-		/// a->submesh[0] = {vertex_buffer, index_buffer}; // modify only the mesh a
+		/// Mesh b = a.duplicate();
+		/// b->submesh[0] = {vertex_buffer, index_buffer}; // modify only the mesh b
 		///	\endcode
 		Mesh duplicate() const;
 	};
@@ -108,7 +108,7 @@ namespace resource{
 			Renderer::UniformHandle				uniform;
 			uint16												buffer_offset;
 			uint16												array_size;
-			Renderer::UniformType::Enum		type;
+			Renderer::UniformType					type;
 		};
 
 		struct TextureInfo
@@ -123,7 +123,7 @@ namespace resource{
 
 		void set_shader(Renderer::ShaderHandle vertex_shader, Renderer::ShaderHandle pixel_shader);
 
-		void set(const char* name, Renderer::UniformType::Enum type, const float* data, unsigned size = 1);
+		void set(const char* name, Renderer::UniformType type, const float* data, unsigned size = 1);
 		void set(const char* name, Renderer::TextureHandle texture, uint32 flags = 0);
 
 		std::map<HashedString, unsigned> _uniform_map;
@@ -140,7 +140,7 @@ namespace resource{
 
 	private:
 
-		UniformInfo&  create_uniform_param(const char* name, Renderer::UniformType::Enum type, unsigned array_size);
+		UniformInfo&  create_uniform_param(const char* name, Renderer::UniformType type, unsigned array_size);
 		TextureInfo&  create_texture_param(const char* name);	
 
 	};

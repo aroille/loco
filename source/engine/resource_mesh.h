@@ -8,7 +8,7 @@ namespace loco
 	namespace resource
 	{
 
-		template<> ResourceManager::ResourceType::Enum ResourceManager::resource_type<Mesh>() const
+		template<> ResourceManager::ResourceType ResourceManager::resource_type<Mesh>() const
 		{
 			return ResourceType::Mesh;
 		}

@@ -22,13 +22,10 @@ namespace loco
 	{
 	public:
 
-		struct ProjectionType
+		enum class ProjectionType
 		{
-			enum Enum
-			{
-				Perspective,
-				Orthographic
-			};
+			Perspective,
+			Orthographic
 		};
 
 	public:
@@ -59,10 +56,10 @@ namespace loco
 		Matrix4x4 projection_matrix(CameraComponent c, float aspect_ratio) const;
 
 		/// Get projection type
-		ProjectionType::Enum projection_type(CameraComponent c) const;
+		ProjectionType projection_type(CameraComponent c) const;
 
 		/// Set projection type
-		void set_projection_type(CameraComponent c, ProjectionType::Enum p);
+		void set_projection_type(CameraComponent c, ProjectionType p);
 
 		/// Get near distance
 		float near_distance(CameraComponent c) const;
@@ -92,7 +89,7 @@ namespace loco
 
 		struct CameraParameters
 		{
-			ProjectionType::Enum proj;
+			ProjectionType proj;
 			float near_distance;
 			float far_distance;
 			union
