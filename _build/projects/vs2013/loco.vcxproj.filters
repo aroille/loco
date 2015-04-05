@@ -16,6 +16,9 @@
     <Filter Include="component">
       <UniqueIdentifier>{9fb032d8-4ed2-4228-8b9d-1bf9ad05f464}</UniqueIdentifier>
     </Filter>
+    <Filter Include="renderer">
+      <UniqueIdentifier>{78f7dbd5-fa6c-403d-8129-46c638670265}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\source\core\debug.h">
@@ -29,9 +32,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\source\core\matrix4x4.h">
       <Filter>core</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\source\engine\renderer.h">
-      <Filter>engine</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\source\core\defines.h">
       <Filter>core</Filter>
@@ -123,6 +123,15 @@
     <ClInclude Include="..\..\..\source\core\vector3.h">
       <Filter>core</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\source\core\vector2.h">
+      <Filter>core</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\renderer\renderers.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\source\renderer\backend.h">
+      <Filter>renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\core\debug.cpp">
@@ -130,9 +139,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\core\math_static.cpp">
       <Filter>core</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\source\engine\renderer.cpp">
-      <Filter>engine</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\source\core\murmur_hash.cpp">
       <Filter>core</Filter>
@@ -178,6 +184,12 @@
     </ClCompile>
     <ClCompile Include="..\..\..\source\entry\entry_windows.cpp">
       <Filter>entry</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\renderer\renderers.cpp">
+      <Filter>renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\source\renderer\backend.cpp">
+      <Filter>renderer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -55,7 +55,7 @@ namespace resource
 		// Set material parameters
 		std::vector<float> data;
 		Texture texture;
-		Renderer::UniformType uniform_type;
+		backend::UniformType uniform_type;
 		uint8 uniform_array_size;
 
 		auto i = o.kv_map().begin();
@@ -70,12 +70,12 @@ namespace resource
 
 			case jsonxx::Value::NUMBER_:
 				data.push_back((float)i->second->number_value_);
-				mat->set(i->first.c_str(), Renderer::UniformType::Float, data.data(), 1);
+				mat->set(i->first.c_str(), backend::UniformType::Float, data.data(), 1);
 				break;
 
 			case jsonxx::Value::BOOL_:
 				data.push_back((float)i->second->bool_value_);
-				mat->set(i->first.c_str(), Renderer::UniformType::Float, data.data(), 1);
+				mat->set(i->first.c_str(), backend::UniformType::Float, data.data(), 1);
 				break;
 
 			case jsonxx::Value::STRING_:
@@ -87,32 +87,32 @@ namespace resource
 				switch (i->second->array_value_->size())
 				{
 				case 2:
-					uniform_type = Renderer::UniformType::Vector2;
+					uniform_type = backend::UniformType::Vector2;
 					uniform_array_size = 1;
 					break;
 
 				case 3:
-					uniform_type = Renderer::UniformType::Vector3;
+					uniform_type = backend::UniformType::Vector3;
 					uniform_array_size = 1;
 					break;
 
 				case 4:
-					uniform_type = Renderer::UniformType::Vector4;
+					uniform_type = backend::UniformType::Vector4;
 					uniform_array_size = 1;
 					break;
 
 				case 9:
-					uniform_type = Renderer::UniformType::Matrix3x3;
+					uniform_type = backend::UniformType::Matrix3x3;
 					uniform_array_size = 1;
 					break;
 
 				case 16:
-					uniform_type = Renderer::UniformType::Matrix4x4;
+					uniform_type = backend::UniformType::Matrix4x4;
 					uniform_array_size = 1;
 					break;
 
 				default:
-					uniform_type = Renderer::UniformType::Float;
+					uniform_type = backend::UniformType::Float;
 					uniform_array_size = (uint8)i->second->array_value_->size();
 					break;
 				}

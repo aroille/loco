@@ -4,16 +4,15 @@
 #include "world.h"
 #include "type.h"
 #include "entry.h"
-#include "renderer_helper.h"
+#include "renderers.h"
 #include "../common/sample_common.h"
-
-#include "bgfx.h"
 
 using namespace loco;
 using namespace loco::math;
 
 static World world;
 static Entity camera;
+static DeferredResources defered_resources;
 
 Entity create_sponza(World& world)
 {
@@ -53,7 +52,7 @@ void init_scene()
 	// Create axis display
 	Entity axis = create_axis(world, 2.0f, 0.2f);
 	TransformComponent axis_tf = world.transform.lookup(axis);
-	world.transform.set_local_matrix(axis_tf, Matrix4x4{ { { 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 2.0, 0.0, 1.0 } } });
+	world.transform.set_local_matrix(axis_tf, Matrix4x4(0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 2.0, 0.0, 1.0));
 
 	// Create sponza
 	resource_manager.load_folder("sponza/");
@@ -63,14 +62,6 @@ void init_scene()
 	camera = entity_manager.create();
 	CameraComponent camera_cp = world.camera.create(camera);
 	TransformComponent camera_tf = world.transform.create(camera);
-
-	// Set view 0 clear state.
-	bgfx::setViewClear(0
-		, BGFX_CLEAR_COLOR_BIT | BGFX_CLEAR_DEPTH_BIT
-		, 0x101010ff
-		, 1.0f
-		, 0
-		);
 }
 
 GameInit loco_init(int argc, char** argv)
@@ -81,7 +72,7 @@ GameInit loco_init(int argc, char** argv)
 	game_init.locked_mouse = true;
 
 	// let the engine choose the graphic backend
-	game_init.renderer_type = Renderer::Type::Count;
+	game_init.renderer_type = backend::Type::Count;
 
 	// set the resource paths
 	strcpy_s(game_init.resource_root_path, sizeof(game_init.resource_root_path), argc > 1 ? argv[1] : "resources/");
@@ -109,16 +100,16 @@ void loco_update_and_render(float delta_time, int32 window_width, int32 window_h
 	// gameplay here
 	camera_update(camera, world, input, delta_time);
 
-	// update and render world
+	// update world
 	world.update();
 
-	// This dummy draw call is here to make sure that view 0 is cleared
-	// if no other draw calls are submitted to view 0.
-	bgfx::submit(0);
-	
+	// render world
 	Viewport viewport = { 0, 0, window_width, window_height };
-	render(world, camera, viewport);
+	defered_resources.update(window_width, window_height);
+	renderer_deferred(world, camera, viewport, defered_resources);
+	
 	frame();
+
 	world.gc(entity_manager);
 
 	//log.info("FPS", "%f", 1.0f / delta_time);

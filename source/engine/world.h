@@ -14,16 +14,15 @@ namespace loco
 		MeshRenderSystem mesh_render;
 		TransformSystem transform;
 
+		/// Constructor, initialize every component systems of this world
 		World();
 
 		/// Garbage collector
 		void gc(const EntityManager& em);
 
-		/// Update all world component systems
+		/// Update all world's component systems
 		void update();
 	};
-
-	extern void render(const World& world, Entity camera, Viewport viewport);
 }
 
 #endif // WORLD_H_HEADER_GUARD

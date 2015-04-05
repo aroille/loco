@@ -3,7 +3,7 @@
 
 #include "defines.h"
 #include "type.h"
-#include "renderer.h"
+#include "backend.h"
 
 
 namespace loco
@@ -11,7 +11,7 @@ namespace loco
 	struct GameInit
 	{
 		bool locked_mouse;
-		Renderer::Type renderer_type;
+		backend::Type renderer_type;
 		char resource_root_path[LOCO_PATH_LENGTH];
 		char default_resource_relative_path[LOCO_PATH_LENGTH];
 	};

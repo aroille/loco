@@ -39,11 +39,11 @@
     <ClInclude Include="..\..\..\source\core\reader_writer.h" />
     <ClInclude Include="..\..\..\source\core\timer.h" />
     <ClInclude Include="..\..\..\source\core\type.h" />
+    <ClInclude Include="..\..\..\source\core\vector2.h" />
     <ClInclude Include="..\..\..\source\core\vector3.h" />
     <ClInclude Include="..\..\..\source\core\vector4.h" />
     <ClInclude Include="..\..\..\source\engine\handle.h" />
     <ClInclude Include="..\..\..\source\engine\loco.h" />
-    <ClInclude Include="..\..\..\source\engine\renderer.h" />
     <ClInclude Include="..\..\..\source\engine\resource_material.h" />
     <ClInclude Include="..\..\..\source\engine\resource_material_json.h" />
     <ClInclude Include="..\..\..\source\engine\resource_mesh.h" />
@@ -54,6 +54,8 @@
     <ClInclude Include="..\..\..\source\engine\resource_type.h" />
     <ClInclude Include="..\..\..\source\engine\world.h" />
     <ClInclude Include="..\..\..\source\entry\entry.h" />
+    <ClInclude Include="..\..\..\source\renderer\backend.h" />
+    <ClInclude Include="..\..\..\source\renderer\renderers.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\component\camera_system.cpp" />
@@ -67,13 +69,14 @@
     <ClCompile Include="..\..\..\source\core\murmur_hash.cpp" />
     <ClCompile Include="..\..\..\source\core\file_utils.cpp" />
     <ClCompile Include="..\..\..\source\engine\loco.cpp" />
-    <ClCompile Include="..\..\..\source\engine\renderer.cpp" />
     <ClCompile Include="..\..\..\source\engine\resource_manager.cpp" />
     <ClCompile Include="..\..\..\source\engine\resource_material_json.cpp" />
     <ClCompile Include="..\..\..\source\engine\resource_type.cpp" />
     <ClCompile Include="..\..\..\source\engine\resource_mesh_bgfx.cpp" />
     <ClCompile Include="..\..\..\source\engine\world.cpp" />
     <ClCompile Include="..\..\..\source\entry\entry_windows.cpp" />
+    <ClCompile Include="..\..\..\source\renderer\backend.cpp" />
+    <ClCompile Include="..\..\..\source\renderer\renderers.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\3rdparty\bgfx\.build\projects\vs2013\bgfx.vcxproj">
@@ -154,7 +157,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\component;..\..\..\3rdparty\bx\include;..\..\..\3rdparty\bgfx\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\component;..\..\..\source\renderer;..\..\..\3rdparty\bx\include;..\..\..\3rdparty\bgfx\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;_CRT_SECURE_NO_WARNINGS;_MBCS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -176,7 +179,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\component;..\..\..\3rdparty\bx\include;..\..\..\3rdparty\bgfx\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\component;..\..\..\source\renderer;..\..\..\3rdparty\bx\include;..\..\..\3rdparty\bgfx\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_HAS_ITERATOR_DEBUGGING=0;_CRT_SECURE_NO_WARNINGS;_MBCS;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
@@ -194,7 +197,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\component;..\..\..\3rdparty\bx\include;..\..\..\3rdparty\bgfx\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\component;..\..\..\source\renderer;..\..\..\3rdparty\bx\include;..\..\..\3rdparty\bgfx\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__STDC_LIMIT_MACROS;__STDC_FORMAT_MACROS;__STDC_CONSTANT_MACROS;WIN32;_WIN32;_HAS_EXCEPTIONS=0;_HAS_ITERATOR_DEBUGGING=0;_SCL_SECURE=0;_SECURE_SCL=0;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
@@ -211,7 +214,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>..\..\..\source\core;..\..\..\source\engine;..\..\..\source\component;..\..\..\3rdparty\bx\include;..\..\..\3rdparty\bgfx\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\source\component;..\..\..\source\core;..\..\..\source\engine;..\..\..\source\renderer;..\..\..\3rdparty\bx\include;..\..\..\3rdparty\bgfx\include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>__STDC_LIMIT_MACROS;__STDC_FORMAT_MACROS;__STDC_CONSTANT_MACROS;WIN32;_WIN32;_HAS_EXCEPTIONS=0;_HAS_ITERATOR_DEBUGGING=0;_SCL_SECURE=0;_SECURE_SCL=0;_SCL_SECURE_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>

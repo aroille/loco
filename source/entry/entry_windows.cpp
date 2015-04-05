@@ -110,7 +110,7 @@ MainWindowCallback(HWND window, UINT message, WPARAM w_param,	LPARAM l_param)
 		global_window_width = LOWORD(l_param);
 		global_window_height = HIWORD(l_param);
 		if (loco::is_initialized())
-			loco::renderer.reset(global_window_width, global_window_height);
+			loco::backend::reset(global_window_width, global_window_height);
 	} break;
 
 	case WM_ACTIVATEAPP:

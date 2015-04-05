@@ -35,7 +35,7 @@ Entity create_axis(World& world, float length, float thickness)
 
 		// set Material
 		Material mat = resource_manager.get<Material>("loco/material/uni_color").duplicate();
-		mat->set("u_color", Renderer::UniformType::Vector4, (float*)&color[i]);
+		mat->set("u_color", backend::UniformType::Vector4, (float*)&color[i]);
 		cube->materials[0] = mat;
 	}
 

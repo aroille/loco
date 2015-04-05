@@ -26,18 +26,18 @@ namespace resource{
 
 	template<> Texture ResourceManager::create(const Memory* mem) const
 	{
-		return renderer.create_texture(mem);
+		return backend::create_texture(mem);
 	}
 
 	template<> void ResourceManager::destroy(const Texture& texture) const
 	{
-		renderer.destroy_texture(texture);
+		backend::destroy_texture(texture);
 	}
 
 #ifdef LOCO_USE_HOT_RELOAD
 	template<> Texture ResourceManager::replace(Texture& current, const Memory* mem) const
 	{
-		Texture new_texture = renderer.create_texture(mem);
+		Texture new_texture = backend::create_texture(mem);
 
 		if (new_texture == Texture::invalid)
 		{
@@ -45,7 +45,7 @@ namespace resource{
 		}
 		else
 		{
-			renderer.destroy_texture(current);
+			backend::destroy_texture(current);
 
 			auto mat_iter = MaterialData::_all_materials.begin();
 			auto mat_iter_end = MaterialData::_all_materials.end();

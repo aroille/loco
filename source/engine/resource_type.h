@@ -2,7 +2,7 @@
 #define RESOURCE_TYPE_H_HEADER_GUARD
 
 #include "murmur_hash.h" // HashedString
-#include "renderer.h"
+#include "backend.h"
 #include "type.h"
 
 #include <list>
@@ -14,10 +14,10 @@ namespace loco{
 namespace resource{
 
 	/// Texture handle
-	typedef Renderer::TextureHandle Texture;
+	typedef backend::TextureHandle Texture;
 
 	/// Shader handle
-	typedef Renderer::ShaderHandle Shader;
+	typedef backend::ShaderHandle Shader;
 
 	/// User interface to MaterialData
 	/// 
@@ -54,8 +54,8 @@ namespace resource{
 	/// Describe a submesh geometry
 	struct SubMeshData
 	{
-		Renderer::VertexBufferHandle vertex_buffer;
-		Renderer::IndexBufferHandle index_buffer;
+		backend::VertexBufferHandle vertex_buffer;
+		backend::IndexBufferHandle index_buffer;
 	};
 
 	/// Describe a mesh (geometry and material for each submeshs)
@@ -105,31 +105,31 @@ namespace resource{
 
 		struct UniformInfo
 		{
-			Renderer::UniformHandle				uniform;
+			backend::UniformHandle				uniform;
 			uint16												buffer_offset;
 			uint16												array_size;
-			Renderer::UniformType					type;
+			backend::UniformType					type;
 		};
 
 		struct TextureInfo
 		{
-			Renderer::UniformHandle			uniform;
-			Renderer::TextureHandle			texture;
+			backend::UniformHandle			uniform;
+			backend::TextureHandle			texture;
 			uint32											flags;
 		};
 
 		MaterialData();
 		~MaterialData();
 
-		void set_shader(Renderer::ShaderHandle vertex_shader, Renderer::ShaderHandle pixel_shader);
+		void set_shader(backend::ShaderHandle vertex_shader, backend::ShaderHandle pixel_shader);
 
-		void set(const char* name, Renderer::UniformType type, const float* data, unsigned size = 1);
-		void set(const char* name, Renderer::TextureHandle texture, uint32 flags = 0);
+		void set(const char* name, backend::UniformType type, const float* data, unsigned size = 1);
+		void set(const char* name, backend::TextureHandle texture, uint32 flags = 0);
 
 		std::map<HashedString, unsigned> _uniform_map;
 		std::map<HashedString, unsigned> _texture_map;
 
-		Renderer::ProgramHandle		_program;
+		backend::ProgramHandle		_program;
 		std::vector<UniformInfo>	_uniform_infos;
 		std::vector<TextureInfo>	_texture_infos;
 		std::vector<float>				_uniform_buffer;
@@ -140,7 +140,7 @@ namespace resource{
 
 	private:
 
-		UniformInfo&  create_uniform_param(const char* name, Renderer::UniformType type, unsigned array_size);
+		UniformInfo&  create_uniform_param(const char* name, backend::UniformType type, unsigned array_size);
 		TextureInfo&  create_texture_param(const char* name);	
 
 	};

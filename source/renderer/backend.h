@@ -1,11 +1,9 @@
-#ifndef RENDERER_H_HEADER_GUARD
-#define RENDERER_H_HEADER_GUARD
+#ifndef BACKEND_H_HEADER_GUARD
+#define BACKEND_H_HEADER_GUARD
 
 #include "math_types.h"
 #include "type.h"
-
 #include <vector>
-#include <map>
 
 #define LOCO_TEXTURE_U_MIRROR						UINT32_C(0x00000001)
 #define LOCO_TEXTURE_U_CLAMP            UINT32_C(0x00000002)
@@ -18,14 +16,6 @@
 #define LOCO_TEXTURE_MAG_POINT          UINT32_C(0x00000100)
 #define LOCO_TEXTURE_MAG_ANISOTROPIC    UINT32_C(0x00000200)
 #define LOCO_TEXTURE_MIP_POINT          UINT32_C(0x00000400)
-
-///
-#define LOCO_RENDERER_HANDLE(_name) \
-struct _name { \
-	uint16 idx; \
-	static _name invalid; \
-	bool operator==(_name const& in) const; \
-};
 
 namespace loco
 {
@@ -50,22 +40,14 @@ namespace loco
 	using namespace resource;
 	using namespace math;
 
-	/// LOCO Renderer 
-	///
-	/// In charge of:
-	///		- Create / Update / Destroy GPU Resource
-	///		- Submit draw call using resource manager resources (Mesh, Material)
-	/// 
-	/// @remarks
-	///		Memory* provide as parameters to every Renderer methods, such as 
-	///		create_texture(Memory*), must be valid for at least 2 frames
-	///
-	/// @remarks
-	///		Renderer is the only class talking to the backend abstraction library BGFX
-	///
-	class Renderer
+	namespace backend
 	{
-	public:
+#define LOCO_BACKEND_HANDLE(handle_name) \
+		struct handle_name { \
+			uint16 idx; \
+			static handle_name invalid; \
+			bool operator==(handle_name const& in) const; \
+			};
 
 		/// Renderer types
 		enum class Type
@@ -145,96 +127,137 @@ namespace loco
 			Count,
 		};
 
+		enum class TextureFormat
+		{
+			BC1,    // DXT1
+			BC2,    // DXT3
+			BC3,    // DXT5
+			BC4,    // LATC1/ATI1
+			BC5,    // LATC2/ATI2
+			BC6H,   // BC6H
+			BC7,    // BC7
+			ETC1,   // ETC1 RGB8
+			ETC2,   // ETC2 RGB8
+			ETC2A,  // ETC2 RGBA8
+			ETC2A1, // ETC2 RGB8A1
+			PTC12,  // PVRTC1 RGB 2BPP
+			PTC14,  // PVRTC1 RGB 4BPP
+			PTC12A, // PVRTC1 RGBA 2BPP
+			PTC14A, // PVRTC1 RGBA 4BPP
+			PTC22,  // PVRTC2 RGBA 2BPP
+			PTC24,  // PVRTC2 RGBA 4BPP
+
+			Unknown, // compressed formats above
+
+			R1,
+			R8,
+			R16,
+			R16F,
+			R32,
+			R32F,
+			RG8,
+			RG16,
+			RG16F,
+			RG32,
+			RG32F,
+			BGRA8,
+			RGBA16,
+			RGBA16F,
+			RGBA32,
+			RGBA32F,
+			R5G6B5,
+			RGBA4,
+			RGB5A1,
+			RGB10A2,
+			R11G11B10F,
+
+			UnknownDepth, // depth formats below
+
+			D16,
+			D24,
+			D24S8,
+			D32,
+			D16F,
+			D24F,
+			D32F,
+			D0S8,
+
+			Count
+		};
+
 		// GPU resource handles :
-		LOCO_RENDERER_HANDLE(TextureHandle);
-		LOCO_RENDERER_HANDLE(VertexDeclHandle);
-		LOCO_RENDERER_HANDLE(VertexBufferHandle);
-		LOCO_RENDERER_HANDLE(IndexBufferHandle);
-		LOCO_RENDERER_HANDLE(ShaderHandle);
-		LOCO_RENDERER_HANDLE(ProgramHandle);
-		LOCO_RENDERER_HANDLE(UniformHandle);
+		LOCO_BACKEND_HANDLE(TextureHandle);
+		LOCO_BACKEND_HANDLE(VertexDeclHandle);
+		LOCO_BACKEND_HANDLE(VertexBufferHandle);
+		LOCO_BACKEND_HANDLE(IndexBufferHandle);
+		LOCO_BACKEND_HANDLE(ShaderHandle);
+		LOCO_BACKEND_HANDLE(ProgramHandle);
+		LOCO_BACKEND_HANDLE(UniformHandle);
 
 		/// Initialize renderer
-		void init(Type renderer_type);
+		extern void init(Type renderer_type);
 
 		/// Shutdown renderer
-		void shutdown();
+		extern void shutdown();
 
 		/// Return the type of the current backend
-		Type type();
+		extern Type type();
 
 		/// Return the name of the backend
-		const char* type_name(Type type);
+		extern const char* type_name(Type type);
 
 		/// Set Main window size
-		void reset(unsigned width, unsigned height);
+		extern void reset(unsigned width, unsigned height);
 
 		/// Switch render buffer
-		void frame();
+		extern void frame();
 
 		/// Return shader_extention name (according to the current backend)
-		inline const char* shader_extention() { return _shader_extention; }
+		extern const char* shader_extention();
 
 		/// Create texture from memory buffer
-		TextureHandle create_texture(const Memory* memory);
+		extern TextureHandle create_texture(const Memory* memory);
 
 		/// Destroy texture
-		void destroy_texture(TextureHandle handle);
+		extern void destroy_texture(TextureHandle handle);
 
 		/// Create program with vertex and pixel shaders
-		ProgramHandle create_program(ShaderHandle vertex_shader, ShaderHandle pixel_shader);
+		extern ProgramHandle create_program(ShaderHandle vertex_shader, ShaderHandle pixel_shader);
 		
 		/// Destroy program
-		void destroy_program(ProgramHandle handle);
+		extern void destroy_program(ProgramHandle handle);
 
 		/// Create shader from memory buffer.
-		ShaderHandle create_shader(const Memory* memory);
+		extern ShaderHandle create_shader(const Memory* memory);
 
 		/// Destroy shader
-		void destroy_shader(ShaderHandle handle);
+		extern void destroy_shader(ShaderHandle handle);
 
 		/// Create shader uniform 
-		UniformHandle create_uniform(const char* name, UniformType type, unsigned array_size);
+		extern UniformHandle create_uniform(const char* name, UniformType type, unsigned array_size);
 		
 		/// Destroy shader uniform
-		void destroy_uniform(UniformHandle handle);
+		extern void destroy_uniform(UniformHandle handle);
 
 		/// Create static vertex buffer from memory buffer
-		VertexBufferHandle create_vertex_buffer(const Memory* memory, const VertexDecl& decl);
+		extern VertexBufferHandle create_vertex_buffer(const Memory* memory, const VertexDecl& decl);
 
 		/// Destroy static vertex buffer.
-		void destroy_vertex_buffer(VertexBufferHandle handle);
+		extern void destroy_vertex_buffer(VertexBufferHandle handle);
 
 		/// Create static index buffer from memory buffer
-		IndexBufferHandle create_index_buffer(const Memory* memory);
+		extern IndexBufferHandle create_index_buffer(const Memory* memory);
 
 		/// Destroy static index buffer.
-		void destroy_index_buffer(IndexBufferHandle handle);
+		extern void destroy_index_buffer(IndexBufferHandle handle);
 
 		/// Set viewport 
-		void set_view_rect(uint8 view_id, Viewport viewport);
+		extern void set_view_rect(uint8 view_id, Viewport viewport);
 
 		/// Set view and projection matrix
-		void set_view_transform(uint8 view_id, const Matrix4x4& view_mtx, const Matrix4x4& proj_mtx);
+		extern void set_view_transform(uint8 view_id, const Matrix4x4& view_mtx, const Matrix4x4& proj_mtx);
 
-		/// Submit draw calls
-		///
-		/// @param view_id View target
-		/// @param count Number of mesh to render
-		/// @param meshes Array of mesh to render
-		/// @param transforms Array of mesh world transform matrix
-		/// @param default_resources Default resources use in case of invalid resources
-		///
-		void batch_render(uint8 view_id, uint32 count, const Mesh* meshes, const Matrix4x4* transforms, const DefaultResources& default_resources);
+	} // backend
+} // loco
 
-	private:
-		/// Bind a material
-		void bind_material(const MaterialData* material, const DefaultResources& default_resources);
-
-	private:
-		char _shader_extention[16];						///< shader extention name (according to the current backend)
-		std::map<uint32, ProgramHandle> _programs;	///< key create from vertex and pixel shader handles
-	};
-}
-
-#endif // RENDERER_H_HEADER_GUARD
+#endif // BACKEND_H_HEADER_GUARD

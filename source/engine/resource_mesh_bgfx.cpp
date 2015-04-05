@@ -105,13 +105,13 @@ namespace bgfx_helper
 						read(_reader, m_decl);
 
 						// convert vertex attribute declaration from bgfx to loco
-						loco::Renderer::VertexDecl loco_decl;
-						for (unsigned i = 0; i < (int32)loco::Renderer::VertexAttrib::Count; i++)
+						loco::backend::VertexDecl loco_decl;
+						for (unsigned i = 0; i < (int32)loco::backend::VertexAttrib::Count; i++)
 						{
-							loco::Renderer::VertexAttrib type = (loco::Renderer::VertexAttrib)i;
+							loco::backend::VertexAttrib type = (loco::backend::VertexAttrib)i;
 							if (m_decl.has((bgfx::Attrib::Enum)type))
 							{
-								loco::Renderer::VertexAttribDecl d;
+								loco::backend::VertexAttribDecl d;
 								d.attrib = type;
 			
 								m_decl.decode((bgfx::Attrib::Enum)type, d.num, (bgfx::AttribType::Enum&)d.type, d.normalized, d.asInt);
@@ -131,7 +131,7 @@ namespace bgfx_helper
 						mem.data = const_cast<uint8*>(_reader->getDataPtr());
 						mem.size = numVertices*stride;
 						_reader->seek(mem.size, bx::Whence::Current);
-						group.m_vbh.idx = loco::renderer.create_vertex_buffer(&mem, loco_decl).idx;
+						group.m_vbh.idx = loco::backend::create_vertex_buffer(&mem, loco_decl).idx;
 					}
 					break;
 

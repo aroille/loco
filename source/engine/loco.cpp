@@ -2,7 +2,7 @@
 #include "loco.h"
 #include "log.h"
 #include "platform.h"
-#include "renderer.h"
+#include "backend.h"
 #include "resource_manager.h"
 
 namespace loco
@@ -13,7 +13,6 @@ namespace loco
 	
 	EntityManager entity_manager;
 	ResourceManager resource_manager;
-	Renderer renderer;
 	uint32 current_frame = 0;
 	bool initialized = false;
 
@@ -22,7 +21,7 @@ namespace loco
 		return initialized; 
 	}
 
-	void init(Renderer::Type renderer_type, int32 window_width, int32 window_height, const char* resources_path, const char* default_resources_path)
+	void init(backend::Type renderer_type, int32 window_width, int32 window_height, const char* resources_path, const char* default_resources_path)
 	{
 		LOCO_LOG_INFO("Loco", "Initializing");
 		LOCO_LOG_INFO("Loco", "Version %s %s %s %s", LOCO_CPU_NAME, LOCO_ARCH_NAME, LOCO_PLATFORM_NAME, LOCO_COMPILER_NAME);
@@ -34,8 +33,8 @@ namespace loco
 		strcpy(default_resource_relativ_path, default_resources_path);
 
 		//init renderer
-		renderer.init(renderer_type);
-		renderer.reset(window_width, window_height);
+		backend::init(renderer_type);
+		backend::reset(window_width, window_height);
 
 		// load default resources
 		resource_manager.load_folder(default_resource_relativ_path);
@@ -46,7 +45,7 @@ namespace loco
 
 	void frame()
 	{
-		renderer.frame();
+		backend::frame();
 		resource_manager.free_memory();
 		current_frame++;
 	}
@@ -54,7 +53,7 @@ namespace loco
 	void shutdown()
 	{
 		resource_manager.unload_all();
-		renderer.shutdown();
+		backend::shutdown();
 	}
 
 } // namespace loco
